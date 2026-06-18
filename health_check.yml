@@ -1,0 +1,33 @@
+name: Health Check — Diario
+
+on:
+  schedule:
+    - cron: "0 9 * * *"   # 9 AM UTC todos los días
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API en Railway
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            https://mapa-compliance-production.up.railway.app/health || echo "000")
+          echo "HTTP Status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "::error::API no responde correctamente (status $STATUS)"
+            exit 1
+          fi
+
+      - name: Notificar fallo (solo si falla)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔴 Health Check falló — ' + new Date().toISOString().slice(0,10),
+              body: 'La API no respondió al health check diario. Revisar Railway.',
+              labels: ['bug', 'automated']
+            })

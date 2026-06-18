@@ -1,0 +1,36 @@
+name: ETL — Alertas regulatorias
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Lunes 6 AM UTC (= 3 AM Argentina)
+  workflow_dispatch:       # Permitir ejecución manual
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Correr ETL Alertas
+        env:
+          DATA_DIR: data
+        run: python -m scripts.etl_alertas
+
+      - name: Correr ETL Normativa
+        env:
+          DATA_DIR: data
+        run: python -m scripts.etl_normativa
+
+      - name: Commit datos actualizados
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: actualización automática alertas y normativa [skip ci]"
+          file_pattern: "data/*.json"
