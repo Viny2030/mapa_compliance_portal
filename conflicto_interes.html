@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title id="page-title">Conflicto de Interés — Monitor de Compliance</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--amarillo:#f9a825;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);line-height:1.6;padding-bottom:2rem}
+header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.8rem 1rem 1.3rem;text-align:center}
+header h1{font-size:1.5rem;margin-bottom:.25rem}
+header p{opacity:.75;font-size:.88rem}
+.lang-sel{display:flex;gap:.25rem;justify-content:center;margin-top:.8rem}
+.lang-btn{background:rgba(255,255,255,.12);border:none;color:#cde;font-size:.72rem;font-weight:700;padding:.3rem .65rem;border-radius:4px;cursor:pointer}
+.lang-btn.active{background:#2196f3;color:#fff}
+.wrap{max-width:940px;margin:0 auto;padding:1.4rem .9rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1.05rem;margin-bottom:.4rem}
+.card .sub{font-size:.8rem;color:var(--muted);margin-bottom:.9rem}
+.demo-banner{font-size:.78rem;color:#0d47a1;background:#e3f2fd;border-left:3px solid var(--sec);padding:.6rem .85rem;border-radius:6px;margin-bottom:1rem;display:flex;align-items:flex-start;gap:.5rem}
+.ley-banner{font-size:.78rem;color:#7c3a00;background:#fff3e0;border-left:3px solid var(--naranja);padding:.6rem .85rem;border-radius:6px;margin-bottom:1rem;display:flex;align-items:flex-start;gap:.5rem}
+
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:.55rem;margin-bottom:1rem}
+@media(max-width:700px){.grid5{grid-template-columns:repeat(2,1fr)}}
+.cat-card{text-align:center;padding:.75rem .4rem;border-radius:9px;border:1.5px solid var(--borde);cursor:pointer;transition:all .15s;background:#fff}
+.cat-card:hover{border-color:var(--sec)}
+.cat-card.active{border-color:var(--pri);background:#eef4fa}
+.cat-ico{font-size:1.5rem;margin-bottom:.3rem}
+.cat-label{font-size:.7rem;font-weight:700;color:var(--texto)}
+.cat-count{font-size:1.1rem;font-weight:800;color:var(--pri);margin-top:.15rem}
+
+.filtro-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.filtro-chip{font-size:.76rem;font-weight:600;padding:.4rem .75rem;border-radius:18px;border:1.5px solid var(--borde);background:#fff;cursor:pointer;color:var(--texto)}
+.filtro-chip:hover{border-color:var(--sec)}
+.filtro-chip.active{background:var(--pri);border-color:var(--pri);color:#fff}
+
+.decl-row{display:flex;align-items:flex-start;gap:.8rem;padding:.85rem .9rem;border-radius:9px;margin-bottom:.6rem;background:#f8fafc;border-left:4px solid}
+.decl-row.sin_conflicto{border-color:var(--verde)}
+.decl-row.declarado{border-color:var(--naranja)}
+.decl-row.con_alerta{border-color:var(--rojo)}
+.decl-ico{flex-shrink:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;margin-top:.1rem}
+.decl-row.sin_conflicto .decl-ico{background:var(--verde)}
+.decl-row.declarado .decl-ico{background:var(--naranja)}
+.decl-row.con_alerta .decl-ico{background:var(--rojo)}
+.decl-body{flex:1;min-width:0}
+.decl-head{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.2rem}
+.decl-nombre{font-size:.92rem;font-weight:700}
+.decl-tipo-tag{font-size:.65rem;font-weight:800;padding:.14rem .5rem;border-radius:8px;background:#e3f2fd;color:#0d47a1;text-transform:uppercase;letter-spacing:.02em}
+.decl-pill{font-size:.66rem;font-weight:800;padding:.16rem .5rem;border-radius:8px;text-transform:uppercase;letter-spacing:.02em}
+.decl-row.sin_conflicto .decl-pill{background:#e8f5e9;color:var(--verde)}
+.decl-row.declarado .decl-pill{background:#fff3e0;color:var(--naranja)}
+.decl-row.con_alerta .decl-pill{background:#fdecea;color:var(--rojo)}
+.decl-desc{font-size:.82rem;color:#444;margin-top:.3rem}
+.decl-meta{font-size:.73rem;color:var(--muted);margin-top:.4rem;display:flex;gap:1rem;flex-wrap:wrap}
+.decl-dd-link{font-size:.76rem;color:var(--rojo);background:#fdecea;border-radius:6px;padding:.4rem .6rem;margin-top:.5rem;display:flex;align-items:center;gap:.4rem;font-weight:600}
+
+.form-grid{display:flex;flex-direction:column;gap:.7rem}
+.form-row{display:flex;gap:.7rem;flex-wrap:wrap}
+.form-field{flex:1;min-width:180px;display:flex;flex-direction:column;gap:.3rem}
+.form-field label{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.02em}
+.form-field input,.form-field select,.form-field textarea{font-family:inherit;font-size:.85rem;padding:.5rem .65rem;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.form-field textarea{resize:vertical;min-height:70px}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+.btn{background:var(--pri);color:#fff;border:none;padding:.6rem 1.2rem;border-radius:6px;font-size:.86rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:#0d2137}
+.btn.verde{background:var(--verde)}.btn.verde:hover{background:#1b5e20}
+.form-success{font-size:.82rem;color:var(--verde);background:#e8f5e9;border-radius:6px;padding:.6rem .8rem;margin-top:.7rem;display:none}
+.form-success.show{display:block}
+
+footer{text-align:center;padding:1.8rem;color:var(--muted);font-size:.76rem}
+a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="h-titulo" data-i18n="h_titulo">⚖️ Declaraciones de Conflicto de Interés</h1>
+  <p id="h-sub" data-i18n="h_sub">Empleados, gerentes, proveedores, clientes y terceros asociados</p>
+  <div class="lang-sel">
+    <button class="lang-btn active" onclick="setLang('es')">🇦🇷 ES</button>
+    <button class="lang-btn" onclick="setLang('en')">🇺🇸 EN</button>
+    <button class="lang-btn" onclick="setLang('pt')">🇧🇷 PT</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="demo-banner" data-i18n="demo_banner">
+    ⚠️ Módulo de demostración: las declaraciones listadas son datos sintéticos. El formulario nuevo se guarda en este navegador (localStorage), sin conexión a un backend real.
+  </div>
+  <div class="ley-banner" data-i18n="ley_banner">
+    📌 La Ley 27.401 (Art. 23) exige que el Programa de Integridad alcance no solo a directivos y empleados, sino también a la relación con socios de negocio, proveedores y terceros intermediarios — la vía más frecuente de soborno indirecto.
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="categorias_titulo">Declarantes por categoría</h2>
+    <p class="sub" data-i18n="categorias_sub">Click en una categoría para filtrar el listado</p>
+    <div class="grid5" id="cat-grid"></div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="listado_titulo">Declaraciones registradas</h2>
+    <p class="sub" data-i18n="listado_sub">Estado de declaración de conflicto de interés por persona o entidad</p>
+    <div class="filtro-row" id="filtro-estado"></div>
+    <div id="decl-lista"></div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="form_titulo">Declarar un nuevo conflicto de interés</h2>
+    <p class="sub" data-i18n="form_sub">Formulario de carga — disponible para cualquier categoría de declarante</p>
+    <div class="form-grid">
+      <div class="form-row">
+        <div class="form-field">
+          <label data-i18n="form_nombre_label">Nombre / Razón social</label>
+          <input type="text" id="f-nombre" data-i18n-placeholder="form_nombre_placeholder" placeholder="Ej: Juan Pérez">
+        </div>
+        <div class="form-field">
+          <label data-i18n="form_tipo_label">Tipo de declarante</label>
+          <select id="f-tipo"></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label data-i18n="form_situacion_label">Tipo de situación</label>
+          <select id="f-situacion"></select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label data-i18n="form_desc_label">Descripción de la situación</label>
+        <textarea id="f-desc" data-i18n-placeholder="form_desc_placeholder" placeholder="Describí brevemente el vínculo o situación declarada..."></textarea>
+      </div>
+      <div>
+        <button class="btn verde" onclick="guardarDeclaracion()" data-i18n="form_btn">📩 Registrar declaración</button>
+        <div class="form-success" id="form-success" data-i18n="form_success">✅ Declaración registrada correctamente.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer data-i18n="footer_texto">
+  Monitor de Compliance Empresarial · Conflicto de Interés · Ph.D. Vicente H. Monteverde
+</footer>
+
+<script src="config.js"></script>
+<script>
+const T={
+  es:{
+    h_titulo:'⚖️ Declaraciones de Conflicto de Interés',
+    h_sub:'Empleados, gerentes, proveedores, clientes y terceros asociados',
+    page_title:'Conflicto de Interés — Monitor de Compliance',
+    demo_banner:'⚠️ Módulo de demostración: las declaraciones listadas son datos sintéticos. El formulario nuevo se guarda en este navegador (localStorage), sin conexión a un backend real.',
+    ley_banner:'📌 La Ley 27.401 (Art. 23) exige que el Programa de Integridad alcance no solo a directivos y empleados, sino también a la relación con socios de negocio, proveedores y terceros intermediarios — la vía más frecuente de soborno indirecto.',
+    categorias_titulo:'Declarantes por categoría',
+    categorias_sub:'Click en una categoría para filtrar el listado',
+    listado_titulo:'Declaraciones registradas',
+    listado_sub:'Estado de declaración de conflicto de interés por persona o entidad',
+    form_titulo:'Declarar un nuevo conflicto de interés',
+    form_sub:'Formulario de carga — disponible para cualquier categoría de declarante',
+    form_nombre_label:'Nombre / Razón social',form_nombre_placeholder:'Ej: Juan Pérez',
+    form_tipo_label:'Tipo de declarante',
+    form_situacion_label:'Tipo de situación',
+    form_desc_label:'Descripción de la situación',form_desc_placeholder:'Describí brevemente el vínculo o situación declarada...',
+    form_btn:'📩 Registrar declaración',
+    form_success:'✅ Declaración registrada correctamente.',
+    form_error_nombre:'Ingresá un nombre o razón social antes de registrar.',
+    footer_texto:'Monitor de Compliance Empresarial · Conflicto de Interés · Ph.D. Vicente H. Monteverde',
+    todas:'Todas',
+    cat_empleado:'Empleados',cat_gerente:'Gerentes / Directivos',cat_proveedor:'Proveedores',cat_cliente:'Clientes',cat_tercero:'Terceros asociados',
+    estado_sin_conflicto:'Sin conflicto',estado_declarado:'Declarado',estado_con_alerta:'Con alerta DD',
+    sit_familiar:'Familiar en proveedor/cliente',
+    sit_societaria:'Participación societaria',
+    sit_otro_empleo:'Otro empleo o actividad externa',
+    sit_regalo:'Regalo u hospitalidad recibida',
+    sit_funcionario:'Relación con funcionario público',
+    sit_otro:'Otra situación',
+    dd_vinculo:'🔗 Vinculado a Due Diligence: alerta OCDE registrada para este proveedor',
+    area_label:'Área',fecha_label:'Fecha de declaración',situacion_label:'Situación',
+  },
+  en:{
+    h_titulo:'⚖️ Conflict of Interest Declarations',
+    h_sub:'Employees, managers, vendors, clients and associated third parties',
+    page_title:'Conflict of Interest — Compliance Monitor',
+    demo_banner:'⚠️ Demo module: the listed declarations are synthetic data. New submissions are saved in this browser (localStorage), with no connection to a real backend.',
+    ley_banner:'📌 Argentine Law 27.401 (Art. 23) requires the Integrity Program to cover not only directors and employees, but also the relationship with business partners, vendors and third-party intermediaries — the most common channel for indirect bribery.',
+    categorias_titulo:'Declarants by category',
+    categorias_sub:'Click a category to filter the list',
+    listado_titulo:'Registered declarations',
+    listado_sub:'Conflict of interest declaration status by person or entity',
+    form_titulo:'Declare a new conflict of interest',
+    form_sub:'Submission form — available for any declarant category',
+    form_nombre_label:'Name / Company name',form_nombre_placeholder:'E.g.: John Smith',
+    form_tipo_label:'Declarant type',
+    form_situacion_label:'Situation type',
+    form_desc_label:'Description of the situation',form_desc_placeholder:'Briefly describe the relationship or declared situation...',
+    form_btn:'📩 Register declaration',
+    form_success:'✅ Declaration registered successfully.',
+    form_error_nombre:'Enter a name or company name before registering.',
+    footer_texto:'Corporate Compliance Monitor · Conflict of Interest · Ph.D. Vicente H. Monteverde',
+    todas:'All',
+    cat_empleado:'Employees',cat_gerente:'Managers / Executives',cat_proveedor:'Vendors',cat_cliente:'Clients',cat_tercero:'Associated third parties',
+    estado_sin_conflicto:'No conflict',estado_declarado:'Declared',estado_con_alerta:'DD Alert',
+    sit_familiar:'Relative at vendor/client',
+    sit_societaria:'Equity ownership',
+    sit_otro_empleo:'Other employment or outside activity',
+    sit_regalo:'Gift or hospitality received',
+    sit_funcionario:'Relationship with public official',
+    sit_otro:'Other situation',
+    dd_vinculo:'🔗 Linked to Due Diligence: OECD alert on file for this vendor',
+    area_label:'Area',fecha_label:'Declaration date',situacion_label:'Situation',
+  },
+  pt:{
+    h_titulo:'⚖️ Declarações de Conflito de Interesse',
+    h_sub:'Funcionários, gerentes, fornecedores, clientes e terceiros associados',
+    page_title:'Conflito de Interesse — Monitor de Compliance',
+    demo_banner:'⚠️ Módulo de demonstração: as declarações listadas são dados sintéticos. O formulário novo é salvo neste navegador (localStorage), sem conexão com um backend real.',
+    ley_banner:'📌 A Lei 27.401 (Art. 23) exige que o Programa de Integridade alcance não apenas diretores e funcionários, mas também a relação com parceiros de negócios, fornecedores e terceiros intermediários — a via mais frequente de suborno indireto.',
+    categorias_titulo:'Declarantes por categoria',
+    categorias_sub:'Clique em uma categoria para filtrar a lista',
+    listado_titulo:'Declarações registradas',
+    listado_sub:'Status de declaração de conflito de interesse por pessoa ou entidade',
+    form_titulo:'Declarar um novo conflito de interesse',
+    form_sub:'Formulário de registro — disponível para qualquer categoria de declarante',
+    form_nombre_label:'Nome / Razão social',form_nombre_placeholder:'Ex: João Silva',
+    form_tipo_label:'Tipo de declarante',
+    form_situacion_label:'Tipo de situação',
+    form_desc_label:'Descrição da situação',form_desc_placeholder:'Descreva brevemente o vínculo ou situação declarada...',
+    form_btn:'📩 Registrar declaração',
+    form_success:'✅ Declaração registrada com sucesso.',
+    form_error_nombre:'Insira um nome ou razão social antes de registrar.',
+    footer_texto:'Monitor de Compliance Empresarial · Conflito de Interesse · Ph.D. Vicente H. Monteverde',
+    todas:'Todas',
+    cat_empleado:'Funcionários',cat_gerente:'Gerentes / Diretores',cat_proveedor:'Fornecedores',cat_cliente:'Clientes',cat_tercero:'Terceiros associados',
+    estado_sin_conflicto:'Sem conflito',estado_declarado:'Declarado',estado_con_alerta:'Alerta DD',
+    sit_familiar:'Familiar em fornecedor/cliente',
+    sit_societaria:'Participação societária',
+    sit_otro_empleo:'Outro emprego ou atividade externa',
+    sit_regalo:'Presente ou hospitalidade recebida',
+    sit_funcionario:'Relação com funcionário público',
+    sit_otro:'Outra situação',
+    dd_vinculo:'🔗 Vinculado ao Due Diligence: alerta OCDE registrado para este fornecedor',
+    area_label:'Área',fecha_label:'Data da declaração',situacion_label:'Situação',
+  }
+};
+
+// ── Datos sintéticos (demo) ──────────────────────────────────────────────
+// 9 declarantes mezclando las 5 categorías exigidas por la Ley 27.401: no solo
+// empleados/directivos, también la relación con terceros (proveedores, clientes,
+// intermediarios), que es la vía más común de soborno indirecto (FCPA/UK Bribery Act).
+//
+// cuit: si está presente y coincide con CONFIG.cuits_verificados, el detalle
+// muestra el vínculo cruzado con Due Diligence (igual patrón que el Mapa de Calor).
+const DECLARACIONES=[
+  {id:'d1',tipo:'empleado',nombre:'Lucía Fernández',area:{es:'Comercial / Ventas',en:'Sales / Commercial',pt:'Comercial / Vendas'},
+    estado:'sin_conflicto',fecha:'2026-01-10',situacion:null,desc:null},
+  {id:'d2',tipo:'empleado',nombre:'Martín Acosta',area:{es:'Compras y Abastecimiento',en:'Procurement and Supply',pt:'Compras e Abastecimento'},
+    estado:'declarado',fecha:'2026-02-14',situacion:'sit_familiar',
+    desc:{es:'Hermano trabaja como gerente comercial en Proveedor Ejemplo 1 S.R.L.',en:'Brother works as commercial manager at Proveedor Ejemplo 1 S.R.L.',pt:'Irmão trabalha como gerente comercial na Proveedor Ejemplo 1 S.R.L.'},
+    cuit:'30-11111111-1'},
+  {id:'d3',tipo:'gerente',nombre:'Valentina Ortiz',area:{es:'Gobierno Corporativo',en:'Corporate Governance',pt:'Governança Corporativa'},
+    estado:'sin_conflicto',fecha:'2026-01-10',situacion:null,desc:null},
+  {id:'d4',tipo:'gerente',nombre:'Gabriel Suárez',area:{es:'Recursos Humanos',en:'Human Resources',pt:'Recursos Humanos'},
+    estado:'declarado',fecha:'2026-03-02',situacion:'sit_otro_empleo',
+    desc:{es:'Director suplente en una consultora de RRHH que presta servicios ocasionales a la empresa.',en:'Alternate director at an HR consulting firm that occasionally provides services to the company.',pt:'Diretor suplente em uma consultoria de RH que presta serviços ocasionais à empresa.'}},
+  {id:'d5',tipo:'proveedor',nombre:'Proveedor Ejemplo 1 S.R.L.',area:null,
+    estado:'declarado',fecha:'2026-02-14',situacion:'sit_familiar',
+    desc:{es:'Vínculo familiar declarado por empleado interno (ver Martín Acosta).',en:'Family relationship declared by internal employee (see Martín Acosta).',pt:'Vínculo familiar declarado por funcionário interno (ver Martín Acosta).'},
+    cuit:'30-11111111-1'},
+  {id:'d6',tipo:'proveedor',nombre:'Siemens S.A.',area:null,
+    estado:'con_alerta',fecha:'2025-03-15',situacion:'sit_otro',
+    desc:{es:'Sin vínculo personal declarado por empleados. Alerta proviene exclusivamente del historial de Due Diligence (caso OCDE).',en:'No personal relationship declared by employees. Alert comes exclusively from the Due Diligence history (OECD case).',pt:'Nenhum vínculo pessoal declarado por funcionários. O alerta vem exclusivamente do histórico de Due Diligence (caso OCDE).'},
+    cuit:'30-54667581-3'},
+  {id:'d7',tipo:'cliente',nombre:'Constructora del Sur S.A.',area:null,
+    estado:'declarado',fecha:'2026-03-20',situacion:'sit_societaria',
+    desc:{es:'Un director de la empresa posee participación societaria minoritaria (4%) en este cliente.',en:'A company director holds a minority equity stake (4%) in this client.',pt:'Um diretor da empresa possui participação societária minoritária (4%) neste cliente.'}},
+  {id:'d8',tipo:'cliente',nombre:'Distribuidora Norte S.R.L.',area:null,
+    estado:'sin_conflicto',fecha:'2026-01-10',situacion:null,desc:null},
+  {id:'d9',tipo:'tercero',nombre:'Estudio Jurídico Asociados & Cía.',area:null,
+    estado:'declarado',fecha:'2026-04-05',situacion:'sit_funcionario',
+    desc:{es:'Intermediario contratado para gestiones regulatorias. Uno de sus socios fue funcionario público hasta 2024.',en:'Intermediary hired for regulatory matters. One of its partners was a public official until 2024.',pt:'Intermediário contratado para gestões regulatórias. Um de seus sócios foi funcionário público até 2024.'}},
+];
+
+const CATEGORIAS=['empleado','gerente','proveedor','cliente','tercero'];
+const CAT_ICOS={empleado:'👤',gerente:'🧑‍💼',proveedor:'📦',cliente:'🤝',tercero:'🔗'};
+
+let lang='es';
+let catActiva=null;   // null = todas
+let filtroEstado='todas';
+
+const t=k=>T[lang][k]||k;
+const tx=v=>{
+  if(v==null)return '';
+  if(typeof v==='object')return v[lang]??v.es??Object.values(v)[0]??'';
+  return v;
+};
+
+const LS_KEY='compliance_coi_nuevas';
+
+function getNuevasDeclaraciones(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    return raw?JSON.parse(raw):[];
+  }catch(e){return [];}
+}
+function guardarNuevaDeclaracion(decl){
+  const lista=getNuevasDeclaraciones();
+  lista.push(decl);
+  try{localStorage.setItem(LS_KEY,JSON.stringify(lista));}catch(e){console.warn('No se pudo guardar en localStorage',e);}
+}
+
+function getCuitsVerificados(){
+  return (typeof CONFIG!=='undefined' && CONFIG.cuits_verificados) ? CONFIG.cuits_verificados : [];
+}
+
+function getTodasDeclaraciones(){
+  const nuevas=getNuevasDeclaraciones();
+  return [...DECLARACIONES, ...nuevas];
+}
+
+function applyStaticI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=t(el.dataset.i18n);});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{el.setAttribute('placeholder',t(el.dataset.i18nPlaceholder));});
+  document.getElementById('page-title').textContent=t('page_title');
+  document.documentElement.lang=lang;
+}
+
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+  applyStaticI18n();
+  renderAll();
+}
+
+function renderCategorias(){
+  const todas=getTodasDeclaraciones();
+  document.getElementById('cat-grid').innerHTML=CATEGORIAS.map(cat=>{
+    const count=todas.filter(d=>d.tipo===cat).length;
+    return `<div class="cat-card ${catActiva===cat?'active':''}" onclick="toggleCategoria('${cat}')">
+      <div class="cat-ico">${CAT_ICOS[cat]}</div>
+      <div class="cat-label">${t('cat_'+cat)}</div>
+      <div class="cat-count">${count}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCategoria(cat){
+  catActiva = catActiva===cat ? null : cat;
+  renderCategorias();
+  renderLista();
+}
+
+function renderFiltroEstado(){
+  const estados=['todas','sin_conflicto','declarado','con_alerta'];
+  document.getElementById('filtro-estado').innerHTML=estados.map(es=>{
+    const label = es==='todas' ? t('todas') : t('estado_'+es);
+    return `<button class="filtro-chip ${filtroEstado===es?'active':''}" onclick="setFiltroEstado('${es}')">${label}</button>`;
+  }).join('');
+}
+
+function setFiltroEstado(es){
+  filtroEstado=es;
+  renderFiltroEstado();
+  renderLista();
+}
+
+function renderLista(){
+  let lista=getTodasDeclaraciones();
+  if(catActiva) lista=lista.filter(d=>d.tipo===catActiva);
+  if(filtroEstado!=='todas') lista=lista.filter(d=>d.estado===filtroEstado);
+
+  const cuits=getCuitsVerificados();
+
+  document.getElementById('decl-lista').innerHTML = lista.length ? lista.map(d=>{
+    const vinculo = d.cuit ? cuits.find(c=>c.cuit===d.cuit) : null;
+    const tieneAlertaDD = vinculo && vinculo.resultado==='alerta_ocde';
+    return `<div class="decl-row ${d.estado}">
+      <div class="decl-ico">${CAT_ICOS[d.tipo]}</div>
+      <div class="decl-body">
+        <div class="decl-head">
+          <span class="decl-nombre">${d.nombre}</span>
+          <span class="decl-tipo-tag">${t('cat_'+d.tipo)}</span>
+          <span class="decl-pill">${t('estado_'+d.estado)}</span>
+        </div>
+        ${d.desc ? `<div class="decl-desc">${tx(d.desc)}</div>` : ''}
+        <div class="decl-meta">
+          ${d.area ? `<span>📍 ${t('area_label')}: ${tx(d.area)}</span>` : ''}
+          <span>📅 ${t('fecha_label')}: ${d.fecha}</span>
+          ${d.situacion ? `<span>📋 ${t('situacion_label')}: ${t(d.situacion)}</span>` : ''}
+        </div>
+        ${tieneAlertaDD ? `<div class="decl-dd-link">${t('dd_vinculo')}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('') : '';
+}
+
+function poblarSelects(){
+  const tipoSel=document.getElementById('f-tipo');
+  tipoSel.innerHTML=CATEGORIAS.map(c=>`<option value="${c}">${t('cat_'+c)}</option>`).join('');
+
+  const sitSel=document.getElementById('f-situacion');
+  const situaciones=['sit_familiar','sit_societaria','sit_otro_empleo','sit_regalo','sit_funcionario','sit_otro'];
+  sitSel.innerHTML=situaciones.map(s=>`<option value="${s}">${t(s)}</option>`).join('');
+}
+
+function guardarDeclaracion(){
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const tipo=document.getElementById('f-tipo').value;
+  const situacion=document.getElementById('f-situacion').value;
+  const desc=document.getElementById('f-desc').value.trim();
+
+  if(!nombre){
+    alert(t('form_error_nombre'));
+    return;
+  }
+
+  const nueva={
+    id:'nuevo_'+Date.now(),
+    tipo,
+    nombre,
+    area:null,
+    estado:'declarado',
+    fecha:new Date().toISOString().slice(0,10),
+    situacion,
+    desc: desc ? {es:desc,en:desc,pt:desc} : null,
+  };
+  guardarNuevaDeclaracion(nueva);
+
+  document.getElementById('f-nombre').value='';
+  document.getElementById('f-desc').value='';
+
+  const successEl=document.getElementById('form-success');
+  successEl.classList.add('show');
+  setTimeout(()=>successEl.classList.remove('show'),3000);
+
+  renderCategorias();
+  renderLista();
+}
+
+function renderAll(){
+  renderCategorias();
+  renderFiltroEstado();
+  renderLista();
+  poblarSelects();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  applyStaticI18n();
+  renderAll();
+});
+</script>
+</body>
+</html>
