@@ -63,6 +63,78 @@ header p{opacity:.75;font-size:.88rem}
 .madurez-bar{display:flex;gap:3px;height:11px;border-radius:5px;overflow:hidden;margin:.5rem 0}
 .mseg{flex:1;background:#e0e7ef}.mseg.on.inicial{background:var(--rojo)}.mseg.on.medio{background:var(--naranja)}.mseg.on.avanzado{background:var(--verde)}
 .riesgo-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;border-radius:8px;margin-bottom:.4rem;background:#f8fafc}
+/* Heatmap probabilidad x impacto */
+.heatmap-wrap{display:flex;gap:.6rem;align-items:flex-start;overflow-x:auto;padding-bottom:.3rem}
+.heatmap-yaxis{display:flex;flex-direction:column-reverse;justify-content:space-between;height:var(--hm-h,250px);flex-shrink:0;padding:2px 0}
+.heatmap-yaxis span{font-size:.66rem;color:var(--muted);font-weight:600;height:50px;display:flex;align-items:center}
+.heatmap-core{flex:1;min-width:280px}
+.heatmap-grid{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,50px);gap:3px;direction:ltr}
+.heatmap-cell{border-radius:6px;display:flex;align-items:center;justify-content:center;position:relative;cursor:default;font-weight:800;font-size:.95rem;color:#fff;transition:transform .12s;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.heatmap-cell:hover{transform:scale(1.06);z-index:5;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.heatmap-cell .hm-count{font-size:.95rem}
+.heatmap-cell .hm-score{position:absolute;bottom:2px;right:4px;font-size:.58rem;font-weight:600;opacity:.85}
+.hm-resumen{display:flex;align-items:center;gap:.7rem;background:#fdecea;border-radius:8px;padding:.6rem .8rem;margin-bottom:.8rem}
+.hm-resumen-num{font-size:1.4rem;font-weight:800;flex-shrink:0;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff}
+.hm-resumen-num.rojo{background:var(--rojo)}.hm-resumen-num.verde{background:var(--verde)}
+.hm-resumen-txt{font-size:.82rem}
+.hm-resumen-lista{font-size:.74rem;color:var(--muted);margin-top:.15rem}
+.hm-leyenda{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.7rem;font-size:.73rem;color:var(--muted)}
+.hm-leyenda-item{display:flex;align-items:center;gap:.35rem}
+.hm-sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+/* Formulario de autoevaluación */
+.autoeval-banner{font-size:.78rem;color:#0d47a1;background:#e3f2fd;border-left:3px solid var(--sec);padding:.55rem .75rem;border-radius:6px;margin-bottom:.8rem}
+.autoeval-item{background:#f8fafc;border-radius:8px;padding:.7rem .8rem;margin-bottom:.6rem}
+.autoeval-area{font-size:.85rem;font-weight:700;color:var(--pri);margin-bottom:.5rem}
+.autoeval-row{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+.autoeval-field{display:flex;flex-direction:column;gap:.25rem;min-width:160px;flex:1}
+.autoeval-field label{font-size:.7rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.autoeval-field select{font-family:inherit;font-size:.82rem;padding:.4rem .55rem;border:1px solid var(--borde);border-radius:6px;background:#fff}
+.autoeval-field select:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+.autoeval-score-preview{font-size:.72rem;color:var(--muted);font-weight:600;white-space:nowrap}
+.autoeval-actions{display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap}
+.autoeval-fuente-tag{font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;margin-left:.4rem}
+.autoeval-fuente-tag.autoevaluacion{background:#e8f5e9;color:var(--verde)}
+.autoeval-fuente-tag.default_sector{background:#fff3e0;color:var(--naranja)}
+.autoeval-fuente-tag.due_diligence{background:#fdecea;color:var(--rojo)}
+/* Calendario regulatorio */
+.cal-leyenda{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem;font-size:.76rem;color:var(--muted)}
+.cal-leyenda-item{display:flex;align-items:center;gap:.35rem}
+.cal-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
+.cal-nav-btn{background:var(--pri);color:#fff;border:none;width:32px;height:32px;border-radius:6px;font-size:.9rem;cursor:pointer;flex-shrink:0}
+.cal-nav-btn:hover{background:#0d2137}
+.cal-mes-label{font-size:1rem;font-weight:700;color:var(--pri)}
+.cal-grid-head{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px}
+.cal-grid-head span{text-align:center;font-size:.66rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day{aspect-ratio:1;border-radius:6px;background:#f8fafc;padding:.25rem;display:flex;flex-direction:column;cursor:default;position:relative;font-size:.72rem;font-weight:600;color:var(--texto)}
+.cal-day.empty{background:transparent}
+.cal-day.has-events{cursor:pointer}
+.cal-day.has-events:hover{background:#e3f2fd}
+.cal-day.today{box-shadow:inset 0 0 0 2px var(--sec)}
+.cal-day.selected{background:#1a3a5c;color:#fff}
+.cal-day-dots{display:flex;gap:2px;flex-wrap:wrap;margin-top:auto}
+.cal-day-dot{width:6px;height:6px;border-radius:50%}
+@media(max-width:480px){.cal-day{font-size:.65rem;padding:.15rem}.cal-day-dot{width:5px;height:5px}}
+.cal-detalle-evento{display:flex;gap:.6rem;padding:.6rem .7rem;border-radius:8px;margin-top:.4rem;background:#f8fafc;border-left:3px solid}
+.cal-detalle-evento.alta{border-color:var(--rojo)}.cal-detalle-evento.media{border-color:var(--naranja)}.cal-detalle-evento.baja{border-color:var(--verde)}
+.cal-detalle-titulo{font-size:.85rem;font-weight:700}
+.cal-detalle-desc{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.cal-detalle-meta{font-size:.7rem;color:var(--muted);margin-top:.3rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.cal-tipo-tag{font-size:.64rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;color:#fff}
+.cal-proximo-row{display:flex;align-items:center;gap:.6rem;padding:.55rem .7rem;border-radius:8px;margin-bottom:.4rem;background:#f8fafc}
+.cal-proximo-fecha{font-size:.7rem;font-weight:700;color:var(--pri);min-width:70px;text-align:center;background:#e3f2fd;border-radius:6px;padding:.3rem .2rem}
+.cal-proximo-info{flex:1}
+.cal-proximo-titulo{font-size:.84rem;font-weight:600}
+.cal-proximo-dias{font-size:.7rem;color:var(--muted)}
+.heatmap-cell .hm-areas{display:none}
+.heatmap-cell:hover .hm-areas{display:block;position:absolute;bottom:105%;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;font-size:.7rem;font-weight:500;padding:.45rem .6rem;border-radius:6px;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);text-shadow:none;z-index:10}
+.heatmap-xaxis{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-top:.3rem}
+.heatmap-xaxis span{text-align:center;font-size:.66rem;color:var(--muted);font-weight:600}
+.heatmap-axis-label{font-size:.68rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;text-align:center;margin-top:.4rem}
+.heatmap-axis-label.vert{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;margin:0;flex-shrink:0;align-self:stretch;display:flex;align-items:center;justify-content:center}
+.heatmap-fuente{font-size:.74rem;color:var(--muted);background:#fff8e1;border-left:3px solid var(--amarillo);padding:.5rem .7rem;border-radius:6px;margin-top:.8rem;display:flex;align-items:flex-start;gap:.4rem}
+@media(max-width:520px){.heatmap-grid{grid-template-rows:repeat(5,40px)}.heatmap-yaxis{height:var(--hm-h,200px)}.heatmap-yaxis span{height:40px}.heatmap-cell{font-size:.8rem}}
 .rdot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 .rdot.alto{background:var(--rojo)}.rdot.medio{background:var(--naranja)}.rdot.bajo{background:var(--verde)}
 .rarea{font-size:.85rem;font-weight:600;min-width:180px}.rdesc{font-size:.78rem;color:var(--muted);flex:1}
@@ -143,6 +215,7 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     <button class="tab-btn" data-panel="internacional">🌍 Internacional</button>
     <button class="tab-btn" data-panel="rite">🏛️ RITE</button>
     <button class="tab-btn" data-panel="mejoras">📈 Mejoras & Alertas</button>
+    <button class="tab-btn" data-panel="calendario">📅 Calendario</button>
     <button class="tab-btn" data-panel="legislacion">📋 Legislación</button>
     <button class="tab-btn" data-panel="reporte">📄 Reporte</button>
   </div>
@@ -208,6 +281,18 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
 <!-- RIESGO -->
 <div class="panel" id="panel-riesgo">
   <div class="wrap">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;flex-wrap:wrap">
+        <div>
+          <h2 data-i18n="heatmap_titulo">Mapa de calor — Probabilidad × Impacto</h2>
+          <p style="font-size:.8rem;color:var(--muted)" data-i18n="heatmap_sub">Matriz de riesgo inherente por área. Cada celda muestra cuántas áreas caen en esa combinación.</p>
+        </div>
+        <button class="btn" id="btn-autoeval-toggle" onclick="toggleAutoeval()" style="flex-shrink:0" data-i18n="hm_btn_autoeval">✏️ Cargar autoevaluación</button>
+      </div>
+      <div id="autoeval-form" style="display:none;margin-top:.9rem"></div>
+      <div id="heatmap-cont" style="margin-top:.9rem"></div>
+      <div id="heatmap-fuente-aviso"></div>
+    </div>
     <div class="card"><h2 data-i18n="radar_riesgo">Radar de riesgo</h2><div class="chart-wrap" style="height:260px"><canvas id="ch-radar"></canvas></div></div>
     <div class="grid2">
       <div class="card" style="margin-bottom:0"><h2 data-i18n="distribucion">Distribución</h2><div class="chart-wrap" style="height:190px"><canvas id="ch-riesgo-dona"></canvas></div><div id="riesgo-ley"></div></div>
@@ -328,6 +413,33 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
   </div>
 </div>
 
+<!-- CALENDARIO REGULATORIO -->
+<div class="panel" id="panel-calendario">
+  <div class="wrap">
+    <div class="card">
+      <h2 data-i18n="cal_titulo">📅 Calendario regulatorio unificado</h2>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.8rem" data-i18n="cal_sub">Capacitaciones, plan de mejora y vencimientos normativos en un solo lugar.</p>
+      <div class="cal-leyenda">
+        <span class="cal-leyenda-item"><span class="cal-dot" style="background:#1a3a5c"></span><span data-i18n="cal_tipo_capacitacion">Capacitación</span></span>
+        <span class="cal-leyenda-item"><span class="cal-dot" style="background:#7b1fa2"></span><span data-i18n="cal_tipo_plan_mejora">Plan de mejora</span></span>
+        <span class="cal-leyenda-item"><span class="cal-dot" style="background:#c62828"></span><span data-i18n="cal_tipo_normativo">Normativo</span></span>
+      </div>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="calMoverMes(-1)">◀</button>
+        <div class="cal-mes-label" id="cal-mes-label"></div>
+        <button class="cal-nav-btn" onclick="calMoverMes(1)">▶</button>
+      </div>
+      <div class="cal-grid-head" id="cal-grid-head"></div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div id="cal-detalle-dia"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="cal_proximos_titulo">Próximos vencimientos (todas las fuentes)</h2>
+      <div id="cal-proximos-list"></div>
+    </div>
+  </div>
+</div>
+
 <!-- LEGISLACION -->
 <div class="panel" id="panel-legislacion">
   <div class="wrap">
@@ -412,7 +524,6 @@ const T={
     reporte_disclaimer:'Reporte generado por el Monitor de Compliance Empresarial. No reemplaza la evaluación profesional de un abogado o compliance officer. Ph.D. Vicente H. Monteverde · <a href="https://mapatransparencia-production.up.railway.app" target="_blank">Ecosistema Transparencia</a>',
     imprimir_btn:'🖨️ Imprimir / Guardar PDF',
     footer_texto:'Monitor de Compliance Empresarial · Ley 27.401 · Estándares Internacionales · Ph.D. Vicente H. Monteverde · <a href="https://mapatransparencia-production.up.railway.app" target="_blank">Mapa Transparencia</a> · <a href="https://meaci-production.up.railway.app" target="_blank">MEACI</a>',
-    // dashboard dinámico
     nivel_avanzado:'Nivel Avanzado',nivel_medio:'Nivel Medio',nivel_inicial:'Nivel Inicial',
     score_desc_avanzado:'Programa robusto y bien documentado',score_desc_medio:'Programa en desarrollo con avances significativos',score_desc_inicial:'Programa en etapa inicial',
     score_sig_avanzado:'✅ Nivel máximo alcanzado',score_sig_medio:'Para Avanzado: completar elementos pendientes y superar 80% en capacitaciones',score_sig_inicial:'Para Medio: completar los 3 obligatorios del Art. 23 y superar 50% en capacitaciones',
@@ -430,6 +541,38 @@ const T={
     dona_27_completo:'Completo',dona_27_progreso:'En progreso',dona_27_pendiente:'Pendiente',
     todos_completados:'Todos los elementos completados',
     riesgo_area_label:'área(s)',riesgo_alto_label:'Alto',riesgo_medio_label:'Medio',riesgo_bajo_label:'Bajo',
+
+    heatmap_titulo:'Mapa de calor — Probabilidad × Impacto',
+
+    heatmap_sub:'Matriz de riesgo inherente por área. Cada celda muestra cuántas áreas caen en esa combinación.',
+
+    hm_eje_probabilidad:'Probabilidad',hm_eje_impacto:'Impacto',
+
+    hm_prob_1:'1 Rara vez',hm_prob_2:'2 Improbable',hm_prob_3:'3 Posible',hm_prob_4:'4 Probable',hm_prob_5:'5 Casi certeza',
+
+    hm_impacto_1:'1 Insignificante',hm_impacto_2:'2 Menor',hm_impacto_3:'3 Moderado',hm_impacto_4:'4 Mayor',hm_impacto_5:'5 Catastrófico',
+
+    hm_celda_vacia:'Sin áreas en esta combinación',
+
+    hm_aviso_fallback:'Algunas áreas no tienen evaluación de probabilidad/impacto cargada — se ubicaron en la matriz con un valor aproximado según su nivel de riesgo general.',
+
+    hm_aviso_sugerido:'área(s) con valores sugeridos de referencia (sin confirmar). Reemplazar por una autoevaluación real antes de presentar este reporte.',
+
+    hm_resumen_titulo:'área(s) en zona crítica (riesgo alto)',hm_resumen_ninguna:'Ninguna área en zona crítica',
+
+    hm_leyenda_bajo:'Bajo',hm_leyenda_medio:'Medio',hm_leyenda_alto:'Alto',
+
+    hm_btn_autoeval:'✏️ Cargar autoevaluación',hm_score_label:'Score',
+
+    hm_autoeval_banner:'Elegí probabilidad e impacto para cada área según el conocimiento real del negocio. Esto reemplaza los valores sugeridos de ejemplo. Los cambios se guardan en este navegador.',
+
+    hm_btn_guardar:'💾 Guardar evaluación',hm_btn_reset:'↺ Restaurar valores sugeridos',
+
+    hm_fuente_autoevaluacion:'Autoevaluado',hm_fuente_default_sector:'Sugerido',hm_fuente_due_diligence:'Due Diligence',
+
+    hm_dd_nota:'Probabilidad elevada automáticamente por alerta OCDE en due diligence de proveedor',
+
+    hm_sin_cambios:'No se detectaron cambios respecto a los valores actuales.',
     dona_dd_sin:'Sin antecedentes',dona_dd_alerta:'Alerta OCDE',
     dd_th_razon:'Razón social',dd_th_cuit:'CUIT',dd_th_fecha:'Fecha',dd_th_resultado:'Resultado',dd_ok:'✓ OK',dd_ocde:'⚠ OCDE',
     dd_consultando:'⏳ Consultando base OCDE-MEACI...',
@@ -451,6 +594,16 @@ const T={
     rep_promedio_completitud:'Promedio completitud',rep_modulos_obligatorios:'Módulos obligatorios',rep_con_menos_50:'Con <50%',
     rep_registrado:'Registrado',rep_nivel:'Nivel',rep_url:'URL',
     plan_completo:'Completo',plan_en_progreso:'En progreso',plan_pendiente:'Pendiente',
+
+    cal_nav:'Calendario',cal_titulo:'📅 Calendario regulatorio unificado',
+
+    cal_sub:'Capacitaciones, plan de mejora y vencimientos normativos en un solo lugar.',
+
+    cal_tipo_capacitacion:'Capacitación',cal_tipo_plan_mejora:'Plan de mejora',cal_tipo_normativo:'Normativo',
+
+    cal_proximos_titulo:'Próximos vencimientos (todas las fuentes)',
+
+    cal_hoy:'Hoy',cal_sin_proximos:'Sin vencimientos próximos en ninguna fuente',
   },
   en:{
     brand:'⚖️ Compliance Monitor',
@@ -512,6 +665,38 @@ const T={
     dona_27_completo:'Complete',dona_27_progreso:'In progress',dona_27_pendiente:'Pending',
     todos_completados:'All elements completed',
     riesgo_area_label:'area(s)',riesgo_alto_label:'High',riesgo_medio_label:'Medium',riesgo_bajo_label:'Low',
+
+    heatmap_titulo:'Heat map — Probability × Impact',
+
+    heatmap_sub:'Inherent risk matrix by area. Each cell shows how many areas fall into that combination.',
+
+    hm_eje_probabilidad:'Probability',hm_eje_impacto:'Impact',
+
+    hm_prob_1:'1 Rare',hm_prob_2:'2 Unlikely',hm_prob_3:'3 Possible',hm_prob_4:'4 Likely',hm_prob_5:'5 Almost certain',
+
+    hm_impacto_1:'1 Insignificant',hm_impacto_2:'2 Minor',hm_impacto_3:'3 Moderate',hm_impacto_4:'4 Major',hm_impacto_5:'5 Catastrophic',
+
+    hm_celda_vacia:'No areas in this combination',
+
+    hm_aviso_fallback:'Some areas have no probability/impact assessment loaded — they were placed on the matrix with an approximate value based on their overall risk level.',
+
+    hm_aviso_sugerido:'area(s) with suggested reference values (unconfirmed). Replace with a real self-assessment before presenting this report.',
+
+    hm_resumen_titulo:'area(s) in critical zone (high risk)',hm_resumen_ninguna:'No areas in critical zone',
+
+    hm_leyenda_bajo:'Low',hm_leyenda_medio:'Medium',hm_leyenda_alto:'High',
+
+    hm_btn_autoeval:'✏️ Load self-assessment',hm_score_label:'Score',
+
+    hm_autoeval_banner:'Choose probability and impact for each area based on real business knowledge. This replaces the suggested sample values. Changes are saved in this browser.',
+
+    hm_btn_guardar:'💾 Save assessment',hm_btn_reset:'↺ Restore suggested values',
+
+    hm_fuente_autoevaluacion:'Self-assessed',hm_fuente_default_sector:'Suggested',hm_fuente_due_diligence:'Due Diligence',
+
+    hm_dd_nota:'Probability automatically raised due to an OECD alert in vendor due diligence',
+
+    hm_sin_cambios:'No changes detected from the current values.',
     dona_dd_sin:'No record',dona_dd_alerta:'OECD alert',
     dd_th_razon:'Company name',dd_th_cuit:'Tax ID',dd_th_fecha:'Date',dd_th_resultado:'Result',dd_ok:'✓ OK',dd_ocde:'⚠ OECD',
     dd_consultando:'⏳ Checking OECD-MEACI database...',
@@ -533,6 +718,16 @@ const T={
     rep_promedio_completitud:'Average completion',rep_modulos_obligatorios:'Mandatory modules',rep_con_menos_50:'Below 50%',
     rep_registrado:'Registered',rep_nivel:'Level',rep_url:'URL',
     plan_completo:'Complete',plan_en_progreso:'In progress',plan_pendiente:'Pending',
+
+    cal_nav:'Calendar',cal_titulo:'📅 Unified regulatory calendar',
+
+    cal_sub:'Training, improvement plan and regulatory deadlines in one place.',
+
+    cal_tipo_capacitacion:'Training',cal_tipo_plan_mejora:'Improvement plan',cal_tipo_normativo:'Regulatory',
+
+    cal_proximos_titulo:'Upcoming deadlines (all sources)',
+
+    cal_hoy:'Today',cal_sin_proximos:'No upcoming deadlines from any source',
   },
   pt:{
     brand:'⚖️ Monitor de Compliance',
@@ -594,6 +789,38 @@ const T={
     dona_27_completo:'Completo',dona_27_progreso:'Em andamento',dona_27_pendiente:'Pendente',
     todos_completados:'Todos os elementos concluídos',
     riesgo_area_label:'área(s)',riesgo_alto_label:'Alto',riesgo_medio_label:'Médio',riesgo_bajo_label:'Baixo',
+
+    heatmap_titulo:'Mapa de calor — Probabilidade × Impacto',
+
+    heatmap_sub:'Matriz de risco inerente por área. Cada célula mostra quantas áreas caem nessa combinação.',
+
+    hm_eje_probabilidad:'Probabilidade',hm_eje_impacto:'Impacto',
+
+    hm_prob_1:'1 Raro',hm_prob_2:'2 Improvável',hm_prob_3:'3 Possível',hm_prob_4:'4 Provável',hm_prob_5:'5 Quase certeza',
+
+    hm_impacto_1:'1 Insignificante',hm_impacto_2:'2 Menor',hm_impacto_3:'3 Moderado',hm_impacto_4:'4 Maior',hm_impacto_5:'5 Catastrófico',
+
+    hm_celda_vacia:'Sem áreas nesta combinação',
+
+    hm_aviso_fallback:'Algumas áreas não têm avaliação de probabilidade/impacto carregada — foram posicionadas na matriz com um valor aproximado conforme seu nível de risco geral.',
+
+    hm_aviso_sugerido:'área(s) com valores sugeridos de referência (não confirmados). Substituir por uma autoavaliação real antes de apresentar este relatório.',
+
+    hm_resumen_titulo:'área(s) em zona crítica (risco alto)',hm_resumen_ninguna:'Nenhuma área em zona crítica',
+
+    hm_leyenda_bajo:'Baixo',hm_leyenda_medio:'Médio',hm_leyenda_alto:'Alto',
+
+    hm_btn_autoeval:'✏️ Carregar autoavaliação',hm_score_label:'Score',
+
+    hm_autoeval_banner:'Escolha probabilidade e impacto para cada área conforme o conhecimento real do negócio. Isso substitui os valores sugeridos de exemplo. As alterações são salvas neste navegador.',
+
+    hm_btn_guardar:'💾 Salvar avaliação',hm_btn_reset:'↺ Restaurar valores sugeridos',
+
+    hm_fuente_autoevaluacion:'Autoavaliado',hm_fuente_default_sector:'Sugerido',hm_fuente_due_diligence:'Due Diligence',
+
+    hm_dd_nota:'Probabilidade elevada automaticamente por alerta OCDE em due diligence de fornecedor',
+
+    hm_sin_cambios:'Nenhuma alteração detectada em relação aos valores atuais.',
     dona_dd_sin:'Sem antecedentes',dona_dd_alerta:'Alerta OCDE',
     dd_th_razon:'Razão social',dd_th_cuit:'CUIT',dd_th_fecha:'Data',dd_th_resultado:'Resultado',dd_ok:'✓ OK',dd_ocde:'⚠ OCDE',
     dd_consultando:'⏳ Consultando base OCDE-MEACI...',
@@ -615,19 +842,26 @@ const T={
     rep_promedio_completitud:'Média de conclusão',rep_modulos_obligatorios:'Módulos obrigatórios',rep_con_menos_50:'Abaixo de 50%',
     rep_registrado:'Registrado',rep_nivel:'Nível',rep_url:'URL',
     plan_completo:'Completo',plan_en_progreso:'Em andamento',plan_pendiente:'Pendente',
+
+    cal_nav:'Calendário',cal_titulo:'📅 Calendário regulatório unificado',
+
+    cal_sub:'Treinamentos, plano de melhoria e vencimentos normativos em um só lugar.',
+
+    cal_tipo_capacitacion:'Treinamento',cal_tipo_plan_mejora:'Plano de melhoria',cal_tipo_normativo:'Normativo',
+
+    cal_proximos_titulo:'Próximos vencimentos (todas as fontes)',
+
+    cal_hoy:'Hoje',cal_sin_proximos:'Sem vencimentos próximos em nenhuma fonte',
   }
 };
 let lang='es';
 const t=k=>T[lang][k]||k;
-// tx: extrae el valor en el idioma activo de un campo de CONFIG.
-// Soporta tanto objetos {es,en,pt} como strings planos (fallback / retrocompatibilidad).
 const tx=v=>{
   if(v==null)return '';
   if(typeof v==='object')return v[lang]??v.es??Object.values(v)[0]??'';
   return v;
 };
 
-// Aplica todas las traducciones fijas marcadas con data-i18n / data-i18n-placeholder
 function applyStaticI18n(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     el.innerHTML=t(el.dataset.i18n);
@@ -649,7 +883,6 @@ function setLang(l){
   renderAll();
 }
 
-// ── Nav ───────────────────────────────────────────────────────────────────
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -660,7 +893,6 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   });
 });
 
-// ── Score ─────────────────────────────────────────────────────────────────
 function calcScore(){
   const pi=CONFIG.programa_integridad;
   const ob=pi.elementos_obligatorios,op=pi.elementos_opcionales,cap=CONFIG.capacitaciones;
@@ -676,7 +908,6 @@ function calcScore(){
 }
 const scColor=s=>s>=75?'#2e7d32':s>=45?'#e65100':'#c62828';
 
-// ── Charts ────────────────────────────────────────────────────────────────
 const charts={};
 const dc=()=>matchMedia('(prefers-color-scheme: dark)').matches;
 function destroyC(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
@@ -713,10 +944,8 @@ function mkLine(id,labels,data){
   charts[id]=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Score',data,borderColor:'#1a3a5c',backgroundColor:'rgba(26,58,92,.08)',borderWidth:2,fill:true,tension:.4,pointBackgroundColor:'#1a3a5c',pointRadius:4}]},options:{scales:{y:{min:0,max:100,ticks:{font:{size:9}},grid:{color:gl()}},x:{ticks:{font:{size:9},color:gc2()},grid:{display:false}}},plugins:{legend:{display:false}},animation:{duration:700}}});
 }
 
-// ── Renders ───────────────────────────────────────────────────────────────
 function renderDashboard(){
   const sc=calcScore();
-  // score ring
   destroyC('ch-score');
   const ctx=document.getElementById('ch-score');
   if(ctx){const c=scColor(sc.total);charts['ch-score']=new Chart(ctx,{type:'doughnut',data:{datasets:[{data:[sc.total,100-sc.total],backgroundColor:[c,'#e0e7ef'],borderWidth:0}]},options:{cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:800}}});}
@@ -726,18 +955,15 @@ function renderDashboard(){
   document.getElementById('score-nivel').innerHTML=`<span style="color:${scColor(sc.total)}">${niv}</span>`;
   document.getElementById('score-desc').textContent=sc.total>=75?t('score_desc_avanzado'):sc.total>=45?t('score_desc_medio'):t('score_desc_inicial');
   document.getElementById('score-sig').textContent=sc.total>=75?t('score_sig_avanzado'):sc.total>=45?t('score_sig_medio'):t('score_sig_inicial');
-  // ejes
   const ejes=[{l:t('eje_programa'),v:sc.programa,m:40},{l:t('eje_capacitacion'),v:sc.capacitacion,m:25},{l:t('eje_dd'),v:sc.due_diligence,m:20},{l:t('eje_riesgo'),v:sc.riesgo,m:15}];
   document.getElementById('ejes-grid').innerHTML=ejes.map(e=>{const p=Math.round(e.v/e.m*100),c=p>=75?'verde':p>=45?'naranja':'rojo';return`<div class="eje ${c}"><div class="eje-num">${e.v}/${e.m}</div><div class="eje-name">${e.l}</div></div>`;}).join('');
-  // charts
   mkDona('ch-prog',
     [sc.ok_ob,sc.prog_ob,sc.ok_op,CONFIG.programa_integridad.elementos_opcionales.length-sc.ok_op-CONFIG.programa_integridad.elementos_opcionales.filter(e=>e.estado==='en_progreso').length],
     [t('dona_oblig_ok'),t('dona_en_progreso'),t('dona_opc_ok'),t('dona_pendientes')],
     ['#2e7d32','#e65100','#66bb6a','#e0e7ef'],'60%');
   mkDona('ch-cap-dash',CONFIG.capacitaciones.map(c=>c.completado),CONFIG.capacitaciones.map(c=>tx(c.modulo).substring(0,16)),['#1a3a5c','#2196f3','#2e7d32','#e65100','#c62828','#7b1fa2'],'60%');
-  const mr=CONFIG.mapa_riesgo;
+  const mr=getMapaRiesgoEfectivo();
   mkBar('ch-riesgo-dash',mr.map(r=>tx(r.area).length>16?tx(r.area).substring(0,16)+'…':tx(r.area)),mr.map(r=>r.riesgo==='alto'?3:r.riesgo==='medio'?2:1),mr.map(r=>r.riesgo==='alto'?'#c62828':r.riesgo==='medio'?'#e65100':'#2e7d32'),true,3.5);
-  // alertas
   const al=[];
   const ob_inc=CONFIG.programa_integridad.elementos_obligatorios.filter(e=>e.estado!=='completo');
   if(ob_inc.length) al.push({t:'roja',i:'🔴',txt:`${ob_inc.length} ${t('alerta_obligatorios_incompletos')}`});
@@ -748,7 +974,6 @@ function renderDashboard(){
   if(!CONFIG.programa_integridad.registrado_rite) al.push({t:'naranja',i:'⚠️',txt:t('alerta_no_rite')});
   if(!al.length) al.push({t:'verde',i:'✅',txt:t('alerta_sin_criticas')});
   document.getElementById('alertas-cont').innerHTML=al.map(a=>`<div class="alerta ${a.t}"><span class="alerta-ico">${a.i}</span><span>${a.txt}</span></div>`).join('');
-  // vencimientos
   const hoy=new Date();
   const prox=CONFIG.capacitaciones.filter(c=>c.fecha_limite).map(c=>({...c,dias:Math.round((new Date(c.fecha_limite)-hoy)/86400000)})).filter(c=>c.dias>0&&c.dias<120).sort((a,b)=>a.dias-b.dias);
   document.getElementById('venc-cont').innerHTML=prox.length?prox.map(c=>`<div class="alerta ${c.dias<30?'roja':c.dias<60?'naranja':'verde'}"><span class="alerta-ico">${c.dias<30?'🔴':c.dias<60?'⚠️':'📅'}</span><span><strong>${tx(c.modulo)}</strong> — ${t('venc_vence')} ${c.fecha_limite} (${c.dias} ${t('dias_label')}) · ${tx(c.destinatarios)}</span></div>`).join(''):`<div class="alerta verde"><span class="alerta-ico">✅</span><span>${t('venc_sin')}</span></div>`;
@@ -783,8 +1008,221 @@ function renderLey27401(){
   document.getElementById('sig-nivel').innerHTML=pend_list.length?pend_list.map(e=>`<div class="alerta naranja"><span class="alerta-ico">📌</span><span>${tx(e.label)}</span></div>`).join(''):`<div class="alerta verde"><span class="alerta-ico">✅</span><span>${t('todos_completados')}</span></div>`;
 }
 
+function heatmapColor(score){
+  if(score<=5)  return score<=2 ? '#2e7d32' : '#43a047';
+  if(score<=11) return score<=8 ? '#f9a825' : '#e65100';
+  return score<=16 ? '#e64a19' : '#c62828';
+}
+const AUTOEVAL_KEY=`autoeval_riesgo_${CONFIG.empresa.cuit||'default'}`;
+
+function getAutoevalOverrides(){
+  try{
+    const raw=localStorage.getItem(AUTOEVAL_KEY);
+    return raw?JSON.parse(raw):{};
+  }catch(e){return {};}
+}
+function setAutoevalOverride(areaIdx,probabilidad,impacto){
+  const data=getAutoevalOverrides();
+  data[areaIdx]={
+    probabilidad:Number(probabilidad),
+    impacto:Number(impacto),
+    fuente:'autoevaluacion',
+    fecha_evaluacion:new Date().toISOString().slice(0,10)
+  };
+  try{localStorage.setItem(AUTOEVAL_KEY,JSON.stringify(data));}catch(e){console.warn('No se pudo guardar en localStorage',e);}
+}
+function clearAutoevalOverrides(){
+  try{localStorage.removeItem(AUTOEVAL_KEY);}catch(e){}
+}
+function getAreasConAlertaDD(){
+  const out={};
+  (CONFIG.cuits_verificados||[]).forEach(c=>{
+    if(c.resultado==='alerta_ocde' && c.area_relacionada!=null){
+      if(!out[c.area_relacionada]) out[c.area_relacionada]=[];
+      out[c.area_relacionada].push(c.razon_social);
+    }
+  });
+  return out;
+}
+function getMapaRiesgoEfectivo(){
+  const overrides=getAutoevalOverrides();
+  const alertasDD=getAreasConAlertaDD();
+  return CONFIG.mapa_riesgo.map((r,idx)=>{
+    if(overrides[idx]){
+      const ov=overrides[idx];
+      const score=ov.probabilidad*ov.impacto;
+      return{...r,evaluacion:{...r.evaluacion,...ov,evaluado_por:CONFIG.empresa.responsable_compliance||''},
+        riesgo:score<=5?'bajo':score<=11?'medio':'alto'};
+    }
+    if(alertasDD[idx] && (!r.evaluacion || r.evaluacion.fuente==='default_sector')){
+      const impacto=r.evaluacion?r.evaluacion.impacto:4;
+      const probabilidad=Math.max(4,r.evaluacion?r.evaluacion.probabilidad:0);
+      const score=probabilidad*impacto;
+      return{...r,evaluacion:{probabilidad,impacto,fuente:'due_diligence',
+        nota:`${t('hm_dd_nota')}: ${alertasDD[idx].join(', ')}`},
+        riesgo:score<=5?'bajo':score<=11?'medio':'alto'};
+    }
+    return r;
+  });
+}
+
+function toggleAutoeval(){
+  const box=document.getElementById('autoeval-form');
+  const visible=box.style.display!=='none';
+  if(visible){box.style.display='none';return;}
+  box.style.display='block';
+  renderAutoevalForm();
+}
+
+function renderAutoevalForm(){
+  const box=document.getElementById('autoeval-form');
+  if(!box) return;
+  const mr=getMapaRiesgoEfectivo();
+  const opciones=(sel,prefix)=>[1,2,3,4,5].map(v=>`<option value="${v}" ${sel===v?'selected':''}>${t(prefix+'_'+v)}</option>`).join('');
+
+  const itemsHtml=mr.map((r,idx)=>{
+    const ev=r.evaluacion||{};
+    const pr=ev.probabilidad||3, im=ev.impacto||3;
+    const fuente=ev.fuente||'default_sector';
+    return`<div class="autoeval-item" data-idx="${idx}" data-orig-pr="${pr}" data-orig-im="${im}">
+      <div class="autoeval-area">${tx(r.area)}<span class="autoeval-fuente-tag ${fuente}" id="ae-tag-${idx}">${t('hm_fuente_'+fuente)}</span></div>
+      <div class="autoeval-row">
+        <div class="autoeval-field">
+          <label>${t('hm_eje_probabilidad')}</label>
+          <select class="ae-prob" data-idx="${idx}" onchange="updateAutoevalPreview(${idx})">${opciones(pr,'hm_prob')}</select>
+        </div>
+        <div class="autoeval-field">
+          <label>${t('hm_eje_impacto')}</label>
+          <select class="ae-imp" data-idx="${idx}" onchange="updateAutoevalPreview(${idx})">${opciones(im,'hm_impacto')}</select>
+        </div>
+        <div class="autoeval-score-preview" id="ae-score-${idx}">${t('hm_score_label')}: ${pr*im}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  box.innerHTML=`
+    <div class="autoeval-banner">${t('hm_autoeval_banner')}</div>
+    ${itemsHtml}
+    <div class="autoeval-actions">
+      <button class="btn verde" onclick="guardarAutoeval()">${t('hm_btn_guardar')}</button>
+      <button class="btn" style="background:#455a64" onclick="resetAutoeval()">${t('hm_btn_reset')}</button>
+    </div>`;
+}
+
+function updateAutoevalPreview(idx){
+  const pr=Number(document.querySelector(`.ae-prob[data-idx="${idx}"]`).value);
+  const im=Number(document.querySelector(`.ae-imp[data-idx="${idx}"]`).value);
+  document.getElementById(`ae-score-${idx}`).textContent=`${t('hm_score_label')}: ${pr*im}`;
+}
+
+function guardarAutoeval(){
+  let cambios=0;
+  document.querySelectorAll('.autoeval-item').forEach(item=>{
+    const idx=item.dataset.idx;
+    const origPr=Number(item.dataset.origPr), origIm=Number(item.dataset.origIm);
+    const pr=Number(document.querySelector(`.ae-prob[data-idx="${idx}"]`).value);
+    const im=Number(document.querySelector(`.ae-imp[data-idx="${idx}"]`).value);
+    if(pr!==origPr || im!==origIm){
+      setAutoevalOverride(idx,pr,im);
+      cambios++;
+    }
+  });
+  document.getElementById('autoeval-form').style.display='none';
+  if(cambios===0){
+    alert(t('hm_sin_cambios'));
+    document.getElementById('autoeval-form').style.display='block';
+    return;
+  }
+  renderRiesgo();
+}
+
+function resetAutoeval(){
+  clearAutoevalOverrides();
+  renderAutoevalForm();
+  renderRiesgo();
+}
+
+function renderHeatmap(){
+  const mr=getMapaRiesgoEfectivo();
+  const cont=document.getElementById('heatmap-cont');
+  if(!cont) return;
+  const bucket={};
+  for(let im=1;im<=5;im++){bucket[im]={};for(let pr=1;pr<=5;pr++)bucket[im][pr]=[];}
+  let usaFallback=false;
+  mr.forEach((r,idx)=>{
+    let pr,im;
+    if(r.evaluacion && r.evaluacion.probabilidad && r.evaluacion.impacto){
+      pr=r.evaluacion.probabilidad; im=r.evaluacion.impacto;
+    } else {
+      usaFallback=true;
+      pr=im=r.riesgo==='alto'?4:r.riesgo==='medio'?3:2;
+    }
+    bucket[im][pr].push({nombre:tx(r.area),idx});
+  });
+  const yLabels=[t('hm_impacto_5'),t('hm_impacto_4'),t('hm_impacto_3'),t('hm_impacto_2'),t('hm_impacto_1')];
+  const xLabels=[t('hm_prob_1'),t('hm_prob_2'),t('hm_prob_3'),t('hm_prob_4'),t('hm_prob_5')];
+  let gridHtml='';
+  for(let im=5;im>=1;im--){
+    for(let pr=1;pr<=5;pr++){
+      const areas=bucket[im][pr];
+      const score=im*pr;
+      const color=heatmapColor(score);
+      const tip=areas.length?areas.map(a=>a.nombre).join(' · '):t('hm_celda_vacia');
+      gridHtml+=`<div class="heatmap-cell" style="background:${color}" data-pr="${pr}" data-im="${im}">
+        <span class="hm-count">${areas.length||''}</span>
+        <span class="hm-score">${score}</span>
+        <div class="hm-areas">${tip}</div>
+      </div>`;
+    }
+  }
+  const enZonaCritica=mr.map((r,idx)=>{
+    let pr,im;
+    if(r.evaluacion && r.evaluacion.probabilidad && r.evaluacion.impacto){pr=r.evaluacion.probabilidad;im=r.evaluacion.impacto;}
+    else{pr=im=r.riesgo==='alto'?4:r.riesgo==='medio'?3:2;}
+    return{nombre:tx(r.area),score:pr*im};
+  }).filter(x=>x.score>=12).sort((a,b)=>b.score-a.score);
+
+  const resumenHtml=`
+    <div class="hm-resumen">
+      <div class="hm-resumen-num ${enZonaCritica.length?'rojo':'verde'}">${enZonaCritica.length}</div>
+      <div class="hm-resumen-txt">
+        <strong>${enZonaCritica.length} ${t('hm_resumen_titulo')}</strong>
+        <div class="hm-resumen-lista">${enZonaCritica.length?enZonaCritica.map(a=>`${a.nombre} (${a.score})`).join(' · '):t('hm_resumen_ninguna')}</div>
+      </div>
+    </div>`;
+
+  const leyendaHtml=`
+    <div class="hm-leyenda">
+      <span class="hm-leyenda-item"><span class="hm-sw" style="background:#2e7d32"></span>${t('hm_leyenda_bajo')} (1-5)</span>
+      <span class="hm-leyenda-item"><span class="hm-sw" style="background:#f9a825"></span>${t('hm_leyenda_medio')} (6-11)</span>
+      <span class="hm-leyenda-item"><span class="hm-sw" style="background:#c62828"></span>${t('hm_leyenda_alto')} (12-25)</span>
+    </div>`;
+
+  cont.innerHTML=`
+    ${resumenHtml}
+    <div class="heatmap-wrap">
+      <div class="heatmap-axis-label vert">${t('hm_eje_impacto')}</div>
+      <div class="heatmap-yaxis" style="--hm-h:250px">${yLabels.map(l=>`<span>${l}</span>`).join('')}</div>
+      <div class="heatmap-core">
+        <div class="heatmap-grid">${gridHtml}</div>
+        <div class="heatmap-xaxis">${xLabels.map(l=>`<span>${l}</span>`).join('')}</div>
+        <div class="heatmap-axis-label">${t('hm_eje_probabilidad')}</div>
+      </div>
+    </div>
+    ${leyendaHtml}`;
+
+  const avisoEl=document.getElementById('heatmap-fuente-aviso');
+  const conSugerido=mr.filter(r=>r.evaluacion && r.evaluacion.fuente==='default_sector').length;
+  if(usaFallback || conSugerido>0){
+    avisoEl.innerHTML=`<div class="heatmap-fuente"><span>⚠️</span><span>${usaFallback?t('hm_aviso_fallback'):`${conSugerido} ${t('hm_aviso_sugerido')}`}</span></div>`;
+  } else {
+    avisoEl.innerHTML='';
+  }
+}
+
 function renderRiesgo(){
-  const mr=CONFIG.mapa_riesgo;
+  renderHeatmap();
+  const mr=getMapaRiesgoEfectivo();
   mkRadar('ch-radar',mr.map(r=>tx(r.area).length>12?tx(r.area).substring(0,12)+'…':tx(r.area)),[{label:t('riesgo'),data:mr.map(r=>r.riesgo==='alto'?3:r.riesgo==='medio'?2:1),backgroundColor:'rgba(198,40,40,.15)',borderColor:'#c62828',pointBackgroundColor:'#c62828',borderWidth:1.5}]);
   charts['ch-radar']&&(charts['ch-radar'].options.scales.r.max=3,charts['ch-radar'].options.scales.r.ticks={stepSize:1,callback:v=>v===3?'A':v===2?'M':v===1?'B':'',font:{size:8}},charts['ch-radar'].update());
   const alto=mr.filter(r=>r.riesgo==='alto').length,medio=mr.filter(r=>r.riesgo==='medio').length,bajo=mr.filter(r=>r.riesgo==='bajo').length;
@@ -845,7 +1283,6 @@ function renderRite(){
 }
 
 function renderMejoras(){
-  // alertas
   const al=[];
   CONFIG.programa_integridad.elementos_obligatorios.filter(e=>e.estado!=='completo').forEach(e=>al.push({t:'roja',i:'🔴',txt:`${t('obligatorio_incompleto')} "${tx(e.label)}"`}));
   CONFIG.capacitaciones.filter(c=>c.obligatorio&&c.completado<70).forEach(c=>{const dias=Math.round((new Date(c.fecha_limite)-new Date())/86400000);al.push({t:dias<30?'roja':'naranja',i:dias<30?'🔴':'⚠️',txt:`"${tx(c.modulo)}" ${t('al_label')} ${c.completado}% — ${t('venc_vence')} ${c.fecha_limite} (${dias} ${t('dias_label')})`});});
@@ -853,10 +1290,8 @@ function renderMejoras(){
   CONFIG.programa_integridad.elementos_opcionales.filter(e=>e.estado==='pendiente').forEach(e=>al.push({t:'naranja',i:'⚠️',txt:`${t('opcional_pendiente')} "${tx(e.label)}"`}));
   if(!al.length) al.push({t:'verde',i:'✅',txt:t('sin_alertas_buen_estado')});
   document.getElementById('mej-alertas').innerHTML=al.map(a=>`<div class="alerta ${a.t}"><span class="alerta-ico">${a.i}</span><span>${a.txt}</span></div>`).join('');
-  // evolución
   const hs=CONFIG.historial_score;
   mkLine('ch-evol',hs.map(h=>h.mes),hs.map(h=>h.score));
-  // brechas radar
   destroyC('ch-brechas');
   const ctx=document.getElementById('ch-brechas');if(ctx){
     charts['ch-brechas']=new Chart(ctx,{type:'radar',
@@ -868,7 +1303,6 @@ function renderMejoras(){
         ]},
       options:{scales:{r:{min:0,max:100,ticks:{display:false},pointLabels:{font:{size:9},color:gc2()}}},plugins:{legend:{display:false}},animation:{duration:700}}});
   }
-  // plan de mejora
   const pm=CONFIG.plan_mejora;
   document.getElementById('plan-mejora').innerHTML=pm.map((p,i)=>{
     const pc=p.prioridad==='alta'?'prio-alta':p.prioridad==='media'?'prio-media':'prio-baja';
@@ -878,9 +1312,6 @@ function renderMejoras(){
   }).join('');
 }
 
-// ── Legislación ────────────────────────────────────────────────────────────
-// Nota: los nombres oficiales de leyes (t) y los códigos de país (p) no se traducen
-// (son nombres propios / siglas oficiales). cat y d sí están en {es,en,pt}.
 const LEYES=[
   {cat:{es:'1. Ética y Transparencia',en:'1. Ethics and Transparency',pt:'1. Ética e Transparência'},normas:[
     {t:'Ley 25.188 — Ética en la Función Pública',p:'🇦🇷 AR',d:{es:'Regula deberes, prohibiciones e incompatibilidades del funcionario público. Régimen de Declaraciones Juradas y obsequios.',en:'Regulates duties, prohibitions and incompatibilities of public officials. Sworn financial disclosure and gift regime.',pt:'Regula deveres, proibições e incompatibilidades do funcionário público. Regime de Declarações Juradas e presentes.'},l:'https://servicios.infoleg.gob.ar/infolegInternet/anexos/60000-64999/60847/norma.htm'},
@@ -930,6 +1361,147 @@ const LEYES=[
   ]},
 ];
 
+const CAL_COLORES={capacitacion:'#1a3a5c',plan_mejora:'#7b1fa2',normativo:'#c62828'};
+
+function getEventosCalendario(){
+  const eventos=[];
+  (CONFIG.capacitaciones||[]).forEach(c=>{
+    if(!c.fecha_limite) return;
+    eventos.push({
+      fecha:c.fecha_limite, tipo:'capacitacion',
+      titulo:tx(c.modulo),
+      descripcion:`${tx(c.destinatarios)} · ${c.completado}% ${t('completo').toLowerCase()}`,
+      criticidad:c.obligatorio?(c.completado<60?'alta':'media'):'baja',
+    });
+  });
+  (CONFIG.plan_mejora||[]).forEach(p=>{
+    if(!p.vence) return;
+    eventos.push({
+      fecha:p.vence, tipo:'plan_mejora',
+      titulo:tx(p.accion),
+      descripcion:`${tx(p.responsable)} · ${t('plan_'+(p.estado==='completo'?'completo':p.estado==='en_progreso'?'en_progreso':'pendiente'))}`,
+      criticidad:p.prioridad==='alta'?'alta':p.prioridad==='media'?'media':'baja',
+    });
+  });
+  (CONFIG.calendario_regulatorio||[]).forEach(ev=>{
+    eventos.push({
+      fecha:ev.fecha, tipo:'normativo',
+      titulo:tx(ev.titulo),
+      descripcion:tx(ev.descripcion),
+      criticidad:ev.criticidad||'media',
+    });
+  });
+  return eventos;
+}
+
+let calMesActual=new Date().getMonth();
+let calAnioActual=new Date().getFullYear();
+let calDiaSeleccionado=null;
+
+function calMoverMes(delta){
+  calMesActual+=delta;
+  if(calMesActual<0){calMesActual=11;calAnioActual--;}
+  if(calMesActual>11){calMesActual=0;calAnioActual++;}
+  calDiaSeleccionado=null;
+  renderCalendario();
+}
+
+function renderCalendario(){
+  const headEl=document.getElementById('cal-grid-head');
+  const gridEl=document.getElementById('cal-grid');
+  const labelEl=document.getElementById('cal-mes-label');
+  if(!gridEl) return;
+
+  const diasSemana={
+    es:['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],
+    en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    pt:['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
+  }[lang]||['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  headEl.innerHTML=diasSemana.map(d=>`<span>${d}</span>`).join('');
+
+  const localeMap={es:'es-AR',en:'en-US',pt:'pt-BR'};
+  const fechaMes=new Date(calAnioActual,calMesActual,1);
+  const mesTxt=fechaMes.toLocaleDateString(localeMap[lang]||'es-AR',{month:'long',year:'numeric'});
+  labelEl.textContent=mesTxt.charAt(0).toUpperCase()+mesTxt.slice(1);
+
+  const eventos=getEventosCalendario();
+  const porDia={};
+  eventos.forEach(ev=>{
+    const d=new Date(ev.fecha+'T00:00:00');
+    if(d.getFullYear()===calAnioActual && d.getMonth()===calMesActual){
+      const key=ev.fecha;
+      if(!porDia[key]) porDia[key]=[];
+      porDia[key].push(ev);
+    }
+  });
+
+  const primerDiaSemana=new Date(calAnioActual,calMesActual,1).getDay();
+  const diasEnMes=new Date(calAnioActual,calMesActual+1,0).getDate();
+  const hoy=new Date();
+  const hoyStr=`${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+
+  let html='';
+  for(let i=0;i<primerDiaSemana;i++) html+='<div class="cal-day empty"></div>';
+  for(let d=1;d<=diasEnMes;d++){
+    const dateStr=`${calAnioActual}-${String(calMesActual+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evs=porDia[dateStr]||[];
+    const isToday=dateStr===hoyStr;
+    const isSelected=dateStr===calDiaSeleccionado;
+    const dotsHtml=evs.slice(0,4).map(e=>`<span class="cal-day-dot" style="background:${CAL_COLORES[e.tipo]}"></span>`).join('');
+    html+=`<div class="cal-day ${evs.length?'has-events':''} ${isToday?'today':''} ${isSelected?'selected':''}" ${evs.length?`onclick="calSeleccionarDia('${dateStr}')"`:''}>
+      ${d}<div class="cal-day-dots">${dotsHtml}</div>
+    </div>`;
+  }
+  gridEl.innerHTML=html;
+
+  if(calDiaSeleccionado) calMostrarDetalleDia(calDiaSeleccionado);
+  else document.getElementById('cal-detalle-dia').innerHTML='';
+
+  renderCalProximos(eventos);
+}
+
+function calSeleccionarDia(dateStr){
+  calDiaSeleccionado=calDiaSeleccionado===dateStr?null:dateStr;
+  renderCalendario();
+}
+
+function calMostrarDetalleDia(dateStr){
+  const eventos=getEventosCalendario().filter(e=>e.fecha===dateStr);
+  const box=document.getElementById('cal-detalle-dia');
+  if(!eventos.length){box.innerHTML='';return;}
+  const localeMap={es:'es-AR',en:'en-US',pt:'pt-BR'};
+  const fechaFmt=new Date(dateStr+'T00:00:00').toLocaleDateString(localeMap[lang]||'es-AR',{weekday:'long',day:'numeric',month:'long'});
+  box.innerHTML=`<h3 style="margin-top:1rem">${fechaFmt}</h3>`+eventos.map(e=>`
+    <div class="cal-detalle-evento ${e.criticidad}">
+      <div style="flex:1">
+        <div class="cal-detalle-titulo">${e.titulo} <span class="cal-tipo-tag" style="background:${CAL_COLORES[e.tipo]}">${t('cal_tipo_'+e.tipo)}</span></div>
+        <div class="cal-detalle-desc">${e.descripcion}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderCalProximos(eventosDelMes){
+  const todos=getEventosCalendario();
+  const hoy=new Date();hoy.setHours(0,0,0,0);
+  const prox=todos.map(e=>({...e,dias:Math.round((new Date(e.fecha+'T00:00:00')-hoy)/86400000)}))
+    .filter(e=>e.dias>=0)
+    .sort((a,b)=>a.dias-b.dias)
+    .slice(0,8);
+  const cont=document.getElementById('cal-proximos-list');
+  if(!cont) return;
+  cont.innerHTML=prox.length?prox.map(e=>{
+    const d=new Date(e.fecha+'T00:00:00');
+    const fechaCorta=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+    return`<div class="cal-proximo-row">
+      <div class="cal-proximo-fecha">${fechaCorta}</div>
+      <div class="cal-proximo-info">
+        <div class="cal-proximo-titulo">${e.titulo} <span class="cal-tipo-tag" style="background:${CAL_COLORES[e.tipo]}">${t('cal_tipo_'+e.tipo)}</span></div>
+        <div class="cal-proximo-dias">${e.dias===0?t('cal_hoy'):`${e.dias} ${t('dias_label')}`}</div>
+      </div>
+    </div>`;
+  }).join(''):`<div class="alerta verde"><span class="alerta-ico">✅</span><span>${t('cal_sin_proximos')}</span></div>`;
+}
+
 function renderLegislacion(f=''){
   const fl=f.toLowerCase();
   let html='';
@@ -968,13 +1540,14 @@ function renderPanel(p){
   else if(p==='internacional')renderInternacional();
   else if(p==='rite')renderRite();
   else if(p==='mejoras')renderMejoras();
+  else if(p==='calendario')renderCalendario();
   else if(p==='legislacion')renderLegislacion();
   else if(p==='reporte')renderReporte();
 }
 
 function renderAll(){
   document.getElementById('nav-nombre').textContent=CONFIG.empresa.nombre;
-  const labels={dashboard:'📊 '+t('dashboard'),ley27401:'⚖️ '+t('ley27401'),riesgo:'🗺️ '+t('riesgo'),capacitacion:'📚 '+t('capacitacion'),duediligence:'🔍 '+t('duediligence'),internacional:'🌍 '+t('internacional'),rite:'🏛️ '+t('rite'),mejoras:'📈 '+t('mejoras'),legislacion:'📋 '+t('legislacion'),reporte:'📄 '+t('reporte')};
+  const labels={dashboard:'📊 '+t('dashboard'),ley27401:'⚖️ '+t('ley27401'),riesgo:'🗺️ '+t('riesgo'),capacitacion:'📚 '+t('capacitacion'),duediligence:'🔍 '+t('duediligence'),internacional:'🌍 '+t('internacional'),rite:'🏛️ '+t('rite'),mejoras:'📈 '+t('mejoras'),calendario:'📅 '+t('cal_nav'),legislacion:'📋 '+t('legislacion'),reporte:'📄 '+t('reporte')};
   document.querySelectorAll('.tab-btn').forEach(b=>{if(labels[b.dataset.panel])b.textContent=labels[b.dataset.panel];});
   const activo=document.querySelector('.tab-btn.active')?.dataset.panel||'dashboard';
   renderPanel(activo);
@@ -986,6 +1559,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   applyStaticI18n();
   renderAll();
 });
+
 </script>
 </body>
 </html>

@@ -73,30 +73,31 @@ const CONFIG = {
     ],
   },
 
+  // probabilidad e impacto: escala 1-5, usados por el Mapa de Calor (matriz 5x5) en la pestaña Riesgo.
   mapa_riesgo: [
     { area: { es: "Comercial / Ventas", en: "Sales / Commercial", pt: "Comercial / Vendas" },
-      riesgo: "alto",
+      riesgo: "alto", probabilidad: 4, impacto: 5,
       descripcion: { es: "Interacción frecuente con sector público. Riesgo de cohecho en licitaciones.", en: "Frequent interaction with the public sector. Risk of bribery in tenders.", pt: "Interação frequente com o setor público. Risco de suborno em licitações." } },
     { area: { es: "Compras y Abastecimiento", en: "Procurement and Supply", pt: "Compras e Abastecimento" },
-      riesgo: "alto",
+      riesgo: "alto", probabilidad: 4, impacto: 4,
       descripcion: { es: "Terceros no evaluados. Riesgo de lavado por cadena de proveedores.", en: "Unvetted third parties. Money laundering risk through the supply chain.", pt: "Terceiros não avaliados. Risco de lavagem por meio da cadeia de fornecedores." } },
     { area: { es: "Finanzas y Contabilidad", en: "Finance and Accounting", pt: "Finanças e Contabilidade" },
-      riesgo: "medio",
+      riesgo: "medio", probabilidad: 3, impacto: 4,
       descripcion: { es: "Registros contables. Riesgo de balances falsos (art. 300 bis CP).", en: "Accounting records. Risk of falsified financial statements.", pt: "Registros contábeis. Risco de balanços falsos." } },
     { area: { es: "Recursos Humanos", en: "Human Resources", pt: "Recursos Humanos" },
-      riesgo: "medio",
+      riesgo: "medio", probabilidad: 3, impacto: 3,
       descripcion: { es: "Contratación de funcionarios públicos. Conflictos de interés.", en: "Hiring of public officials. Conflicts of interest.", pt: "Contratação de funcionários públicos. Conflitos de interesse." } },
     { area: { es: "Gobierno Corporativo", en: "Corporate Governance", pt: "Governança Corporativa" },
-      riesgo: "medio",
+      riesgo: "medio", probabilidad: 2, impacto: 5,
       descripcion: { es: "Toma de decisiones. Riesgo de negociaciones incompatibles.", en: "Decision making. Risk of incompatible negotiations.", pt: "Tomada de decisões. Risco de negociações incompatíveis." } },
     { area: { es: "Operaciones / Producción", en: "Operations / Production", pt: "Operações / Produção" },
-      riesgo: "bajo",
+      riesgo: "bajo", probabilidad: 2, impacto: 2,
       descripcion: { es: "Bajo nivel de interacción con funcionarios públicos.", en: "Low level of interaction with public officials.", pt: "Baixo nível de interação com funcionários públicos." } },
     { area: { es: "Tecnología e Información", en: "Technology and Information", pt: "Tecnologia e Informação" },
-      riesgo: "bajo",
+      riesgo: "bajo", probabilidad: 2, impacto: 3,
       descripcion: { es: "Acceso a datos sensibles. Riesgo de uso indebido de información.", en: "Access to sensitive data. Risk of misuse of information.", pt: "Acesso a dados sensíveis. Risco de uso indevido de informações." } },
     { area: { es: "Relaciones Institucionales", en: "Institutional Relations", pt: "Relações Institucionais" },
-      riesgo: "alto",
+      riesgo: "alto", probabilidad: 3, impacto: 5,
       descripcion: { es: "Lobby, donaciones, patrocinios. Tráfico de influencias.", en: "Lobbying, donations, sponsorships. Influence peddling.", pt: "Lobby, doações, patrocínios. Tráfico de influência." } },
   ],
 
@@ -121,10 +122,12 @@ const CONFIG = {
       destinatarios: { es: "Directores, Comercial", en: "Directors, Sales", pt: "Diretores, Comercial" } },
   ],
 
+  // area_vinculada: nombre del área en mapa_riesgo (en español, clave estable) que se ve afectada
+  // por este proveedor. Si resultado==="alerta_ocde", el Mapa de Calor sube el riesgo de esa área.
   cuits_verificados: [
-    { razon_social: "Proveedor Ejemplo 1 S.R.L.", cuit: "30-11111111-1", fecha: "2025-05-10", resultado: "sin_antecedentes" },
-    { razon_social: "Proveedor Ejemplo 2 S.A.",   cuit: "30-22222222-2", fecha: "2025-04-20", resultado: "sin_antecedentes" },
-    { razon_social: "Siemens S.A.",               cuit: "30-54667581-3", fecha: "2025-03-15", resultado: "alerta_ocde" },
+    { razon_social: "Proveedor Ejemplo 1 S.R.L.", cuit: "30-11111111-1", fecha: "2025-05-10", resultado: "sin_antecedentes", area_vinculada: "Compras y Abastecimiento" },
+    { razon_social: "Proveedor Ejemplo 2 S.A.",   cuit: "30-22222222-2", fecha: "2025-04-20", resultado: "sin_antecedentes", area_vinculada: "Comercial / Ventas" },
+    { razon_social: "Siemens S.A.",               cuit: "30-54667581-3", fecha: "2025-03-15", resultado: "alerta_ocde",     area_vinculada: "Compras y Abastecimiento" },
   ],
 
   historial_score: [
