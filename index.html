@@ -94,7 +94,23 @@ header p{opacity:.75;font-size:.88rem}
 .autoeval-fuente-tag.autoevaluacion{background:#e8f5e9;color:var(--verde)}
 .autoeval-fuente-tag.default_sector{background:#fff3e0;color:var(--naranja)}
 .autoeval-fuente-tag.due_diligence{background:#fdecea;color:var(--rojo)}
-.cal-leyenda{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:.9rem;font-size:.76rem;color:var(--muted)}
+.alerta-reg{background:#f8fafc;border:1px solid var(--borde);border-radius:8px;margin-bottom:.6rem;overflow:hidden}
+.alerta-reg-header{display:flex;align-items:center;gap:.6rem;padding:.6rem .8rem;cursor:pointer}
+.alerta-reg-header:hover{background:#f0f4f8}
+.alerta-reg-titulo{flex:1;font-size:.84rem;font-weight:600}
+.alerta-reg-fuente{font-size:.7rem;color:var(--muted);background:#e0e7ef;padding:.1rem .4rem;border-radius:4px;white-space:nowrap}
+.alerta-reg-btn{font-size:.7rem;font-weight:700;color:#1a3a5c;background:#e3f2fd;border:none;border-radius:4px;padding:.2rem .55rem;cursor:pointer;white-space:nowrap}
+.alerta-reg-btn:hover{background:#bbdefb}
+.alerta-reg-btn.loading{opacity:.6;cursor:default}
+.alerta-ia-panel{display:none;border-top:1px solid var(--borde);padding:.7rem .9rem;background:#fff;font-size:.82rem}
+.alerta-ia-panel.visible{display:block}
+.ia-row{display:flex;gap:.5rem;margin-bottom:.4rem;align-items:flex-start}
+.ia-label{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;min-width:90px;padding-top:.1rem;flex-shrink:0}
+.ia-valor{color:var(--texto);line-height:1.45}
+.ia-urgencia{display:inline-block;font-size:.68rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;margin-left:.4rem}
+.ia-urgencia.alta{background:#fdecea;color:var(--rojo)}.ia-urgencia.media{background:#fff3e0;color:var(--naranja)}.ia-urgencia.baja{background:#e8f5e9;color:var(--verde)}
+.alerta-reg-cont{margin-top:.6rem}
+
 .cal-leyenda-item{display:flex;align-items:center;gap:.35rem}
 .cal-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem}
@@ -1022,6 +1038,10 @@ function renderDashboard(){
   if(!CONFIG.programa_integridad.registrado_rite) al.push({t:'naranja',i:'⚠️',txt:t('alerta_no_rite')});
   if(!al.length) al.push({t:'verde',i:'✅',txt:t('alerta_sin_criticas')});
   document.getElementById('alertas-cont').innerHTML=al.map(a=>`<div class="alerta ${a.t}"><span class="alerta-ico">${a.i}</span><span>${a.txt}</span></div>`).join('');
+
+  // ── Alertas regulatorias con resumen IA ───────────────────────────────
+  cargarAlertasRegulatoriasIA();
+
   const hoy=new Date();
   const prox=CONFIG.capacitaciones.filter(c=>c.fecha_limite).map(c=>({...c,dias:Math.round((new Date(c.fecha_limite)-hoy)/86400000)})).filter(c=>c.dias>0&&c.dias<120).sort((a,b)=>a.dias-b.dias);
   document.getElementById('venc-cont').innerHTML=prox.length?prox.map(c=>`<div class="alerta ${c.dias<30?'roja':c.dias<60?'naranja':'verde'}"><span class="alerta-ico">${c.dias<30?'🔴':c.dias<60?'⚠️':'📅'}</span><span><strong>${tx(c.modulo)}</strong> — ${t('venc_vence')} ${c.fecha_limite} (${c.dias} ${t('dias_label')}) · ${tx(c.destinatarios)}</span></div>`).join(''):`<div class="alerta verde"><span class="alerta-ico">✅</span><span>${t('venc_sin')}</span></div>`;
@@ -1357,7 +1377,95 @@ document.addEventListener('DOMContentLoaded',async()=>{
   renderAll();
 });
 
-// ── PARCHE: Alertas cruzadas + Score con penalización ─────────────────────
+// ── Alertas regulatorias con resumen IA ──────────────────────────────────
+async function cargarAlertasRegulatoriasIA(){
+  const cont = document.getElementById('alertas-cont');
+  if(!cont) return;
+
+  let data;
+  try {
+    const r = await fetch('/api/v1/alertas');
+    data = await r.json();
+  } catch(e) {
+    return; // sin backend, no mostrar
+  }
+
+  const alertas = (data.alertas || []).filter(a => a.fuente && a.fuente !== 'Interna');
+  if(!alertas.length) return;
+
+  // Contenedor separado para alertas regulatorias
+  let regCont = document.getElementById('alertas-regulatorias');
+  if(!regCont){
+    regCont = document.createElement('div');
+    regCont.id = 'alertas-regulatorias';
+    regCont.innerHTML = `<div style="font-size:.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:.8rem 0 .4rem">🔔 Alertas regulatorias</div>`;
+    cont.after(regCont);
+  } else {
+    regCont.innerHTML = `<div style="font-size:.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:.8rem 0 .4rem">🔔 Alertas regulatorias</div>`;
+  }
+
+  const severidadIco = {rojo:'🔴', naranja:'⚠️', verde:'🟢'};
+
+  alertas.forEach(a => {
+    const tieneIA = !!a.resumen_ia;
+    const div = document.createElement('div');
+    div.className = 'alerta-reg';
+    div.innerHTML = `
+      <div class="alerta-reg-header">
+        <span>${severidadIco[a.severidad]||'📌'}</span>
+        <span class="alerta-reg-titulo">${a.descripcion}</span>
+        <span class="alerta-reg-fuente">${a.fuente}</span>
+        <button class="alerta-reg-btn" data-id="${a.id}" onclick="toggleResumenIA(this,'${a.id}')">
+          ${tieneIA ? '🤖 Ver análisis' : '🤖 Analizar'}
+        </button>
+      </div>
+      <div class="alerta-ia-panel" id="ia-${a.id}">
+        ${tieneIA ? renderResumenIA(a.resumen_ia) : '<span style="color:var(--muted);font-size:.8rem">Cargando análisis IA...</span>'}
+      </div>`;
+    regCont.appendChild(div);
+  });
+}
+
+function renderResumenIA(r){
+  const urgTag = r.urgencia ? `<span class="ia-urgencia ${r.urgencia}">${r.urgencia.toUpperCase()}</span>` : '';
+  return `
+    <div class="ia-row"><span class="ia-label">Qué cambió</span><span class="ia-valor">${r.que_cambio||'—'}${urgTag}</span></div>
+    <div class="ia-row"><span class="ia-label">Afecta a</span><span class="ia-valor">${r.a_quien_afecta||'—'}</span></div>
+    <div class="ia-row"><span class="ia-label">Acción</span><span class="ia-valor">${r.accion_concreta||'—'}</span></div>`;
+}
+
+async function toggleResumenIA(btn, id){
+  const panel = document.getElementById('ia-'+id);
+  if(!panel) return;
+
+  if(panel.classList.contains('visible')){
+    panel.classList.remove('visible');
+    return;
+  }
+
+  panel.classList.add('visible');
+
+  // Si ya tiene contenido real, solo mostrar
+  if(panel.dataset.loaded) return;
+
+  btn.classList.add('loading');
+  btn.textContent = '⏳ Analizando...';
+
+  try {
+    const r = await fetch(`/api/v1/alertas/${id}/resumen`);
+    if(!r.ok) throw new Error(r.status);
+    const data = await r.json();
+    panel.innerHTML = renderResumenIA(data.resumen_ia);
+    panel.dataset.loaded = '1';
+    btn.textContent = '🤖 Ver análisis';
+  } catch(e) {
+    panel.innerHTML = '<span style="color:var(--rojo);font-size:.8rem">⚠️ Resumen IA no disponible. Configurar ANTHROPIC_API_KEY en Railway.</span>';
+    btn.textContent = '🤖 Analizar';
+  }
+  btn.classList.remove('loading');
+}
+
+
 function leerIncidentesLS(){
   try{ return JSON.parse(localStorage.getItem('inc_data')||'[]'); }catch(e){ return []; }
 }
