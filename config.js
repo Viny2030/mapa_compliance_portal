@@ -173,4 +173,47 @@ const CONFIG = {
 
   meaci_url: "https://meaci-production.up.railway.app",
   meaci_api: "https://meaci-production.up.railway.app/api/cruce-compr",
+
+  // ── Predictor de riesgo ─────────────────────────────────────────────────
+  // El predictor.html lee CONFIG.predictor para pre-cargar los valores por
+  // defecto en lugar de depender de localStorage.
+  predictor: {
+    // Pesos que usa el modelo (deben sumar 100)
+    pesos: { programa: 25, capacitacion: 20, due_diligence: 20, riesgo: 15, comunicacion: 10, investigacion: 10 },
+    // Valores actuales del programa (0-100) — se sincronizan con los ejes del dashboard
+    valores_actuales: {
+      programa:      68,
+      capacitacion:  65,
+      due_diligence: 60,
+      riesgo:        100,
+      comunicacion:  20,
+      investigacion: 30,
+    },
+    // Escenarios guardados (el predictor puede seguir agregando al array via localStorage
+    // pero los escenarios base siempre vienen del config)
+    escenarios_base: [
+      { nombre: "Situación actual", valores: { programa: 68, capacitacion: 65, due_diligence: 60, riesgo: 100, comunicacion: 20, investigacion: 30 } },
+      { nombre: "Meta 6 meses",     valores: { programa: 85, capacitacion: 80, due_diligence: 75, riesgo: 100, comunicacion: 60, investigacion: 60 } },
+      { nombre: "Nivel mínimo OA",  valores: { programa: 60, capacitacion: 60, due_diligence: 40, riesgo: 60,  comunicacion: 40, investigacion: 40 } },
+    ],
+  },
+
+  // ── Benchmark sectorial ─────────────────────────────────────────────────
+  // El benchmark.html lee CONFIG.benchmark para mostrar la comparativa sin
+  // que el usuario tenga que ingresar el score manualmente.
+  benchmark: {
+    // Score actual de la empresa (se sincroniza con calcScore() del dashboard)
+    score_propio: null, // null = el benchmark.html lo calcula desde CONFIG al cargar
+    sector_default: "construccion",
+    sectores: {
+      construccion:  { nombre: "Construcción / Obra pública", p25: 38, p50: 52, p75: 68, top10: 84 },
+      servicios:     { nombre: "Servicios profesionales",     p25: 45, p50: 60, p75: 74, top10: 89 },
+      industria:     { nombre: "Industria manufacturera",     p25: 40, p50: 55, p75: 70, top10: 85 },
+      energia:       { nombre: "Energía y recursos naturales",p25: 50, p50: 65, p75: 78, top10: 92 },
+      finanzas:      { nombre: "Servicios financieros",       p25: 55, p50: 70, p75: 82, top10: 94 },
+      tecnologia:    { nombre: "Tecnología",                  p25: 48, p50: 63, p75: 76, top10: 91 },
+      salud:         { nombre: "Salud y farmacéutico",        p25: 52, p50: 66, p75: 79, top10: 93 },
+      comercio:      { nombre: "Comercio y retail",           p25: 35, p50: 48, p75: 62, top10: 78 },
+    },
+  },
 };

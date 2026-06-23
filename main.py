@@ -73,5 +73,21 @@ async def documentos_html():
 async def conflicto_interes_html():
     return FileResponse(os.path.join(ROOT, "conflicto_interes.html"))
 
+@app.get("/incidentes.html", include_in_schema=False)
+async def incidentes_html():
+    return FileResponse(os.path.join(ROOT, "incidentes.html"))
+
+@app.get("/controles.html", include_in_schema=False)
+async def controles_html():
+    return FileResponse(os.path.join(ROOT, "controles.html"))
+
+@app.get("/predictor.html", include_in_schema=False)
+async def predictor_html():
+    return FileResponse(os.path.join(ROOT, "predictor.html"))
+
+@app.get("/capacitaciones.html", include_in_schema=False)
+async def capacitaciones_html():
+    return FileResponse(os.path.join(ROOT, "capacitaciones.html"))
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
