@@ -69,6 +69,10 @@ async def benchmark_html():
 async def documentos_html():
     return FileResponse(os.path.join(ROOT, "documentos.html"))
 
+@app.get("/landing.html", include_in_schema=False)
+async def landing_html():
+    return FileResponse(os.path.join(ROOT, "landing.html"))
+
 @app.get("/conflicto_interes.html", include_in_schema=False)
 async def conflicto_interes_html():
     return FileResponse(os.path.join(ROOT, "conflicto_interes.html"))
