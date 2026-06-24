@@ -199,8 +199,9 @@ async function cargarChecklist() {
 
     document.getElementById('k-total').textContent =
       (await fetch(`${API}/documentos-cliente`).then(r=>r.json())).total || 0;
-    document.getElementById('k-pct').textContent = data.pct + '%';
-    document.getElementById('k-faltan').textContent = data.total - data.cubiertos;
+    document.getElementById('k-pct').textContent = (data.pct ?? 0) + '%';
+    document.getElementById('k-faltan').textContent =
+      isNaN(data.total - data.cubiertos) ? 0 : (data.total - data.cubiertos);
 
     const cont = document.getElementById('checklist-cont');
     cont.innerHTML = data.checklist.map(c => `
