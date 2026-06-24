@@ -75,6 +75,35 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-sh
 .badge-medio{background:#fff3e0;color:var(--naranja)}
 .badge-inicial{background:#fdecea;color:var(--rojo)}
 .fuente{font-size:.72rem;color:var(--muted);background:#fffde7;border-left:3px solid #f9a825;padding:.5rem .75rem;border-radius:6px;margin-top:.6rem}
+
+  /* ── Cuantificación USD ── */
+  .usd-input-wrap{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+  .usd-prefix{font-size:1.1rem;font-weight:700;color:var(--muted);flex-shrink:0}
+  .usd-input{flex:1;font-family:inherit;font-size:1rem;padding:.55rem .8rem;border:1.5px solid var(--borde);border-radius:7px;font-weight:600}
+  .usd-input:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+  .usd-card{border-radius:10px;padding:1rem 1.1rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.8rem}
+  .usd-card.alto{background:#fdecea;border-left:4px solid #c62828}
+  .usd-card.medio{background:#fff3e0;border-left:4px solid #e65100}
+  .usd-card.bajo{background:#f0fdf4;border-left:4px solid #2e7d32}
+  .usd-area{flex:1;min-width:0}
+  .usd-area-nombre{font-size:.88rem;font-weight:700;color:var(--texto)}
+  .usd-area-desc{font-size:.74rem;color:var(--muted);margin-top:.1rem}
+  .usd-monto{text-align:right;flex-shrink:0}
+  .usd-monto-num{font-size:1.1rem;font-weight:800;line-height:1}
+  .usd-monto-label{font-size:.68rem;color:var(--muted);font-weight:600}
+  .usd-monto.alto .usd-monto-num{color:#c62828}
+  .usd-monto.medio .usd-monto-num{color:#e65100}
+  .usd-monto.bajo .usd-monto-num{color:#2e7d32}
+  .usd-total-box{background:var(--pri);color:#fff;border-radius:10px;padding:1.1rem 1.3rem;display:flex;justify-content:space-between;align-items:center;margin-top:.8rem}
+  .usd-total-label{font-size:.82rem;opacity:.8}
+  .usd-total-num{font-size:1.6rem;font-weight:900}
+  .usd-metodologia{font-size:.74rem;color:var(--muted);line-height:1.6;margin-top:.7rem;padding:.6rem;background:#f8fafc;border-radius:6px}
+  .grid-usd{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem}
+  @media(max-width:580px){.grid-usd{grid-template-columns:1fr}}
+  .usd-kpi{text-align:center;padding:.8rem;border-radius:8px;border:1px solid var(--borde)}
+  .usd-kpi-num{font-size:1.4rem;font-weight:800;color:var(--pri)}
+  .usd-kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.15rem}
+
 </style>
 </head>
 <body>
@@ -164,6 +193,109 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-sh
 <script>
 // ── Historial desde config o default ─────────────────────────────────────
 let historial = [];
+
+// ── Cuantificación financiera del riesgo en USD ──────────────────────────────
+const FACTORES_CATEGORIA = {
+  'alto':  0.08,
+  'medio': 0.04,
+  'bajo':  0.015,
+};
+
+function fmtUSD(n) {
+  if (n >= 1000000) return 'USD ' + (n/1000000).toFixed(2) + 'M';
+  if (n >= 1000)    return 'USD ' + Math.round(n/1000) + 'K';
+  return 'USD ' + Math.round(n).toLocaleString();
+}
+
+function calcularRiesgoUSD() {
+  const facturacion = parseFloat(document.getElementById('facturacion-usd').value) || 0;
+  if (facturacion <= 0 || typeof CONFIG === 'undefined') return;
+
+  const areas = CONFIG.mapa_riesgo || [];
+  if (!areas.length) return;
+
+  let totalEsperado = 0;
+  let totalMaximo   = 0;
+  const resultados  = [];
+
+  areas.forEach(area => {
+    const prob   = (area.probabilidad || 1) / 5;
+    const imp    = (area.impacto     || 1) / 5;
+    const factor = FACTORES_CATEGORIA[area.riesgo] || 0.02;
+    const nombre = typeof area.area === 'object' ? (area.area.es || '') : area.area;
+    const desc   = typeof area.descripcion === 'object' ? (area.descripcion.es || '') : (area.descripcion || '');
+
+    const perdida_esperada = prob * imp * factor * facturacion;
+    const perdida_maxima   = imp  * factor * facturacion;  // prob=1 (worst case)
+
+    totalEsperado += perdida_esperada;
+    totalMaximo   += perdida_maxima;
+
+    resultados.push({
+      nombre,
+      desc,
+      riesgo: area.riesgo,
+      prob: area.probabilidad,
+      imp:  area.impacto,
+      esperada: perdida_esperada,
+      maxima:   perdida_maxima,
+    });
+  });
+
+  // Ordenar por pérdida esperada desc
+  resultados.sort((a, b) => b.esperada - a.esperada);
+
+  // KPIs
+  const kpisEl = document.getElementById('usd-kpis');
+  kpisEl.style.display = 'grid';
+  const pctFact = totalEsperado / facturacion * 100;
+  kpisEl.innerHTML = `
+    <div class="usd-kpi">
+      <div class="usd-kpi-num" style="color:#c62828">${fmtUSD(totalEsperado)}</div>
+      <div class="usd-kpi-label">Pérdida esperada total / año</div>
+    </div>
+    <div class="usd-kpi">
+      <div class="usd-kpi-num" style="color:#e65100">${fmtUSD(totalMaximo)}</div>
+      <div class="usd-kpi-label">Exposición máxima (worst case)</div>
+    </div>
+    <div class="usd-kpi">
+      <div class="usd-kpi-num">${pctFact.toFixed(1)}%</div>
+      <div class="usd-kpi-label">% de facturación en riesgo</div>
+    </div>
+    <div class="usd-kpi">
+      <div class="usd-kpi-num" style="color:#2e7d32">${fmtUSD(totalEsperado * 0.6)}</div>
+      <div class="usd-kpi-label">Ahorro estimado con programa avanzado</div>
+    </div>
+  `;
+
+  // Áreas
+  document.getElementById('usd-areas').innerHTML = resultados.map(r => `
+    <div class="usd-card ${r.riesgo}">
+      <div class="usd-area">
+        <div class="usd-area-nombre">${r.nombre}</div>
+        <div class="usd-area-desc">Prob: ${r.prob}/5 · Imp: ${r.imp}/5 · ${r.desc.substring(0,80)}${r.desc.length>80?'…':''}</div>
+      </div>
+      <div class="usd-monto ${r.riesgo}">
+        <div class="usd-monto-num">${fmtUSD(r.esperada)}</div>
+        <div class="usd-monto-label">esperada / año</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Total
+  const totalEl = document.getElementById('usd-total');
+  totalEl.style.display = 'block';
+  totalEl.innerHTML = `
+    <div class="usd-total-box">
+      <div>
+        <div class="usd-total-label">Exposición total esperada</div>
+        <div style="font-size:.75rem;opacity:.65">${areas.length} áreas · ${fmtUSD(facturacion)} de facturación</div>
+      </div>
+      <div class="usd-total-num">${fmtUSD(totalEsperado)}</div>
+    </div>
+  `;
+}
+
 if(typeof CONFIG !== 'undefined' && CONFIG.historial_score && CONFIG.historial_score.length >= 3){
   historial = CONFIG.historial_score.map(h=>({mes:h.mes, score:h.score}));
 } else {
