@@ -149,6 +149,44 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,58,92,.96
 .proof-num{font-size:2.6rem;font-weight:900;color:var(--navy);line-height:1}
 .proof-label{font-size:.78rem;color:var(--slate);margin-top:.3rem;line-height:1.4}
 
+
+/* ── Auditoría Rápida ── */
+.audit-bg{background:linear-gradient(135deg,#f0f4f8 0%,#e8eef5 100%);padding:5rem 1.5rem}
+.audit-inner{max-width:760px;margin:0 auto}
+.audit-card{background:#fff;border-radius:16px;padding:2.5rem;box-shadow:0 4px 32px rgba(26,58,92,.1);border:1px solid #dde3ea}
+.audit-steps{display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid #e8eef5}
+.audit-step{flex:1;text-align:center;padding:.6rem .4rem;font-size:.72rem;font-weight:700;color:#9ca3af;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.audit-step.active{color:var(--navy);border-bottom-color:var(--gold)}
+.audit-step.done{color:var(--gold)}
+.audit-q{display:none}.audit-q.active{display:block}
+.audit-q h3{font-size:1.05rem;font-weight:800;color:var(--navy);margin-bottom:.4rem}
+.audit-q p{font-size:.85rem;color:var(--slate);margin-bottom:1.2rem}
+.audit-opciones{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:480px){.audit-opciones{grid-template-columns:1fr}}
+.audit-opcion{padding:.8rem 1rem;border:2px solid #e0e7ef;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--navy);background:#fafbfc;transition:all .18s;text-align:left}
+.audit-opcion:hover{border-color:var(--navy);background:#f0f4f8}
+.audit-opcion.selected{border-color:var(--gold);background:rgba(201,168,76,.08);color:var(--navy)}
+.audit-opcion .opt-ico{font-size:1.1rem;margin-right:.5rem}
+.audit-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.audit-prog{font-size:.75rem;color:var(--slate)}
+.btn-audit-next{background:var(--navy);color:#fff;border:none;padding:.6rem 1.4rem;border-radius:8px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .18s}
+.btn-audit-next:hover{background:#0d2137}
+.btn-audit-next:disabled{opacity:.4;cursor:not-allowed}
+.btn-audit-back{background:none;border:1px solid #dde3ea;color:var(--slate);padding:.6rem 1rem;border-radius:8px;font-size:.86rem;cursor:pointer;font-family:inherit}
+.audit-resultado{display:none;text-align:center;padding:1rem 0}
+.audit-score-big{font-size:3.5rem;font-weight:900;line-height:1;margin-bottom:.3rem}
+.audit-nivel{font-size:1rem;font-weight:700;margin-bottom:1rem}
+.audit-barras{text-align:left;margin:1.2rem 0}
+.audit-barra-row{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem;font-size:.8rem}
+.audit-barra-label{min-width:110px;color:var(--slate);font-weight:600}
+.audit-barra-track{flex:1;background:#e0e7ef;border-radius:4px;height:8px;overflow:hidden}
+.audit-barra-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.audit-barra-val{min-width:32px;text-align:right;font-weight:700;color:var(--navy)}
+.audit-cta-box{background:linear-gradient(135deg,var(--navy) 0%,#0d2137 100%);border-radius:12px;padding:1.5rem;margin-top:1.5rem;color:#fff}
+.audit-cta-box h4{font-size:1rem;font-weight:800;margin-bottom:.4rem}
+.audit-cta-box p{font-size:.82rem;opacity:.8;margin-bottom:1rem}
+.audit-reiniciar{background:none;border:none;color:var(--slate);font-size:.78rem;cursor:pointer;margin-top:.8rem;text-decoration:underline}
+
 /* ── CTA FINAL ── */
 .cta-bg{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 100%);padding:5rem 1.5rem;text-align:center}
 .cta-bg h2{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:1rem}
@@ -195,6 +233,7 @@ footer{background:var(--navy-dark);padding:2.5rem 1.5rem;text-align:center}
       <div class="nav-links">
         <a href="#features" data-i18n="nav_features">Funciones</a>
         <a href="#normas" data-i18n="nav_normas">Normativa</a>
+        <a href="#auditoria" data-i18n="nav_audit" style="color:rgba(255,255,255,.75);font-size:.85rem;font-weight:600;text-decoration:none">Diagnóstico</a>
         <a href="#pricing" data-i18n="nav_pricing">Precios</a>
         <a href="index.html" data-i18n="nav_demo" class="nav-cta">Ver demo →</a>
       </div>
@@ -224,6 +263,7 @@ footer{background:var(--navy-dark);padding:2.5rem 1.5rem;text-align:center}
       </div>
       <div class="hero-actions">
         <a href="index.html" class="btn-primary" data-i18n="hero_cta_primary">Ver la demo en vivo →</a>
+        <a href="#auditoria" data-i18n="nav_audit" style="color:rgba(255,255,255,.75);font-size:.85rem;font-weight:600;text-decoration:none">Diagnóstico</a>
         <a href="#pricing" class="btn-ghost" data-i18n="hero_cta_secondary">Ver precios</a>
       </div>
     </div>
@@ -490,6 +530,109 @@ footer{background:var(--navy-dark);padding:2.5rem 1.5rem;text-align:center}
   </div>
 </section>
 
+
+<!-- ══════════ AUDITORÍA RÁPIDA ══════════ -->
+<section class="audit-bg reveal" id="auditoria">
+  <div class="audit-inner">
+    <div style="text-align:center;margin-bottom:1.8rem">
+      <div class="section-label">⚡ Diagnóstico express</div>
+      <h2 class="section-title" data-i18n="audit_title">¿Cuál es el score de tu empresa?</h2>
+      <p class="section-sub" style="margin:0 auto;text-align:center" data-i18n="audit_sub">4 preguntas · 60 segundos · Score estimado al instante</p>
+    </div>
+
+    <div class="audit-card">
+      <!-- Steps indicator -->
+      <div class="audit-steps">
+        <div class="audit-step active" id="step-ind-1">1. Programa</div>
+        <div class="audit-step" id="step-ind-2">2. Capacitación</div>
+        <div class="audit-step" id="step-ind-3">3. Riesgos</div>
+        <div class="audit-step" id="step-ind-4">4. Canal</div>
+      </div>
+
+      <!-- Pregunta 1 -->
+      <div class="audit-q active" id="audit-q1">
+        <h3>¿Tu empresa tiene un Código de Ética aprobado?</h3>
+        <p>Elemento obligatorio del Art. 23 de la Ley 27.401 para contratar con el Estado.</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(1,'a')"><span class="opt-ico">✅</span>Sí, aprobado y vigente</div>
+          <div class="audit-opcion" onclick="seleccionar(1,'b')"><span class="opt-ico">🔄</span>En redacción / borrador</div>
+          <div class="audit-opcion" onclick="seleccionar(1,'c')"><span class="opt-ico">💭</span>Planeado pero no iniciado</div>
+          <div class="audit-opcion" onclick="seleccionar(1,'d')"><span class="opt-ico">❌</span>No tenemos</div>
+        </div>
+        <div class="audit-nav">
+          <span class="audit-prog">Pregunta 1 de 4</span>
+          <button class="btn-audit-next" id="next-1" disabled onclick="siguiente(2)">Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- Pregunta 2 -->
+      <div class="audit-q" id="audit-q2">
+        <h3>¿Qué porcentaje del personal recibió capacitación en compliance?</h3>
+        <p>Incluye directores, gerentes y empleados con acceso a recursos públicos o proveedores.</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(2,'a')"><span class="opt-ico">🏆</span>Más del 80%</div>
+          <div class="audit-opcion" onclick="seleccionar(2,'b')"><span class="opt-ico">📈</span>Entre 50% y 80%</div>
+          <div class="audit-opcion" onclick="seleccionar(2,'c')"><span class="opt-ico">🌱</span>Menos del 50%</div>
+          <div class="audit-opcion" onclick="seleccionar(2,'d')"><span class="opt-ico">❌</span>Sin capacitaciones aún</div>
+        </div>
+        <div class="audit-nav">
+          <button class="btn-audit-back" onclick="anterior(1)">← Atrás</button>
+          <span class="audit-prog">Pregunta 2 de 4</span>
+          <button class="btn-audit-next" id="next-2" disabled onclick="siguiente(3)">Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- Pregunta 3 -->
+      <div class="audit-q" id="audit-q3">
+        <h3>¿La empresa tiene un mapa de riesgos de corrupción actualizado?</h3>
+        <p>El mapa debe identificar áreas, probabilidad e impacto. Se recomienda revisión anual.</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(3,'a')"><span class="opt-ico">✅</span>Sí, actualizado este año</div>
+          <div class="audit-opcion" onclick="seleccionar(3,'b')"><span class="opt-ico">📅</span>Existe pero tiene más de 1 año</div>
+          <div class="audit-opcion" onclick="seleccionar(3,'c')"><span class="opt-ico">🔄</span>En construcción</div>
+          <div class="audit-opcion" onclick="seleccionar(3,'d')"><span class="opt-ico">❌</span>No tenemos</div>
+        </div>
+        <div class="audit-nav">
+          <button class="btn-audit-back" onclick="anterior(2)">← Atrás</button>
+          <span class="audit-prog">Pregunta 3 de 4</span>
+          <button class="btn-audit-next" id="next-3" disabled onclick="siguiente(4)">Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- Pregunta 4 -->
+      <div class="audit-q" id="audit-q4">
+        <h3>¿Existe un canal de denuncias confidencial operativo?</h3>
+        <p>Debe garantizar anonimato, acuse de recibo en 7 días y resolución en 90 días (Ley 27.401).</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(4,'a')"><span class="opt-ico">✅</span>Sí, activo y comunicado</div>
+          <div class="audit-opcion" onclick="seleccionar(4,'b')"><span class="opt-ico">📧</span>Solo email, sin sistema</div>
+          <div class="audit-opcion" onclick="seleccionar(4,'c')"><span class="opt-ico">🔄</span>En implementación</div>
+          <div class="audit-opcion" onclick="seleccionar(4,'d')"><span class="opt-ico">❌</span>No tenemos</div>
+        </div>
+        <div class="audit-nav">
+          <button class="btn-audit-back" onclick="anterior(3)">← Atrás</button>
+          <span class="audit-prog">Pregunta 4 de 4</span>
+          <button class="btn-audit-next" id="next-4" disabled onclick="calcularScore()">Ver mi score →</button>
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div class="audit-resultado" id="audit-resultado">
+        <div class="audit-score-big" id="audit-score-num">—</div>
+        <div class="audit-nivel" id="audit-nivel-txt">—</div>
+        <div class="audit-barras" id="audit-barras"></div>
+        <div id="audit-msg" style="font-size:.85rem;color:var(--slate);margin-bottom:1rem"></div>
+        <div class="audit-cta-box">
+          <h4>📊 Obtené tu diagnóstico completo</h4>
+          <p>Score detallado en 6 ejes, plan de mejora priorizado y reporte PDF ejecutivo.</p>
+          <a href="index.html" class="btn-primary" style="display:inline-flex">Ver la demo en vivo →</a>
+        </div>
+        <button class="audit-reiniciar" onclick="reiniciarAudit()">↺ Volver a hacer el diagnóstico</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- CTA FINAL -->
 <section class="cta-bg" id="contact">
   <div class="section-inner">
@@ -509,7 +652,8 @@ footer{background:var(--navy-dark);padding:2.5rem 1.5rem;text-align:center}
     <div class="footer-links">
       <a href="index.html" data-i18n="footer_demo">Demo</a>
       <a href="#features" data-i18n="footer_features">Funciones</a>
-      <a href="#pricing" data-i18n="footer_pricing">Precios</a>
+      <a href="#auditoria" data-i18n="nav_audit" style="color:rgba(255,255,255,.75);font-size:.85rem;font-weight:600;text-decoration:none">Diagnóstico</a>
+        <a href="#pricing" data-i18n="footer_pricing">Precios</a>
       <a href="mailto:vhmonte@retina.ar" data-i18n="footer_contact">Contacto</a>
       <a href="https://mapatransparencia-production.up.railway.app" target="_blank">Mapa Transparencia</a>
       <a href="https://meaci-production.up.railway.app" target="_blank">MEACI</a>
@@ -567,6 +711,7 @@ const T = {
     pricing_note:'Todos los planes incluyen deploy en Railway, actualizaciones automáticas y documentación completa. Los precios no incluyen IVA local. Podés cancelar en cualquier momento.',
     cta_title:'¿Listo para medir tu programa de compliance?',
     cta_sub:'En menos de 5 minutos tenés el primer score. Sin instalar nada, sin tarjeta de crédito.',
+    audit_title:'¿Cuál es el score de tu empresa?', audit_sub:'4 preguntas · 60 segundos · Score estimado al instante',
     cta_btn_demo:'Ver demo en vivo →', cta_btn_contact:'Contactar al equipo',
     footer_demo:'Demo', footer_features:'Funciones', footer_pricing:'Precios', footer_contact:'Contacto',
     footer_copy:'© 2026 Ph.D. Vicente H. Monteverde · Ecosistema Transparencia · Todos los derechos reservados',
@@ -617,6 +762,7 @@ const T = {
     pricing_note:'All plans include Railway deployment, automatic updates and full documentation. Prices exclude local VAT. Cancel anytime.',
     cta_title:'Ready to measure your compliance program?',
     cta_sub:'Get your first score in under 5 minutes. No installation, no credit card.',
+    audit_title:'What is your company\'s score?', audit_sub:'4 questions · 60 seconds · Estimated score instantly',
     cta_btn_demo:'See live demo →', cta_btn_contact:'Contact the team',
     footer_demo:'Demo', footer_features:'Features', footer_pricing:'Pricing', footer_contact:'Contact',
     footer_copy:'© 2026 Ph.D. Vicente H. Monteverde · Ecosistema Transparencia · All rights reserved',
@@ -667,6 +813,7 @@ const T = {
     pricing_note:'Todos os planos incluem deploy no Railway, atualizações automáticas e documentação completa. Os preços não incluem impostos locais. Cancele quando quiser.',
     cta_title:'Pronto para medir seu programa de compliance?',
     cta_sub:'Em menos de 5 minutos você tem o primeiro score. Sem instalar nada, sem cartão de crédito.',
+    audit_title:'Qual é o score da sua empresa?', audit_sub:'4 perguntas · 60 segundos · Score estimado na hora',
     cta_btn_demo:'Ver demo ao vivo →', cta_btn_contact:'Falar com a equipe',
     footer_demo:'Demo', footer_features:'Funcionalidades', footer_pricing:'Preços', footer_contact:'Contato',
     footer_copy:'© 2026 Ph.D. Vicente H. Monteverde · Ecosistema Transparência · Todos os direitos reservados',
@@ -738,6 +885,110 @@ function animateScore(){
 }
 
 // ── Scroll reveal ─────────────────────────────────────────────────────────
+
+// ── Auditoría Rápida ────────────────────────────────────────────────────────
+const auditRespuestas = {};
+
+const auditPesos = {
+  1: { a:100, b:50, c:20, d:0  },  // Código de ética
+  2: { a:100, b:65, c:30, d:0  },  // Capacitación
+  3: { a:100, b:40, c:20, d:0  },  // Mapa de riesgos
+  4: { a:100, b:40, c:20, d:0  },  // Canal denuncias
+};
+
+const auditEtiquetas = {
+  1: 'Programa',
+  2: 'Capacitación',
+  3: 'Riesgos',
+  4: 'Canal'
+};
+
+function seleccionar(pregunta, opcion) {
+  auditRespuestas[pregunta] = opcion;
+  document.querySelectorAll(`#audit-q${pregunta} .audit-opcion`)
+    .forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById(`next-${pregunta}`).disabled = false;
+}
+
+function siguiente(num) {
+  document.getElementById(`audit-q${num-1}`).classList.remove('active');
+  document.getElementById(`audit-q${num}`).classList.add('active');
+  document.getElementById(`step-ind-${num-1}`).classList.remove('active');
+  document.getElementById(`step-ind-${num-1}`).classList.add('done');
+  document.getElementById(`step-ind-${num}`).classList.add('active');
+}
+
+function anterior(num) {
+  document.getElementById(`audit-q${num+1}`).classList.remove('active');
+  document.getElementById(`audit-q${num}`).classList.add('active');
+  document.getElementById(`step-ind-${num+1}`).classList.remove('active');
+  document.getElementById(`step-ind-${num}`).classList.remove('done');
+  document.getElementById(`step-ind-${num}`).classList.add('active');
+}
+
+function calcularScore() {
+  const scores = {};
+  let total = 0;
+  for (let i = 1; i <= 4; i++) {
+    const resp = auditRespuestas[i] || 'd';
+    scores[i] = auditPesos[i][resp];
+    total += scores[i];
+  }
+  const scoreFinal = Math.round(total / 4);
+  const nivel = scoreFinal >= 75 ? '🏆 Nivel Avanzado'
+              : scoreFinal >= 45 ? '📈 Nivel Medio'
+              : '🌱 Nivel Inicial';
+  const color = scoreFinal >= 75 ? '#2e7d32'
+              : scoreFinal >= 45 ? '#e65100'
+              : '#c62828';
+  const msg = scoreFinal >= 75
+    ? 'Tu programa está bien desarrollado. El diagnóstico completo identifica oportunidades de mejora para nivel avanzado.'
+    : scoreFinal >= 45
+    ? 'Tenés una base sólida. El diagnóstico completo prioriza los elementos que más impactan tu score.'
+    : 'Hay oportunidades importantes. El diagnóstico completo te da un plan de acción paso a paso.';
+
+  // Mostrar resultado
+  document.querySelectorAll('.audit-q').forEach(q => q.classList.remove('active'));
+  const res = document.getElementById('audit-resultado');
+  res.style.display = 'block';
+
+  const numEl = document.getElementById('audit-score-num');
+  numEl.textContent = scoreFinal;
+  numEl.style.color = color;
+  document.getElementById('audit-nivel-txt').textContent = nivel;
+  document.getElementById('audit-nivel-txt').style.color = color;
+  document.getElementById('audit-msg').textContent = msg;
+
+  // Barras por eje
+  const barras = document.getElementById('audit-barras');
+  barras.innerHTML = Object.entries(scores).map(([k, v]) => `
+    <div class="audit-barra-row">
+      <span class="audit-barra-label">${auditEtiquetas[k]}</span>
+      <div class="audit-barra-track">
+        <div class="audit-barra-fill" style="width:${v}%;background:${v>=75?'#2e7d32':v>=45?'#e65100':'#c62828'}"></div>
+      </div>
+      <span class="audit-barra-val">${v}</span>
+    </div>
+  `).join('');
+
+  // Marcar último step
+  document.getElementById('step-ind-4').classList.remove('active');
+  document.getElementById('step-ind-4').classList.add('done');
+}
+
+function reiniciarAudit() {
+  Object.keys(auditRespuestas).forEach(k => delete auditRespuestas[k]);
+  document.querySelectorAll('.audit-opcion').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.audit-step').forEach((el,i) => {
+    el.classList.remove('active','done');
+    if(i===0) el.classList.add('active');
+  });
+  document.querySelectorAll('[id^="next-"]').forEach(el => el.disabled = true);
+  document.getElementById('audit-resultado').style.display = 'none';
+  document.getElementById('audit-q1').classList.add('active');
+}
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if(e.isIntersecting){
