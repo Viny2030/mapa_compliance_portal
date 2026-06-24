@@ -266,6 +266,7 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     <button class="tab-btn active" data-panel="dashboard">📊 Dashboard</button>
     <button class="tab-btn" data-panel="board">🏛️ Board View</button>
     <button class="tab-btn" data-panel="ley27401">⚖️ Ley 27.401</button>
+    <button class="tab-btn" data-panel="brasil">🇧🇷 Lei 12.846</button>
     <button class="tab-btn" data-panel="riesgo">🗺️ Riesgo</button>
     <button class="tab-btn" data-panel="capacitacion">📚 Capacitación</button>
     <button class="tab-btn" data-panel="duediligence">🔍 Due Diligence</button>
@@ -391,6 +392,52 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     <div class="card"><h2 data-i18n="elementos_obligatorios_titulo">Elementos obligatorios — Art. 23</h2><p style="font-size:.8rem;color:var(--muted);margin-bottom:.7rem" data-i18n="elementos_obligatorios_sub">Requeridos para contratar con el Estado Nacional (Art. 24)</p><div id="check-oblig"></div></div>
     <div class="card"><h2 data-i18n="elementos_opcionales_titulo">Elementos opcionales — Fortalecen el Programa</h2><p style="font-size:.8rem;color:var(--muted);margin-bottom:.7rem" data-i18n="elementos_opcionales_sub">Elevan el nivel de madurez y reducen responsabilidad penal (Art. 9)</p><div id="check-opc"></div></div>
     <div class="card"><h2 data-i18n="sig_nivel_titulo">¿Qué falta para el siguiente nivel?</h2><div id="sig-nivel"></div></div>
+  </div>
+</div>
+
+
+<!-- LEI 12.846 BRASIL -->
+<div class="panel" id="panel-brasil">
+  <div class="wrap">
+    <div class="card">
+      <h2>🇧🇷 Lei Anticorrupção 12.846/2013 — Brasil</h2>
+      <p style="font-size:.83rem;color:var(--muted);margin-bottom:.9rem">
+        Responsabilidade objetiva · Acordo de Leniência · CGU/AGU
+      </p>
+      <div class="score-wrap">
+        <div class="score-ring">
+          <canvas id="ch-brasil-score" width="130" height="130"></canvas>
+          <div class="score-center">
+            <div class="score-num" id="brasil-score-num">—</div>
+            <div style="font-size:.72rem;color:var(--muted)">/100</div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:180px">
+          <div id="brasil-nivel" style="font-size:1.05rem;font-weight:700;margin-bottom:.35rem"></div>
+          <div id="brasil-obrig" style="font-size:.83rem;color:var(--muted);margin-bottom:.5rem"></div>
+          <div id="brasil-reducao" style="font-size:.8rem;padding:.45rem .65rem;border-radius:6px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card" style="margin-bottom:0">
+        <h2>✅ Elementos obrigatórios</h2>
+        <div id="brasil-check-obrig"></div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <h2>⚖️ Fatores atenuantes</h2>
+        <div id="brasil-check-aten"></div>
+      </div>
+    </div><br>
+    <div class="card">
+      <h2>📋 Referência normativa</h2>
+      <div style="font-size:.83rem;color:var(--muted);line-height:1.7">
+        <div style="margin-bottom:.4rem">🔹 <strong>Art. 7</strong> — Fatores que atenuam a sanção, incluindo a existência de programa de integridade</div>
+        <div style="margin-bottom:.4rem">🔹 <strong>Art. 16</strong> — Acordo de Leniência: redução de até 2/3 da multa para empresas colaboradoras</div>
+        <div style="margin-bottom:.4rem">🔹 <strong>Art. 41-D</strong> (Decreto 11.129/2022) — Parâmetros mínimos do Programa de Integridade</div>
+        <div>🔹 <strong>Portaria CGU 909/2015</strong> — Avaliação do programa para fins de redução de sanções</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1223,6 +1270,53 @@ function renderInternacional(){
   document.getElementById('int-leyes').innerHTML=leyes.map(l=>`<div class="int-ley"><div class="int-head"><span class="int-flag">${l.flag}</span><div style="flex:1"><div class="int-nombre">${l.nombre}</div><div class="int-sub">${l.sub}</div></div><span class="int-aplica ${l.aplica?'si':'no'}">${l.aplica?t('int_aplica'):t('int_no_aplica')}</span></div><div class="int-desc">${tx(l.desc)}</div><div class="int-art">📋 ${l.arts}</div></div>`).join('');
 }
 
+
+function renderBrasil(){
+  fetch('/api/v1/brasil/score/demo')
+    .then(r=>r.json())
+    .then(data=>{
+      // Score ring
+      destroyC('ch-brasil-score');
+      const ctx=document.getElementById('ch-brasil-score');
+      if(ctx){const c=data.color;charts['ch-brasil-score']=new Chart(ctx,{type:'doughnut',data:{datasets:[{data:[data.score,100-data.score],backgroundColor:[c,'#e0e7ef'],borderWidth:0}]},options:{cutout:'74%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:800}}});}
+      
+      document.getElementById('brasil-score-num').textContent=data.score;
+      document.getElementById('brasil-score-num').style.color=data.color;
+      document.getElementById('brasil-nivel').innerHTML=`<span style="color:${data.color}">${data.nivel}</span>`;
+      document.getElementById('brasil-obrig').textContent=`Obrigatórios completos: ${data.obrigatorios_ok}/${data.obrigatorios_total}`;
+      
+      const redEl=document.getElementById('brasil-reducao');
+      if(data.elegivel_reducao_multa){
+        redEl.innerHTML='✅ Elegível para redução de multa (Art. 7 Lei 12.846)';
+        redEl.style.cssText='background:#e8f5e9;color:#1b5e20;font-size:.8rem;padding:.45rem .65rem;border-radius:6px';
+      } else {
+        redEl.innerHTML='⚠️ Não elegível para redução — completar mínimo 4 obrigatórios';
+        redEl.style.cssText='background:#fff3e0;color:#7c3a00;font-size:.8rem;padding:.45rem .65rem;border-radius:6px';
+      }
+
+      const obrig=data.detalle.filter(e=>e.tipo==='obrigatorio');
+      const aten=data.detalle.filter(e=>e.tipo==='atenuante');
+      
+      const renderCheck=(lista)=>lista.map(e=>`
+        <div class="check-item">
+          <div class="check-badge badge-${e.estado==='completo'?'ok':e.estado==='en_progreso'?'prog':'pend'}">
+            ${e.estado==='completo'?'✓':e.estado==='en_progreso'?'◑':'○'}
+          </div>
+          <div>
+            <div class="check-label">${e.label}</div>
+            <div class="check-evidencia" style="color:var(--muted);font-size:.74rem">${e.art} · ${e.valor}/100</div>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('brasil-check-obrig').innerHTML=renderCheck(obrig);
+      document.getElementById('brasil-check-aten').innerHTML=renderCheck(aten);
+    })
+    .catch(()=>{
+      document.getElementById('brasil-score-num').textContent='—';
+    });
+}
+
 function renderRite(){
   const reg=CONFIG.programa_integridad.registrado_rite;
   document.getElementById('rite-estado-box').innerHTML=reg?`<div class="rite-estado" style="background:#e8f5e9"><span class="rite-ico">✅</span><div><strong>${t('rite_registrada')}</strong><br><span style="font-size:.82rem;color:#1b5e20">${t('rite_nivel_label')} ${t(CONFIG.programa_integridad.nivel_madurez)} · <a href="${CONFIG.programa_integridad.url_rite}" target="_blank">${t('rite_ver_registro')}</a></span></div></div>`:`<div class="rite-estado" style="background:#fff3e0"><span class="rite-ico">⚠️</span><div><strong>${t('rite_no_registrada')}</strong><br><span style="font-size:.82rem;color:#7c3a00">${t('rite_recomendable')}</span></div></div>`;
@@ -1330,6 +1424,7 @@ function renderPanel(p){
   else if(p==='capacitacion')renderCapacitacion();
   else if(p==='duediligence')renderDD();
   else if(p==='internacional')renderInternacional();
+  else if(p==='brasil')renderBrasil();
   else if(p==='rite')renderRite();
   else if(p==='mejoras')renderMejoras();
   else if(p==='calendario')renderCalendario();
