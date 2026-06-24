@@ -117,9 +117,63 @@
   .msg { padding: .8rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: .88rem; }
   .msg-ok  { background: #eafaf1; color: var(--ok); border: 1px solid #a9dfbf; }
   .msg-err { background: #fdedec; color: var(--danger); border: 1px solid #f1948a; }
+
+  /* ── Login PIN ── */
+  #login-overlay {
+    position: fixed; inset: 0; background: rgba(26,58,92,.97);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+  }
+  #login-overlay.hidden { display: none; }
+  .login-box {
+    background: #fff; border-radius: 12px; padding: 2rem 2.5rem;
+    width: 100%; max-width: 360px; text-align: center;
+  }
+  .login-box h2 { color: var(--primary); font-size: 1.1rem; margin-bottom: .3rem; }
+  .login-box p  { font-size: .82rem; color: #7f8c8d; margin-bottom: 1.2rem; }
+  .pin-input {
+    width: 100%; font-size: 1.8rem; letter-spacing: .4rem; text-align: center;
+    border: 2px solid var(--border); border-radius: 8px; padding: .7rem;
+    font-family: monospace; margin-bottom: .8rem;
+  }
+  .pin-input:focus { border-color: var(--primary); outline: none; }
+  .login-error { color: var(--danger); font-size: .83rem; margin-bottom: .7rem; min-height: 1.2rem; }
+  .rol-badge {
+    display: inline-block; padding: .25rem .8rem; border-radius: 20px;
+    font-size: .78rem; font-weight: 700; margin-bottom: 1rem;
+  }
+  .rol-consultor  { background: #e8f4fd; color: #2980b9; }
+  .rol-compliance { background: #eafaf1; color: var(--ok); }
+  .pin-expira { font-size: .75rem; color: #e8a020; margin-top: .5rem; }
+  #session-bar {
+    background: #0d2137; color: #a8c7e8; font-size: .75rem;
+    padding: .3rem 1rem; display: flex; justify-content: space-between; align-items: center;
+  }
+  #session-bar.hidden { display: none; }
 </style>
 </head>
 <body>
+
+<!-- ══════════ LOGIN OVERLAY ══════════ -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div style="font-size:2rem;margin-bottom:.5rem">🔐</div>
+    <h2>Panel de Compliance</h2>
+    <p>Ingresá tu PIN para acceder al panel de gestión de denuncias.</p>
+    <input type="password" class="pin-input" id="pin-input" maxlength="8"
+      placeholder="••••" onkeydown="if(event.key==='Enter') doLogin()">
+    <div class="login-error" id="login-error"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:0" onclick="doLogin()">Ingresar →</button>
+    <div class="pin-expira" id="pin-expira-msg"></div>
+  </div>
+</div>
+
+<!-- ══════════ BARRA DE SESIÓN ══════════ -->
+<div id="session-bar" class="hidden">
+  <span id="session-rol-badge"></span>
+  <span id="session-expira"></span>
+  <button onclick="doLogout()" style="background:rgba(255,255,255,.1);border:none;color:#a8c7e8;font-size:.75rem;padding:.2rem .6rem;border-radius:4px;cursor:pointer">Cerrar sesión</button>
+</div>
+
 
 <header>
   <div>
@@ -131,7 +185,7 @@
 <div class="tabs">
   <div class="tab active" onclick="showTab('denunciar')">Presentar Denuncia</div>
   <div class="tab" onclick="showTab('seguimiento')">Consultar Estado</div>
-  <div class="tab" onclick="showTab('panel')">Panel Compliance</div>
+  <div class="tab" onclick="mostrarPanelOLogin()">Panel Compliance 🔐</div>
 </div>
 
 <!-- ══════════ TAB 1: DENUNCIAR ══════════ -->
@@ -406,6 +460,106 @@ async function enviarMensaje() {
   }
 }
 
+// ── Auth / Login ────────────────────────────────────────────────────────────
+const API = '/api/v1';
+let sessionToken = localStorage.getItem('denuncias_token') || '';
+let sessionRol   = localStorage.getItem('denuncias_rol')   || '';
+
+async function doLogin() {
+  const pin = document.getElementById('pin-input').value.trim();
+  if (!pin) return;
+  document.getElementById('login-error').textContent = '';
+
+  try {
+    const r = await fetch(`${API}/denuncias/auth/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ pin })
+    });
+    if (!r.ok) {
+      const e = await r.json();
+      document.getElementById('login-error').textContent = e.detail || 'PIN incorrecto.';
+      document.getElementById('pin-input').value = '';
+      return;
+    }
+    const data = await r.json();
+    sessionToken = data.token;
+    sessionRol   = data.rol;
+    localStorage.setItem('denuncias_token', sessionToken);
+    localStorage.setItem('denuncias_rol',   sessionRol);
+
+    document.getElementById('login-overlay').classList.add('hidden');
+    mostrarSessionBar(data);
+    showTab('panel');
+    cargarPanel();
+  } catch(e) {
+    document.getElementById('login-error').textContent = 'Error de conexión.';
+  }
+}
+
+async function doLogout() {
+  if (sessionToken) {
+    await fetch(`${API}/denuncias/auth/logout`, {
+      method: 'POST', headers: {'X-Session-Token': sessionToken}
+    }).catch(() => {});
+  }
+  sessionToken = '';
+  sessionRol   = '';
+  localStorage.removeItem('denuncias_token');
+  localStorage.removeItem('denuncias_rol');
+  document.getElementById('session-bar').classList.add('hidden');
+  showTab('denunciar');
+}
+
+function mostrarSessionBar(data) {
+  const rolLabels = { consultor: '🔵 Consultor', compliance: '🟢 Compliance Officer' };
+  const expira = new Date(data.expira || data.expira_en || '');
+  document.getElementById('session-rol-badge').textContent = rolLabels[data.rol] || data.rol;
+  document.getElementById('session-expira').textContent =
+    `Sesión válida hasta ${expira.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'})}`;
+  document.getElementById('session-bar').classList.remove('hidden');
+}
+
+function mostrarPanelOLogin() {
+  if (sessionToken) {
+    showTab('panel');
+    cargarPanel();
+  } else {
+    document.getElementById('login-overlay').classList.remove('hidden');
+    document.getElementById('pin-input').focus();
+  }
+}
+
+// Verificar sesión guardada al cargar
+async function verificarSesionGuardada() {
+  if (!sessionToken) return;
+  try {
+    const r = await fetch(`${API}/denuncias/auth/estado`, {
+      headers: {'X-Session-Token': sessionToken}
+    });
+    if (r.ok) {
+      const data = await r.json();
+      mostrarSessionBar({ rol: data.rol, expira: data.expira });
+      // Advertencia si el PIN expira pronto
+      if (data.pin_expira_en_dias <= 5) {
+        document.getElementById('pin-expira-msg').textContent =
+          `⚠️ El PIN expira en ${data.pin_expira_en_dias} días. Actualizarlo en .env`;
+      }
+    } else {
+      // Sesión expirada
+      sessionToken = '';
+      localStorage.removeItem('denuncias_token');
+      localStorage.removeItem('denuncias_rol');
+    }
+  } catch(e) {}
+}
+
+function authHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'X-Session-Token': sessionToken
+  };
+}
+
 // ── Tab 3: Panel Compliance ─────────────────────────────────────────────────
 async function cargarPanel() {
   const estado    = document.getElementById('filtro-estado').value;
@@ -415,9 +569,10 @@ async function cargarPanel() {
   if (estado)    url += `&estado=${estado}`;
   if (prioridad) url += `&prioridad=${prioridad}`;
 
+  const opts = { headers: authHeaders() };
   const [rDen, rAlerta] = await Promise.all([
-    fetch(url),
-    fetch(`${API}/alertas`)
+    fetch(url, opts),
+    fetch(`${API}/denuncias/alertas`, opts)
   ]);
   const dataDen    = await rDen.json();
   const dataAlerta = await rAlerta.json();
@@ -475,7 +630,7 @@ async function cargarPanel() {
 }
 
 async function marcarLeida(id) {
-  await fetch(`${API}/alertas/${id}/leer`, { method: 'PATCH' });
+  await fetch(`${API}/denuncias/alertas/${id}/leer`, { method: 'PATCH', headers: authHeaders() });
   cargarPanel();
 }
 
@@ -498,13 +653,13 @@ async function guardarActualizacion() {
   const mensaje   = document.getElementById('modal-mensaje').value.trim();
 
   await fetch(`${API}/denuncias/${currentDenunciaId}`, {
-    method: 'PATCH', headers: {'Content-Type':'application/json'},
+    method: 'PATCH', headers: authHeaders(),
     body: JSON.stringify({ estado, prioridad })
   });
 
   if (mensaje) {
     // Buscar el código de la denuncia actual
-    const r = await fetch(`${API}/denuncias?limit=200`);
+    const r = await fetch(`${API}/denuncias?limit=200`, { headers: authHeaders() });
     const d = await r.json();
     const den = d.denuncias.find(x => x.id === currentDenunciaId);
     if (den) {
@@ -535,6 +690,9 @@ function tipoAlertaLabel(t) {
     caso_critico:            'Caso crítico — revisar urgente'
   }[t] || t;
 }
+
+// Inicializar
+verificarSesionGuardada();
 </script>
 </body>
 </html>
