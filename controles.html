@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gestión de Controles — Monitor de Compliance</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:56px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700;text-decoration:none}
+.nav-back{color:#a8c7e8;font-size:.8rem;text-decoration:none}
+.nav-back:hover{color:#fff}
+.wrap{max-width:960px;margin:0 auto;padding:1.4rem .9rem}
+.page-header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.6rem 1rem 1.2rem;margin-bottom:1.4rem}
+.page-header h1{font-size:1.4rem;margin-bottom:.2rem}
+.page-header p{opacity:.75;font-size:.85rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1rem;margin-bottom:.9rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1.2rem}
+@media(max-width:640px){.grid4{grid-template-columns:repeat(2,1fr)}}
+.kpi{text-align:center;padding:.8rem .5rem;border-radius:8px;border:1px solid var(--borde)}
+.kpi-num{font-size:1.6rem;font-weight:800;line-height:1}
+.kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.2rem}
+.kpi.verde .kpi-num{color:var(--verde)}.kpi.rojo .kpi-num{color:var(--rojo)}.kpi.naranja .kpi-num{color:var(--naranja)}.kpi.azul .kpi-num{color:var(--sec)}
+/* Barra progreso */
+.prog-wrap{margin:.3rem 0}
+.prog-label{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted);margin-bottom:.2rem}
+.prog-track{background:#e0e7ef;border-radius:4px;height:8px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px}
+.prog-fill.verde{background:var(--verde)}.prog-fill.naranja{background:var(--naranja)}.prog-fill.rojo{background:var(--rojo)}
+/* Filtros */
+.filtros{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.filtro-btn{background:#f0f4f8;border:1px solid var(--borde);color:var(--muted);font-size:.75rem;font-weight:600;padding:.28rem .65rem;border-radius:5px;cursor:pointer;transition:all .15s}
+.filtro-btn.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+.search-ctrl{flex:1;min-width:160px;font-size:.83rem;padding:.35rem .7rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit}
+/* Marco tabs */
+.marco-tabs{display:flex;gap:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.marco-tab{background:#f0f4f8;border:1px solid var(--borde);color:var(--muted);font-size:.75rem;font-weight:700;padding:.3rem .8rem;border-radius:6px;cursor:pointer}
+.marco-tab.active{background:var(--sec);color:#fff;border-color:var(--sec)}
+/* Controles */
+.ctrl-list{display:flex;flex-direction:column;gap:.45rem}
+.ctrl-item{border:1px solid var(--borde);border-radius:8px;padding:.8rem 1rem;background:#fafbfc;cursor:pointer;transition:box-shadow .15s}
+.ctrl-item:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ctrl-head{display:flex;align-items:flex-start;gap:.5rem;flex-wrap:wrap}
+.ctrl-id{font-size:.68rem;font-weight:700;color:var(--muted);font-family:monospace;flex-shrink:0;margin-top:.2rem;min-width:60px}
+.ctrl-nombre{font-size:.88rem;font-weight:700;flex:1}
+.badge{display:inline-flex;align-items:center;font-size:.67rem;font-weight:700;padding:.13rem .45rem;border-radius:7px}
+.badge-impl{background:#e8f5e9;color:var(--verde)}
+.badge-parcial{background:#fff3e0;color:var(--naranja)}
+.badge-pendiente{background:#fdecea;color:var(--rojo)}
+.badge-na{background:#f5f5f5;color:#757575}
+.badge-marco{background:#e3f2fd;color:#0d47a1}
+.badge-categoria{background:#ede7f6;color:#4a148c}
+.ctrl-meta{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem;align-items:center}
+.ctrl-evidencia{font-size:.77rem;color:var(--muted);margin-top:.3rem;font-style:italic}
+.ctrl-prog{margin-top:.4rem}
+/* Badges estado */
+.est-implementado .ctrl-item{border-left:3px solid var(--verde)}
+.est-parcial .ctrl-item{border-left:3px solid var(--naranja)}
+.est-pendiente .ctrl-item{border-left:3px solid var(--rojo)}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:1.4rem;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.modal-header h3{color:var(--pri);font-size:.95rem;flex:1;padding-right:.5rem}
+.close-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)}
+.form-group{display:flex;flex-direction:column;gap:.28rem;margin-bottom:.65rem}
+.form-group label{font-size:.76rem;font-weight:600;color:var(--pri)}
+input,select,textarea{font-family:inherit;font-size:.85rem;padding:.45rem .7rem;border:1px solid var(--borde);border-radius:6px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+textarea{resize:vertical;min-height:60px}
+.btn{background:var(--pri);color:#fff;border:none;padding:.45rem 1.1rem;border-radius:6px;font-size:.84rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:#0d2137}
+.btn.verde{background:var(--verde)}.btn.verde:hover{background:#1b5e20}
+.btn.gris{background:#6b7280}.btn.gris:hover{background:#4b5563}
+.btn.rojo{background:var(--rojo)}
+.btn-sm{padding:.3rem .7rem;font-size:.77rem}
+.modal-footer{display:flex;gap:.4rem;justify-content:flex-end;margin-top:.9rem;padding-top:.7rem;border-top:1px solid var(--borde);flex-wrap:wrap}
+.empty{text-align:center;padding:2.5rem;color:var(--muted)}
+.toast{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--pri);color:#fff;padding:.6rem 1rem;border-radius:8px;font-size:.84rem;font-weight:600;z-index:999;opacity:0;transform:translateY(8px);transition:all .3s}
+.toast.show{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <a class="nav-brand" href="index.html">⚖️ Monitor de Compliance</a>
+    <a class="nav-back" href="index.html">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <h1>🛡️ Gestión de Controles</h1>
+    <p>Controles internos ISO 27001 / COSO · Estado de implementación y evidencia</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="grid4" id="kpi-grid"></div>
+
+  <!-- Progreso por marco -->
+  <div class="card">
+    <h2>📊 Implementación por marco</h2>
+    <div id="prog-marcos"></div>
+  </div>
+
+  <!-- Lista de controles -->
+  <div class="card">
+    <h2>📋 Controles registrados</h2>
+    <div class="marco-tabs" id="marco-tabs"></div>
+    <div class="filtros">
+      <input class="search-ctrl" type="text" id="search" placeholder="🔍 Buscar control…" oninput="renderLista()">
+      <button class="filtro-btn active" onclick="setFiltroEst('todos',this)">Todos</button>
+      <button class="filtro-btn" onclick="setFiltroEst('implementado',this)">✅ Implementado</button>
+      <button class="filtro-btn" onclick="setFiltroEst('parcial',this)">⚠️ Parcial</button>
+      <button class="filtro-btn" onclick="setFiltroEst('pendiente',this)">❌ Pendiente</button>
+    </div>
+    <div class="ctrl-list" id="ctrl-list"></div>
+  </div>
+
+  <!-- Agregar control -->
+  <div class="card">
+    <h2>➕ Agregar control</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="form-group">
+        <label>Marco de referencia</label>
+        <select id="f-marco">
+          <option>ISO 27001</option>
+          <option>COSO</option>
+          <option>Ley 27.401</option>
+          <option>FCPA</option>
+          <option>Interno</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Categoría</label>
+        <select id="f-cat">
+          <option>Ambiente de Control</option>
+          <option>Evaluación de Riesgos</option>
+          <option>Actividades de Control</option>
+          <option>Información y Comunicación</option>
+          <option>Supervisión / Monitoreo</option>
+          <option>Seguridad de la Información</option>
+          <option>Controles Anticorrupción</option>
+        </select>
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Nombre del control</label>
+        <input type="text" id="f-nombre" placeholder="Ej: Revisión periódica de accesos privilegiados">
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select id="f-estado">
+          <option value="implementado">✅ Implementado</option>
+          <option value="parcial">⚠️ Parcial</option>
+          <option value="pendiente">❌ Pendiente</option>
+          <option value="na">— No aplica</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>% Implementación</label>
+        <input type="number" id="f-pct" min="0" max="100" value="0" placeholder="0-100">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Evidencia</label>
+        <input type="text" id="f-evidencia" placeholder="Ej: Procedimiento ACC-001, acta de revisión, etc.">
+      </div>
+      <div class="form-group" style="grid-column:1/-1">
+        <label>Responsable</label>
+        <input type="text" id="f-resp" placeholder="Área o persona responsable">
+      </div>
+    </div>
+    <div style="margin-top:.7rem">
+      <button class="btn verde" onclick="agregarControl()">Agregar control →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal edición -->
+<div class="modal-overlay" id="modal" onclick="cerrarModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-titulo">Editar control</h3>
+      <button class="close-btn" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn rojo btn-sm" onclick="eliminarControl()">Eliminar</button>
+      <button class="btn gris btn-sm" onclick="document.getElementById('modal').classList.remove('open')">Cancelar</button>
+      <button class="btn verde btn-sm" onclick="guardarEdicion()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Datos ─────────────────────────────────────────────────────────────────
+let controles = JSON.parse(localStorage.getItem('ctrl_data') || 'null');
+
+const CONTROLES_DEMO = [
+  // COSO
+  {id:'C-001',marco:'COSO',categoria:'Ambiente de Control',nombre:'Código de Ética y Conducta',estado:'implementado',pct:100,evidencia:'Aprobado por Directorio 03/2024',responsable:'Compliance'},
+  {id:'C-002',marco:'COSO',categoria:'Ambiente de Control',nombre:'Estructura organizacional y segregación de funciones',estado:'implementado',pct:90,evidencia:'Organigrama vigente y manual de funciones',responsable:'RRHH'},
+  {id:'C-003',marco:'COSO',categoria:'Evaluación de Riesgos',nombre:'Matriz de riesgo de corrupción actualizada',estado:'implementado',pct:100,evidencia:'Matriz actualizada 06/2025 – aprobada por Directorio',responsable:'Compliance'},
+  {id:'C-004',marco:'COSO',categoria:'Actividades de Control',nombre:'Aprobación dual en pagos >$500.000',estado:'parcial',pct:65,evidencia:'Implementado en Finanzas, pendiente en sucursales',responsable:'Finanzas'},
+  {id:'C-005',marco:'COSO',categoria:'Actividades de Control',nombre:'Due diligence de terceros y proveedores',estado:'parcial',pct:50,evidencia:'Protocolo DD-003 en implementación',responsable:'Compras'},
+  {id:'C-006',marco:'COSO',categoria:'Información y Comunicación',nombre:'Canal de denuncias confidencial activo',estado:'implementado',pct:100,evidencia:'Canal activo compliance@empresademo.com.ar',responsable:'Compliance'},
+  {id:'C-007',marco:'COSO',categoria:'Supervisión / Monitoreo',nombre:'Auditoría interna de compliance semestral',estado:'parcial',pct:50,evidencia:'1 de 2 auditorías del año realizadas',responsable:'Auditoría'},
+  // ISO 27001
+  {id:'I-001',marco:'ISO 27001',categoria:'Seguridad de la Información',nombre:'Control de accesos y gestión de privilegios',estado:'implementado',pct:85,evidencia:'Revisión trimestral de permisos AD',responsable:'TI'},
+  {id:'I-002',marco:'ISO 27001',categoria:'Seguridad de la Información',nombre:'Cifrado de información sensible en tránsito y reposo',estado:'parcial',pct:60,evidencia:'TLS 1.3 en producción, pendiente equipos remotos',responsable:'TI'},
+  {id:'I-003',marco:'ISO 27001',categoria:'Seguridad de la Información',nombre:'Plan de continuidad del negocio (BCP)',estado:'pendiente',pct:10,evidencia:'',responsable:'TI / Operaciones'},
+  {id:'I-004',marco:'ISO 27001',categoria:'Seguridad de la Información',nombre:'Gestión de incidentes de seguridad',estado:'parcial',pct:45,evidencia:'Procedimiento borrador aprobado',responsable:'TI'},
+  // Ley 27.401
+  {id:'L-001',marco:'Ley 27.401',categoria:'Controles Anticorrupción',nombre:'Política de regalos e invitaciones (GR-002)',estado:'implementado',pct:100,evidencia:'Distribuida a toda la organización 04/2024',responsable:'Compliance'},
+  {id:'L-002',marco:'Ley 27.401',categoria:'Controles Anticorrupción',nombre:'Declaraciones juradas de conflictos de interés',estado:'pendiente',pct:5,evidencia:'',responsable:'Compliance / Legal'},
+  {id:'L-003',marco:'Ley 27.401',categoria:'Controles Anticorrupción',nombre:'Procedimiento de investigaciones internas',estado:'parcial',pct:40,evidencia:'Borrador aprobado, pendiente implementación',responsable:'Legal'},
+  {id:'L-004',marco:'Ley 27.401',categoria:'Controles Anticorrupción',nombre:'Registro RITE actualizado y vigente',estado:'implementado',pct:100,evidencia:'Registrado en rite.gob.ar – nivel medio',responsable:'Compliance'},
+];
+
+if(!controles){ controles = CONTROLES_DEMO; guardar(); }
+
+let filtroEst = 'todos';
+let filtroMarco = 'todos';
+let idActivo = null;
+let counter = controles.length + 1;
+
+function guardar(){ localStorage.setItem('ctrl_data', JSON.stringify(controles)); }
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function renderKPIs(){
+  const total = controles.length;
+  const impl = controles.filter(c=>c.estado==='implementado').length;
+  const parc = controles.filter(c=>c.estado==='parcial').length;
+  const pend = controles.filter(c=>c.estado==='pendiente').length;
+  const pctTotal = total ? Math.round(controles.reduce((a,c)=>a+c.pct,0)/total) : 0;
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi verde"><div class="kpi-num">${impl}</div><div class="kpi-label">Implementados</div></div>
+    <div class="kpi naranja"><div class="kpi-num">${parc}</div><div class="kpi-label">Parciales</div></div>
+    <div class="kpi rojo"><div class="kpi-num">${pend}</div><div class="kpi-label">Pendientes</div></div>
+    <div class="kpi azul"><div class="kpi-num">${pctTotal}%</div><div class="kpi-label">Implementación global</div></div>
+  `;
+}
+
+// ── Progreso por marco ────────────────────────────────────────────────────
+function renderProgMarcos(){
+  const marcos = [...new Set(controles.map(c=>c.marco))];
+  document.getElementById('prog-marcos').innerHTML = marcos.map(m=>{
+    const grupo = controles.filter(c=>c.marco===m);
+    const pct = Math.round(grupo.reduce((a,c)=>a+c.pct,0)/grupo.length);
+    const color = pct>=75?'verde':pct>=45?'naranja':'rojo';
+    return `<div class="prog-wrap">
+      <div class="prog-label"><span><strong>${m}</strong> (${grupo.length} controles)</span><span>${pct}%</span></div>
+      <div class="prog-track"><div class="prog-fill ${color}" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ── Marco tabs ────────────────────────────────────────────────────────────
+function renderMarcoTabs(){
+  const marcos = ['todos', ...new Set(controles.map(c=>c.marco))];
+  document.getElementById('marco-tabs').innerHTML = marcos.map(m=>`
+    <button class="marco-tab ${filtroMarco===m?'active':''}" onclick="setFiltroMarco('${m}',this)">${m==='todos'?'Todos los marcos':m}</button>
+  `).join('');
+}
+
+function setFiltroMarco(m, btn){
+  filtroMarco = m;
+  document.querySelectorAll('.marco-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLista();
+}
+
+function setFiltroEst(f, btn){
+  filtroEst = f;
+  document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLista();
+}
+
+// ── Lista ─────────────────────────────────────────────────────────────────
+function estadoLabel(e){ return {implementado:'✅ Implementado',parcial:'⚠️ Parcial',pendiente:'❌ Pendiente',na:'— No aplica'}[e]||e; }
+function estadoBadge(e){ return {implementado:'badge-impl',parcial:'badge-parcial',pendiente:'badge-pendiente',na:'badge-na'}[e]||''; }
+function progColor(p){ return p>=75?'verde':p>=40?'naranja':'rojo'; }
+
+function renderLista(){
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  let lista = controles.filter(c=>{
+    if(filtroEst!=='todos' && c.estado!==filtroEst) return false;
+    if(filtroMarco!=='todos' && c.marco!==filtroMarco) return false;
+    if(q && !c.nombre.toLowerCase().includes(q) && !c.categoria.toLowerCase().includes(q) && !c.marco.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const cont = document.getElementById('ctrl-list');
+  if(!lista.length){
+    cont.innerHTML = `<div class="empty">📭 Sin controles que coincidan.</div>`;
+    return;
+  }
+
+  // Agrupar por categoría
+  const cats = [...new Set(lista.map(c=>c.categoria))];
+  cont.innerHTML = cats.map(cat=>{
+    const items = lista.filter(c=>c.categoria===cat);
+    return `<div style="margin-bottom:.8rem">
+      <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:.3rem 0;border-bottom:2px solid var(--borde);margin-bottom:.4rem">${cat}</div>
+      ${items.map(c=>`
+        <div class="ctrl-item" onclick="abrirModal('${c.id}')">
+          <div class="ctrl-head">
+            <span class="ctrl-id">${c.id}</span>
+            <span class="ctrl-nombre">${c.nombre}</span>
+            <span class="badge ${estadoBadge(c.estado)}">${estadoLabel(c.estado)}</span>
+            <span class="badge badge-marco">${c.marco}</span>
+          </div>
+          <div class="ctrl-meta">
+            <span class="badge badge-categoria">${c.categoria}</span>
+            ${c.responsable?`<span style="font-size:.73rem;color:var(--muted)">👤 ${c.responsable}</span>`:''}
+          </div>
+          ${c.evidencia?`<div class="ctrl-evidencia">📎 ${c.evidencia}</div>`:''}
+          <div class="ctrl-prog">
+            <div class="prog-label"><span></span><span style="font-size:.72rem;color:var(--muted)">${c.pct}%</span></div>
+            <div class="prog-track"><div class="prog-fill ${progColor(c.pct)}" style="width:${c.pct}%"></div></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────
+function abrirModal(id){
+  idActivo = id;
+  const c = controles.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('modal-titulo').textContent = `${c.id} — Editar control`;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="form-group"><label>Nombre del control</label><input type="text" id="e-nombre" value="${c.nombre}"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="form-group"><label>Marco</label>
+        <select id="e-marco">${['ISO 27001','COSO','Ley 27.401','FCPA','Interno'].map(m=>`<option ${c.marco===m?'selected':''}>${m}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>Categoría</label>
+        <select id="e-cat">${['Ambiente de Control','Evaluación de Riesgos','Actividades de Control','Información y Comunicación','Supervisión / Monitoreo','Seguridad de la Información','Controles Anticorrupción'].map(x=>`<option ${c.categoria===x?'selected':''}>${x}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>Estado</label>
+        <select id="e-estado">${[['implementado','✅ Implementado'],['parcial','⚠️ Parcial'],['pendiente','❌ Pendiente'],['na','— No aplica']].map(([v,l])=>`<option value="${v}" ${c.estado===v?'selected':''}>${l}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label>% Implementación (0–100)</label><input type="number" id="e-pct" min="0" max="100" value="${c.pct}"></div>
+    </div>
+    <div class="form-group"><label>Evidencia</label><input type="text" id="e-evidencia" value="${c.evidencia||''}"></div>
+    <div class="form-group"><label>Responsable</label><input type="text" id="e-resp" value="${c.responsable||''}"></div>
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+function guardarEdicion(){
+  const c = controles.find(x=>x.id===idActivo);
+  if(!c) return;
+  c.nombre = document.getElementById('e-nombre').value.trim() || c.nombre;
+  c.marco = document.getElementById('e-marco').value;
+  c.categoria = document.getElementById('e-cat').value;
+  c.estado = document.getElementById('e-estado').value;
+  c.pct = Math.min(100, Math.max(0, parseInt(document.getElementById('e-pct').value)||0));
+  c.evidencia = document.getElementById('e-evidencia').value.trim();
+  c.responsable = document.getElementById('e-resp').value.trim();
+  guardar(); renderAll(); document.getElementById('modal').classList.remove('open');
+  toast('✅ Control actualizado');
+}
+
+function eliminarControl(){
+  if(!confirm('¿Eliminar este control?')) return;
+  controles = controles.filter(x=>x.id!==idActivo);
+  guardar(); renderAll(); document.getElementById('modal').classList.remove('open');
+  toast('Control eliminado');
+}
+
+function cerrarModal(e){ if(e.target===document.getElementById('modal')) document.getElementById('modal').classList.remove('open'); }
+
+// ── Agregar ───────────────────────────────────────────────────────────────
+function agregarControl(){
+  const nombre = document.getElementById('f-nombre').value.trim();
+  if(!nombre){ toast('⚠️ Ingresá el nombre del control'); return; }
+  const prefix = {ISO:'I','COSO':'C','Ley':'L','FCPA':'F','Interno':'X'}[document.getElementById('f-marco').value.substring(0,4)] || 'X';
+  const nuevo = {
+    id: prefix+'-'+String(counter).padStart(3,'0'),
+    marco: document.getElementById('f-marco').value,
+    categoria: document.getElementById('f-cat').value,
+    nombre,
+    estado: document.getElementById('f-estado').value,
+    pct: Math.min(100, Math.max(0, parseInt(document.getElementById('f-pct').value)||0)),
+    evidencia: document.getElementById('f-evidencia').value.trim(),
+    responsable: document.getElementById('f-resp').value.trim(),
+  };
+  counter++;
+  controles.push(nuevo);
+  guardar(); renderAll();
+  document.getElementById('f-nombre').value='';
+  document.getElementById('f-evidencia').value='';
+  document.getElementById('f-resp').value='';
+  document.getElementById('f-pct').value='0';
+  toast(`✅ ${nuevo.id} agregado`);
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function renderAll(){
+  renderKPIs(); renderProgMarcos(); renderMarcoTabs(); renderLista();
+}
+
+renderAll();
+</script>
+</body>
+</html>

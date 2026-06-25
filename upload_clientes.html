@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Carga de Documentos â Monitor de Compliance</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:56px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700}
+.nav-back{color:#a8c7e8;font-size:.8rem;text-decoration:none}
+.nav-back:hover{color:#fff}
+.wrap{max-width:960px;margin:0 auto;padding:1.4rem .9rem}
+.page-header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.6rem 1rem 1.2rem;margin-bottom:1.4rem;border-radius:10px}
+.page-header h1{font-size:1.35rem;margin-bottom:.25rem}
+.page-header p{opacity:.75;font-size:.85rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1rem;margin-bottom:.9rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
+@media(max-width:640px){.grid3{grid-template-columns:repeat(2,1fr)}}
+.kpi{text-align:center;padding:.9rem .5rem;border-radius:8px;border:1px solid var(--borde)}
+.kpi-num{font-size:1.7rem;font-weight:800;line-height:1;color:var(--pri)}
+.kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.25rem}
+.kpi.verde .kpi-num{color:var(--verde)}
+.kpi.naranja .kpi-num{color:var(--naranja)}
+
+/* Zona de drop */
+.drop-zone{border:2px dashed var(--borde);border-radius:10px;padding:2.5rem 1rem;text-align:center;cursor:pointer;transition:all .2s;background:#fafbfc;margin-bottom:1rem}
+.drop-zone.hover{border-color:var(--sec);background:#e3f2fd}
+.drop-zone.uploading{border-color:var(--naranja);background:#fff8f0}
+.drop-ico{font-size:2.5rem;margin-bottom:.5rem}
+.drop-txt{font-size:.9rem;color:var(--muted)}
+.drop-hint{font-size:.76rem;color:var(--muted);margin-top:.3rem}
+#file-input{display:none}
+
+/* Selector de tipo */
+.tipo-select{width:100%;font-family:inherit;font-size:.86rem;padding:.5rem .75rem;border:1px solid var(--borde);border-radius:6px;background:#fff;margin-bottom:.7rem}
+.tipo-select:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+
+/* Progress bar */
+.progress-wrap{display:none;margin-bottom:.8rem}
+.progress-track{background:#e0e7ef;border-radius:4px;height:8px;overflow:hidden}
+.progress-fill{height:100%;background:var(--sec);border-radius:4px;transition:width .3s;width:0%}
+.progress-label{font-size:.78rem;color:var(--muted);margin-top:.3rem}
+
+/* Toast */
+.toast{position:fixed;bottom:1.5rem;right:1rem;padding:.7rem 1.1rem;border-radius:8px;font-size:.86rem;font-weight:600;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:opacity .3s;opacity:0;pointer-events:none}
+.toast.ok{background:#e8f5e9;color:var(--verde);border-left:4px solid var(--verde)}
+.toast.err{background:#fdecea;color:var(--rojo);border-left:4px solid var(--rojo)}
+.toast.show{opacity:1;pointer-events:auto}
+
+/* Checklist */
+.check-item{display:flex;align-items:center;gap:.65rem;padding:.6rem .75rem;border-radius:8px;margin-bottom:.4rem;background:#f8fafc;border:1px solid var(--borde)}
+.check-item.ok{background:#f0fdf4;border-color:#bbf7d0}
+.check-item.falta{background:#fafafa}
+.check-ico{font-size:1.15rem;flex-shrink:0;width:26px;text-align:center}
+.check-info{flex:1;min-width:0}
+.check-label{font-size:.85rem;font-weight:600;color:var(--texto)}
+.check-sub{font-size:.74rem;color:var(--muted);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.check-estado{flex-shrink:0}
+.pill{display:inline-block;font-size:.67rem;font-weight:700;padding:.12rem .42rem;border-radius:8px}
+.pill-ok{background:#dcfce7;color:#166534}
+.pill-pend{background:#f5f5f5;color:#9ca3af}
+
+/* Lista de docs subidos */
+.doc-row{display:flex;align-items:center;gap:.6rem;padding:.6rem .8rem;border-bottom:1px solid var(--borde);font-size:.84rem}
+.doc-row:last-child{border-bottom:none}
+.doc-row-ico{font-size:1.1rem;flex-shrink:0}
+.doc-row-info{flex:1;min-width:0}
+.doc-row-nombre{font-weight:600;color:var(--pri);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-row-meta{font-size:.73rem;color:var(--muted);margin-top:.1rem}
+.doc-row-fecha{font-size:.73rem;color:var(--verde);font-weight:600}
+.btn-del{background:none;border:1px solid #fca5a5;color:var(--rojo);font-size:.72rem;padding:.2rem .5rem;border-radius:5px;cursor:pointer}
+.btn-del:hover{background:#fdecea}
+.btn{background:var(--pri);color:#fff;border:none;padding:.5rem 1.1rem;border-radius:6px;font-size:.86rem;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:.4rem}
+.btn:hover{background:#0d2137}
+.btn.sec{background:#f0f4f8;color:var(--pri);border:1px solid var(--borde)}
+.btn.sec:hover{background:#e0e7ef}
+
+/* Resultado extracciÃ³n */
+.extrac-box{background:#f8fafc;border-radius:8px;padding:.8rem;font-size:.82rem;margin-top:.6rem;border:1px solid var(--borde)}
+.extrac-row{display:flex;gap:.5rem;margin-bottom:.25rem}
+.extrac-key{color:var(--muted);min-width:130px;flex-shrink:0}
+.extrac-val{color:var(--texto);font-weight:500;word-break:break-all}
+.cuit-tag{display:inline-block;background:#e3f2fd;color:#0d47a1;font-size:.68rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;margin:.1rem .2rem .1rem 0;font-family:monospace}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <div class="nav-brand">âï¸ Monitor de Compliance â Panel de Documentos</div>
+    <a href="/" class="nav-back">â Volver al dashboard</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <h1>ð Carga de documentos del cliente</h1>
+    <p>SubÃ­ los documentos del programa de integridad. El sistema los procesa y actualiza el checklist automÃ¡ticamente.</p>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid3" id="kpis">
+    <div class="kpi"><div class="kpi-num" id="k-total">â</div><div class="kpi-label">Documentos subidos</div></div>
+    <div class="kpi verde"><div class="kpi-num" id="k-pct">â</div><div class="kpi-label">Cobertura documental</div></div>
+    <div class="kpi"><div class="kpi-num" id="k-faltan">â</div><div class="kpi-label">Tipos sin cubrir</div></div>
+  </div>
+
+  <!-- Upload -->
+  <div class="card">
+    <h2>â¬ï¸ Subir documento</h2>
+
+    <label for="tipo-doc" style="font-size:.82rem;color:var(--muted);display:block;margin-bottom:.3rem">
+      Tipo de documento (opcional â el sistema lo detecta solo):
+    </label>
+    <select class="tipo-select" id="tipo-doc">
+      <option value="">ð Detectar automÃ¡ticamente</option>
+    </select>
+
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="drop-ico">ð</div>
+      <div class="drop-txt">HacÃ© clic o arrastrÃ¡ el archivo aquÃ­</div>
+      <div class="drop-hint">PDF, XLSX, XLS, CSV, DOC, DOCX Â· MÃ¡ximo 20 MB</div>
+    </div>
+    <input type="file" id="file-input" accept=".pdf,.xlsx,.xls,.csv,.doc,.docx">
+
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label">Subiendo...</div>
+    </div>
+
+    <!-- Resultado de la Ãºltima subida -->
+    <div id="ultimo-resultado" style="display:none"></div>
+  </div>
+
+  <!-- Checklist -->
+  <div class="card">
+    <h2>â Checklist documental</h2>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:.9rem">
+      Cobertura de los elementos del programa de integridad segÃºn los documentos subidos.
+    </p>
+    <div id="checklist-cont">
+      <div style="color:var(--muted);font-size:.85rem;padding:1rem 0">Cargando checklist...</div>
+    </div>
+  </div>
+
+  <!-- Documentos subidos -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;flex-wrap:wrap;gap:.5rem">
+      <h2 style="margin-bottom:0">ð Documentos subidos</h2>
+      <button class="btn sec" onclick="cargarTodo()">ð Actualizar</button>
+    </div>
+    <div id="docs-cont">
+      <div style="color:var(--muted);font-size:.85rem;padding:1rem 0">Cargando documentos...</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api/v1';
+
+// ââ InicializaciÃ³n ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+async function init() {
+  await cargarTipos();
+  await cargarTodo();
+}
+
+async function cargarTipos() {
+  try {
+    const r = await fetch(`${API}/documentos-cliente/tipos`);
+    const data = await r.json();
+    const sel = document.getElementById('tipo-doc');
+    data.tipos.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      opt.textContent = `${t.icono} ${t.label}`;
+      sel.appendChild(opt);
+    });
+  } catch(e) { console.error(e); }
+}
+
+async function cargarTodo() {
+  await Promise.all([cargarChecklist(), cargarDocs()]);
+}
+
+// ââ Checklist âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+async function cargarChecklist() {
+  try {
+    const r = await fetch(`${API}/documentos-cliente/checklist`);
+    const data = await r.json();
+
+    document.getElementById('k-total').textContent =
+      (await fetch(`${API}/documentos-cliente`).then(r=>r.json())).total || 0;
+    document.getElementById('k-pct').textContent = (data.pct ?? 0) + '%';
+    document.getElementById('k-faltan').textContent =
+      isNaN(data.total - data.cubiertos) ? 0 : (data.total - data.cubiertos);
+
+    const cont = document.getElementById('checklist-cont');
+    cont.innerHTML = data.checklist.map(c => `
+      <div class="check-item ${c.cubierto ? 'ok' : 'falta'}">
+        <div class="check-ico">${c.icono}</div>
+        <div class="check-info">
+          <div class="check-label">${c.label}</div>
+          ${c.cubierto
+            ? `<div class="check-sub">${c.archivo}${c.fecha ? ' Â· ' + c.fecha : ''}</div>`
+            : '<div class="check-sub" style="color:#9ca3af">No subido aÃºn</div>'
+          }
+        </div>
+        <div class="check-estado">
+          ${c.cubierto
+            ? '<span class="pill pill-ok">â OK</span>'
+            : '<span class="pill pill-pend">Pendiente</span>'
+          }
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('checklist-cont').innerHTML =
+      '<div style="color:var(--muted);font-size:.85rem">No se pudo cargar el checklist.</div>';
+  }
+}
+
+// ââ Lista de docs ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+async function cargarDocs() {
+  try {
+    const r = await fetch(`${API}/documentos-cliente`);
+    const data = await r.json();
+    const cont = document.getElementById('docs-cont');
+    if (!data.documentos || data.documentos.length === 0) {
+      cont.innerHTML = '<div style="color:var(--muted);font-size:.85rem;padding:.5rem 0">TodavÃ­a no hay documentos subidos.</div>';
+      return;
+    }
+    cont.innerHTML = data.documentos.map(d => `
+      <div class="doc-row">
+        <div class="doc-row-ico">${d.tipo_icono || 'ð'}</div>
+        <div class="doc-row-info">
+          <div class="doc-row-nombre">${d.nombre_archivo}</div>
+          <div class="doc-row-meta">
+            ${d.tipo_label} Â· ${d.tamanio_kb} KB
+            ${d.fecha_detectada ? `<span class="doc-row-fecha"> Â· ${d.fecha_detectada}</span>` : ''}
+          </div>
+        </div>
+        <button class="btn-del" onclick="eliminarDoc('${d.tipo}','${encodeURIComponent(d.nombre_archivo)}')">â Quitar</button>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('docs-cont').innerHTML =
+      '<div style="color:var(--muted);font-size:.85rem">Error al cargar documentos.</div>';
+  }
+}
+
+// ââ Upload âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('hover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('hover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('hover');
+  if (e.dataTransfer.files[0]) subirArchivo(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) subirArchivo(fileInput.files[0]);
+});
+
+async function subirArchivo(archivo) {
+  const tipoForzado = document.getElementById('tipo-doc').value;
+  const formData = new FormData();
+  formData.append('archivo', archivo);
+  formData.append('tipo_forzado', tipoForzado);
+
+  // UI: estado subiendo
+  dropZone.classList.add('uploading');
+  const progressWrap = document.getElementById('progress-wrap');
+  const progressFill = document.getElementById('progress-fill');
+  const progressLabel = document.getElementById('progress-label');
+  progressWrap.style.display = 'block';
+  progressFill.style.width = '0%';
+  progressLabel.textContent = `Subiendo ${archivo.name}...`;
+
+  // Simular progreso
+  let pct = 0;
+  const timer = setInterval(() => {
+    pct = Math.min(pct + 12, 85);
+    progressFill.style.width = pct + '%';
+  }, 150);
+
+  try {
+    const r = await fetch(`${API}/documentos-cliente/upload`, { method: 'POST', body: formData });
+    clearInterval(timer);
+    progressFill.style.width = '100%';
+
+    if (!r.ok) {
+      const err = await r.json();
+      throw new Error(err.detail || 'Error al subir');
+    }
+
+    const data = await r.json();
+    progressLabel.textContent = 'â Subido correctamente';
+    mostrarResultado(data.metadata);
+    toast(`â ${archivo.name} subido`, 'ok');
+    await cargarTodo();
+  } catch(e) {
+    clearInterval(timer);
+    progressLabel.textContent = 'â ' + (e.message || 'Error desconocido');
+    progressFill.style.background = 'var(--rojo)';
+    toast('Error: ' + e.message, 'err');
+  } finally {
+    dropZone.classList.remove('uploading');
+    fileInput.value = '';
+    setTimeout(() => {
+      progressWrap.style.display = 'none';
+      progressFill.style.width = '0%';
+      progressFill.style.background = 'var(--sec)';
+    }, 3000);
+  }
+}
+
+function mostrarResultado(meta) {
+  const div = document.getElementById('ultimo-resultado');
+  div.style.display = 'block';
+
+  let extras = '';
+
+  if (meta.datos?.texto_preview) {
+    const preview = meta.datos.texto_preview.substring(0, 200).replace(/</g, '&lt;');
+    extras += `
+      <div class="extrac-row">
+        <span class="extrac-key">Texto extraÃ­do:</span>
+        <span class="extrac-val" style="font-size:.75rem;color:var(--muted)">${preview}â¦</span>
+      </div>`;
+  }
+
+  if (meta.datos?.cuits_detectados?.length > 0) {
+    const cuits = meta.datos.cuits_detectados.slice(0, 10)
+      .map(c => `<span class="cuit-tag">${c}</span>`).join('');
+    extras += `
+      <div class="extrac-row">
+        <span class="extrac-key">CUITs detectados:</span>
+        <span class="extrac-val">${cuits}${meta.datos.cuits_detectados.length > 10 ? ' +mÃ¡s' : ''}</span>
+      </div>`;
+  }
+
+  if (meta.datos?.filas) {
+    extras += `
+      <div class="extrac-row">
+        <span class="extrac-key">Filas en planilla:</span>
+        <span class="extrac-val">${meta.datos.filas} registros Â· ${(meta.datos.columnas||[]).join(', ')}</span>
+      </div>`;
+  }
+
+  div.innerHTML = `
+    <div class="extrac-box">
+      <div style="font-size:.82rem;font-weight:700;color:var(--pri);margin-bottom:.5rem">
+        ${meta.tipo_icono} Documento procesado
+      </div>
+      <div class="extrac-row">
+        <span class="extrac-key">Tipo detectado:</span>
+        <span class="extrac-val">${meta.tipo_label}</span>
+      </div>
+      <div class="extrac-row">
+        <span class="extrac-key">Elemento compliance:</span>
+        <span class="extrac-val">${meta.elemento_compliance || 'â'}</span>
+      </div>
+      ${meta.fecha_detectada ? `
+      <div class="extrac-row">
+        <span class="extrac-key">Fecha detectada:</span>
+        <span class="extrac-val" style="color:var(--verde)">${meta.fecha_detectada}</span>
+      </div>` : ''}
+      <div class="extrac-row">
+        <span class="extrac-key">ExtracciÃ³n:</span>
+        <span class="extrac-val">${meta.extraccion}</span>
+      </div>
+      ${extras}
+    </div>`;
+}
+
+// ââ Eliminar âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+async function eliminarDoc(tipo, nombreEnc) {
+  const nombre = decodeURIComponent(nombreEnc);
+  if (!confirm(`Â¿EliminÃ¡s "${nombre}"?`)) return;
+  try {
+    const r = await fetch(`${API}/documentos-cliente/${tipo}/${nombreEnc}`, { method: 'DELETE' });
+    if (r.ok) {
+      toast(`"${nombre}" eliminado`, 'ok');
+      await cargarTodo();
+    }
+  } catch(e) {
+    toast('Error al eliminar', 'err');
+  }
+}
+
+// ââ Toast ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function toast(msg, tipo='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${tipo} show`;
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+init();
+</script>
+</body>
+</html>

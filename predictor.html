@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Score Predictor â Monitor de Compliance</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--morado:#7b1fa2;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:56px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700;text-decoration:none}
+.nav-back{color:#a8c7e8;font-size:.8rem;text-decoration:none}.nav-back:hover{color:#fff}
+.wrap{max-width:920px;margin:0 auto;padding:1.4rem .9rem}
+.page-header{background:linear-gradient(135deg,var(--morado) 0%,#1a3a5c 100%);color:#fff;padding:1.6rem 1rem 1.2rem;margin-bottom:1.4rem}
+.page-header h1{font-size:1.4rem;margin-bottom:.2rem}
+.page-header p{opacity:.75;font-size:.85rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1rem;margin-bottom:.9rem}
+.card.morado{border-top-color:var(--morado)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
+@media(max-width:580px){.grid3{grid-template-columns:1fr 1fr}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.kpi{text-align:center;padding:.9rem .5rem;border-radius:8px;border:1px solid var(--borde)}
+.kpi-num{font-size:1.7rem;font-weight:800;line-height:1}
+.kpi-sub{font-size:.65rem;color:var(--muted);margin-top:.05rem}
+.kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.2rem}
+.kpi.morado .kpi-num{color:var(--morado)}.kpi.verde .kpi-num{color:var(--verde)}.kpi.naranja .kpi-num{color:var(--naranja)}.kpi.azul .kpi-num{color:var(--sec)}
+/* PredicciÃ³n highlight */
+.pred-box{background:linear-gradient(135deg,#ede7f6,#e8eaf6);border:2px solid var(--morado);border-radius:12px;padding:1.2rem;text-align:center;margin-bottom:1rem}
+.pred-score{font-size:3rem;font-weight:900;color:var(--morado);line-height:1}
+.pred-label{font-size:.8rem;color:var(--muted);margin-top:.3rem}
+.pred-intervalo{font-size:.78rem;color:var(--morado);font-weight:600;margin-top:.2rem}
+.pred-nivel{font-size:.88rem;font-weight:700;margin-top:.4rem}
+/* Gauge confianza */
+.conf-bar{height:8px;border-radius:4px;background:#e0e7ef;overflow:hidden;margin:.4rem 0}
+.conf-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--naranja),var(--verde))}
+/* Tabla historial editable */
+.hist-table{width:100%;border-collapse:collapse;font-size:.83rem}
+.hist-table th{background:#f0f4f8;color:var(--pri);font-size:.72rem;font-weight:700;text-align:left;padding:.4rem .6rem;border-bottom:2px solid var(--borde)}
+.hist-table td{padding:.38rem .6rem;border-bottom:1px solid var(--borde);vertical-align:middle}
+.hist-table td input{border:none;background:transparent;font-family:inherit;font-size:.83rem;width:100%;padding:0;color:var(--texto)}
+.hist-table td input:focus{outline:none;border-bottom:2px solid var(--sec)}
+.hist-table tr:last-child td{border-bottom:none}
+.hist-table tr.proyectado td{color:var(--morado);font-style:italic;background:#faf0ff}
+/* Factores */
+.factor-item{display:flex;align-items:center;gap:.7rem;padding:.5rem 0;border-bottom:1px solid var(--borde)}
+.factor-item:last-child{border-bottom:none}
+.factor-label{font-size:.83rem;flex:1}
+.factor-imp{font-size:.72rem;font-weight:700;min-width:60px;text-align:right}
+.factor-bar-wrap{width:80px;background:#e0e7ef;border-radius:3px;height:6px;overflow:hidden}
+.factor-bar-fill{height:100%;border-radius:3px}
+/* Recomendaciones */
+.rec-item{display:flex;gap:.6rem;padding:.6rem .8rem;border-radius:8px;margin-bottom:.4rem;font-size:.83rem}
+.rec-item.alta{background:#e8f5e9;border-left:3px solid var(--verde);color:#1b5e20}
+.rec-item.media{background:#e3f2fd;border-left:3px solid var(--sec);color:#0d47a1}
+.rec-item.baja{background:#fff3e0;border-left:3px solid var(--naranja);color:#7c3a00}
+.rec-impacto{font-size:.68rem;font-weight:700;padding:.1rem .35rem;border-radius:5px;background:rgba(0,0,0,.08);flex-shrink:0;align-self:flex-start;margin-top:.1rem}
+/* Escenarios */
+.escenario-card{border:1px solid var(--borde);border-radius:9px;padding:.9rem;text-align:center;cursor:pointer;transition:all .15s}
+.escenario-card:hover,.escenario-card.active{border-color:var(--morado);background:#faf0ff}
+.esc-score{font-size:1.8rem;font-weight:800;color:var(--morado)}
+.esc-label{font-size:.76rem;font-weight:700;margin-bottom:.2rem}
+.esc-desc{font-size:.72rem;color:var(--muted);line-height:1.4}
+.chart-wrap{position:relative;height:240px}
+.btn{background:var(--pri);color:#fff;border:none;padding:.42rem 1rem;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:#0d2137}
+.btn.morado{background:var(--morado)}.btn.morado:hover{background:#4a148c}
+.btn.verde{background:var(--verde)}.btn-sm{padding:.28rem .65rem;font-size:.76rem}
+.badge-nivel{display:inline-flex;font-size:.72rem;font-weight:700;padding:.15rem .5rem;border-radius:7px}
+.badge-avanzado{background:#e8f5e9;color:var(--verde)}
+.badge-medio{background:#fff3e0;color:var(--naranja)}
+.badge-inicial{background:#fdecea;color:var(--rojo)}
+.fuente{font-size:.72rem;color:var(--muted);background:#fffde7;border-left:3px solid #f9a825;padding:.5rem .75rem;border-radius:6px;margin-top:.6rem}
+
+  /* ââ CuantificaciÃ³n USD ââ */
+  .usd-input-wrap{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+  .usd-prefix{font-size:1.1rem;font-weight:700;color:var(--muted);flex-shrink:0}
+  .usd-input{flex:1;font-family:inherit;font-size:1rem;padding:.55rem .8rem;border:1.5px solid var(--borde);border-radius:7px;font-weight:600}
+  .usd-input:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+  .usd-card{border-radius:10px;padding:1rem 1.1rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.8rem}
+  .usd-card.alto{background:#fdecea;border-left:4px solid #c62828}
+  .usd-card.medio{background:#fff3e0;border-left:4px solid #e65100}
+  .usd-card.bajo{background:#f0fdf4;border-left:4px solid #2e7d32}
+  .usd-area{flex:1;min-width:0}
+  .usd-area-nombre{font-size:.88rem;font-weight:700;color:var(--texto)}
+  .usd-area-desc{font-size:.74rem;color:var(--muted);margin-top:.1rem}
+  .usd-monto{text-align:right;flex-shrink:0}
+  .usd-monto-num{font-size:1.1rem;font-weight:800;line-height:1}
+  .usd-monto-label{font-size:.68rem;color:var(--muted);font-weight:600}
+  .usd-monto.alto .usd-monto-num{color:#c62828}
+  .usd-monto.medio .usd-monto-num{color:#e65100}
+  .usd-monto.bajo .usd-monto-num{color:#2e7d32}
+  .usd-total-box{background:var(--pri);color:#fff;border-radius:10px;padding:1.1rem 1.3rem;display:flex;justify-content:space-between;align-items:center;margin-top:.8rem}
+  .usd-total-label{font-size:.82rem;opacity:.8}
+  .usd-total-num{font-size:1.6rem;font-weight:900}
+  .usd-metodologia{font-size:.74rem;color:var(--muted);line-height:1.6;margin-top:.7rem;padding:.6rem;background:#f8fafc;border-radius:6px}
+  .grid-usd{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem}
+  @media(max-width:580px){.grid-usd{grid-template-columns:1fr}}
+  .usd-kpi{text-align:center;padding:.8rem;border-radius:8px;border:1px solid var(--borde)}
+  .usd-kpi-num{font-size:1.4rem;font-weight:800;color:var(--pri)}
+  .usd-kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.15rem}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <a class="nav-brand" href="index.html">âï¸ Monitor de Compliance</a>
+    <a class="nav-back" href="index.html">â Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <h1>ð¤ AI Score Predictor</h1>
+    <p>PredicciÃ³n del score de compliance para el prÃ³ximo trimestre Â· RegresiÃ³n lineal + anÃ¡lisis de factores</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- KPIs -->
+  <div class="grid3" id="kpi-grid"></div>
+
+  <div class="grid2">
+    <!-- PredicciÃ³n principal -->
+    <div class="card morado" style="margin-bottom:0">
+      <h2>ð¯ PredicciÃ³n prÃ³ximo trimestre</h2>
+      <div class="pred-box">
+        <div class="pred-score" id="pred-score">â</div>
+        <div class="pred-label">Score predicho</div>
+        <div class="pred-intervalo" id="pred-intervalo"></div>
+        <div class="pred-nivel" id="pred-nivel"></div>
+      </div>
+      <div style="margin-bottom:.4rem">
+        <div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:.2rem">
+          <span>Confianza del modelo</span><span id="conf-pct">â</span>
+        </div>
+        <div class="conf-bar"><div class="conf-fill" id="conf-fill"></div></div>
+      </div>
+      <div id="pred-resumen" style="font-size:.8rem;color:#444;line-height:1.5;margin-top:.5rem"></div>
+    </div>
+
+    <!-- Escenarios -->
+    <div class="card" style="margin-bottom:0">
+      <h2>ð Escenarios</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin-bottom:.7rem" id="escenarios"></div>
+      <div style="font-size:.78rem;color:var(--muted);line-height:1.5" id="escenario-desc"></div>
+    </div>
+  </div><br>
+
+  <!-- GrÃ¡fico proyecciÃ³n -->
+  <div class="card">
+    <h2>ð ProyecciÃ³n score â histÃ³rico + predicciÃ³n</h2>
+    <div class="chart-wrap"><canvas id="ch-proyeccion"></canvas></div>
+    <div class="fuente">ð LÃ­nea continua = histÃ³rico real. LÃ­nea punteada = proyecciÃ³n del modelo. Banda = intervalo de confianza 80%.</div>
+  </div>
+
+  <div class="grid2">
+    <!-- Factores de impacto -->
+    <div class="card" style="margin-bottom:0">
+      <h2>âï¸ Factores de impacto en la predicciÃ³n</h2>
+      <div id="factores"></div>
+    </div>
+
+    <!-- Recomendaciones IA -->
+    <div class="card" style="margin-bottom:0">
+      <h2>ð¡ Acciones recomendadas para maximizar el score</h2>
+      <div id="recomendaciones"></div>
+    </div>
+  </div><br>
+
+  <!-- Historial editable -->
+  <div class="card">
+    <h2>ð Historial de scores (editable para recalcular)</h2>
+    <div style="overflow-x:auto">
+      <table class="hist-table" id="hist-table"></table>
+    </div>
+    <div style="margin-top:.7rem;display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn morado btn-sm" onclick="recalcular()">ð¤ Recalcular predicciÃ³n</button>
+      <button class="btn btn-sm" onclick="agregarMes()">+ Agregar mes</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="config.js"></script>
+<script>
+// ââ Historial desde config o default âââââââââââââââââââââââââââââââââââââ
+let historial = [];
+
+// ââ CuantificaciÃ³n financiera del riesgo en USD ââââââââââââââââââââââââââââââ
+const FACTORES_CATEGORIA = {
+  'alto':  0.08,
+  'medio': 0.04,
+  'bajo':  0.015,
+};
+
+function fmtUSD(n) {
+  if (n >= 1000000) return 'USD ' + (n/1000000).toFixed(2) + 'M';
+  if (n >= 1000)    return 'USD ' + Math.round(n/1000) + 'K';
+  return 'USD ' + Math.round(n).toLocaleString();
+}
+
+function calcularRiesgoUSD() {
+  const facturacion = parseFloat(document.getElementById('facturacion-usd').value) || 0;
+  if (facturacion <= 0 || typeof CONFIG === 'undefined') return;
+
+  const areas = CONFIG.mapa_riesgo || [];
+  if (!areas.length) return;
+
+  let totalEsperado = 0;
+  let totalMaximo   = 0;
+  const resultados  = [];
+
+  areas.forEach(area => {
+    const prob   = (area.probabilidad || 1) / 5;
+    const imp    = (area.impacto     || 1) / 5;
+    const factor = FACTORES_CATEGORIA[area.riesgo] || 0.02;
+    const nombre = typeof area.area === 'object' ? (area.area.es || '') : area.area;
+    const desc   = typeof area.descripcion === 'object' ? (area.descripcion.es || '') : (area.descripcion || '');
+
+    const perdida_esperada = prob * imp * factor * facturacion;
+    const perdida_maxima   = imp  * factor * facturacion;  // prob=1 (worst case)
+
+    totalEsperado += perdida_esperada;
+    totalMaximo   += perdida_maxima;
+
+    resultados.push({
+      nombre,
+      desc,
+      riesgo: area.riesgo,
+      prob: area.probabilidad,
+      imp:  area.impacto,
+      esperada: perdida_esperada,
+      maxima:   perdida_maxima,
+    });
+  });
+
+  // Ordenar por pÃ©rdida esperada desc
+  resultados.sort((a, b) => b.esperada - a.esperada);
+
+  // KPIs
+  const kpisEl = document.getElementById('usd-kpis');
+  kpisEl.style.display = 'grid';
+  const pctFact = totalEsperado / facturacion * 100;
+  kpisEl.innerHTML = `
+    <div class="usd-kpi">
+      <div class="usd-kpi-num" style="color:#c62828">${fmtUSD(totalEsperado)}</div>
+      <div class="usd-kpi-label">PÃ©rdida esperada total / aÃ±o</div>
+    </div>
+    <div class="usd-kpi">
+      <div class="usd-kpi-num" style="color:#e65100">${fmtUSD(totalMaximo)}</div>
+      <div class="usd-kpi-label">ExposiciÃ³n mÃ¡xima (worst case)</div>
+    </div>
+    <div class="usd-kpi">
+      <div class="usd-kpi-num">${pctFact.toFixed(1)}%</div>
+      <div class="usd-kpi-label">% de facturaciÃ³n en riesgo</div>
+    </div>
+    <div class="usd-kpi">
+      <div class="usd-kpi-num" style="color:#2e7d32">${fmtUSD(totalEsperado * 0.6)}</div>
+      <div class="usd-kpi-label">Ahorro estimado con programa avanzado</div>
+    </div>
+  `;
+
+  // Ãreas
+  document.getElementById('usd-areas').innerHTML = resultados.map(r => `
+    <div class="usd-card ${r.riesgo}">
+      <div class="usd-area">
+        <div class="usd-area-nombre">${r.nombre}</div>
+        <div class="usd-area-desc">Prob: ${r.prob}/5 Â· Imp: ${r.imp}/5 Â· ${r.desc.substring(0,80)}${r.desc.length>80?'â¦':''}</div>
+      </div>
+      <div class="usd-monto ${r.riesgo}">
+        <div class="usd-monto-num">${fmtUSD(r.esperada)}</div>
+        <div class="usd-monto-label">esperada / aÃ±o</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Total
+  const totalEl = document.getElementById('usd-total');
+  totalEl.style.display = 'block';
+  totalEl.innerHTML = `
+    <div class="usd-total-box">
+      <div>
+        <div class="usd-total-label">ExposiciÃ³n total esperada</div>
+        <div style="font-size:.75rem;opacity:.65">${areas.length} Ã¡reas Â· ${fmtUSD(facturacion)} de facturaciÃ³n</div>
+      </div>
+      <div class="usd-total-num">${fmtUSD(totalEsperado)}</div>
+    </div>
+  `;
+}
+
+if(typeof CONFIG !== 'undefined' && CONFIG.historial_score && CONFIG.historial_score.length >= 3){
+  historial = CONFIG.historial_score.map(h=>({mes:h.mes, score:h.score}));
+} else {
+  historial = [
+    {mes:'Ene 2026', score:42},{mes:'Feb 2026', score:48},
+    {mes:'Mar 2026', score:53},{mes:'Abr 2026', score:58},
+    {mes:'May 2026', score:63},{mes:'Jun 2026', score:67},
+  ];
+}
+
+const charts = {};
+function destroyC(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+
+// ââ RegresiÃ³n lineal simple âââââââââââââââââââââââââââââââââââââââââââââââ
+function regresionLineal(datos){
+  const n = datos.length;
+  const xs = datos.map((_,i)=>i);
+  const ys = datos.map(d=>d.score);
+  const sumX = xs.reduce((a,b)=>a+b,0);
+  const sumY = ys.reduce((a,b)=>a+b,0);
+  const sumXY = xs.reduce((a,x,i)=>a+x*ys[i],0);
+  const sumX2 = xs.reduce((a,x)=>a+x*x,0);
+  const m = (n*sumXY - sumX*sumY) / (n*sumX2 - sumX*sumX);
+  const b = (sumY - m*sumX) / n;
+  // RÂ²
+  const yMean = sumY/n;
+  const ssTot = ys.reduce((a,y)=>a+(y-yMean)**2,0);
+  const ssRes = ys.reduce((a,y,i)=>a+(y-(m*i+b))**2,0);
+  const r2 = ssTot>0 ? 1-ssRes/ssTot : 1;
+  return { m, b, r2 };
+}
+
+function predecir(reg, paso){ return Math.round(Math.min(100, Math.max(0, reg.m*paso + reg.b))); }
+
+// ââ Calcular score actual desde config ââââââââââââââââââââââââââââââââââââ
+function getScoreActual(){
+  if(typeof CONFIG === 'undefined') return historial[historial.length-1]?.score || 67;
+  const pi = CONFIG.programa_integridad;
+  const ob = pi.elementos_obligatorios, op = pi.elementos_opcionales, cap = CONFIG.capacitaciones;
+  const ok_ob = ob.filter(e=>e.estado==='completo').length, prog_ob = ob.filter(e=>e.estado==='en_progreso').length;
+  const p_ob = Math.round((ok_ob*30+prog_ob*10)/(ob.length*30)*30);
+  const ok_op = op.filter(e=>e.estado==='completo').length, prog_op = op.filter(e=>e.estado==='en_progreso').length;
+  const p_op = Math.round((ok_op*10+prog_op*3)/(op.length*10)*10);
+  const avg = cap.reduce((a,c)=>a+c.completado,0)/cap.length;
+  const p_cap = Math.round(avg/100*25);
+  const p_dd = Math.min(20, CONFIG.cuits_verificados.length*4);
+  const p_ri = CONFIG.mapa_riesgo.length>=5?15:Math.round(CONFIG.mapa_riesgo.length/8*15);
+  return Math.min(100, p_ob+p_op+p_cap+p_dd+p_ri);
+}
+
+// ââ AnÃ¡lisis de factores ââââââââââââââââââââââââââââââââââââââââââââââââââ
+function analizarFactores(){
+  const factores = [];
+  if(typeof CONFIG === 'undefined') return factores;
+  const pi = CONFIG.programa_integridad, cap = CONFIG.capacitaciones;
+
+  const ob_inc = pi.elementos_obligatorios.filter(e=>e.estado!=='completo').length;
+  const cap_prom = cap.reduce((a,c)=>a+c.completado,0)/cap.length;
+  const cap_baj = cap.filter(c=>c.obligatorio&&c.completado<70).length;
+  const dd_ok = CONFIG.cuits_verificados.filter(c=>c.resultado==='sin_antecedentes').length;
+  const dd_tot = CONFIG.cuits_verificados.length;
+  const incs = JSON.parse(localStorage.getItem('inc_data')||'[]');
+  const incsActivos = incs.filter(i=>i.estado==='abierto'||i.estado==='investigando').length;
+  const ctrls = JSON.parse(localStorage.getItem('ctrl_data')||'[]');
+  const ctrlPend = ctrls.filter(c=>c.estado==='pendiente').length;
+
+  factores.push({label:'Elementos obligatorios Art. 23', impacto: ob_inc===0?'+alto':ob_inc===1?'-medio':'-alto', color: ob_inc===0?'var(--verde)':'var(--rojo)', pct: ob_inc===0?100:ob_inc===1?50:20, signo:ob_inc===0?1:-1});
+  factores.push({label:'Completitud capacitaciones', impacto: cap_prom>=80?'+alto':cap_prom>=60?'+medio':'-medio', color: cap_prom>=80?'var(--verde)':cap_prom>=60?'var(--naranja)':'var(--rojo)', pct:cap_prom, signo:cap_prom>=60?1:-1});
+  factores.push({label:'Due diligence de proveedores', impacto: dd_tot>=3?'+medio':'+bajo', color: 'var(--naranja)', pct: dd_tot>0?Math.round(dd_ok/dd_tot*100):0, signo:1});
+  factores.push({label:'Incidentes activos', impacto: incsActivos===0?'+neutro':incsActivos<=2?'-bajo':'-medio', color: incsActivos===0?'var(--verde)':'var(--rojo)', pct: incsActivos===0?100:Math.max(10,100-incsActivos*20), signo:incsActivos===0?1:-1});
+  factores.push({label:'Controles pendientes', impacto: ctrlPend===0?'+neutro':ctrlPend<=3?'-bajo':'-medio', color: ctrlPend===0?'var(--verde)':'var(--naranja)', pct: ctrlPend===0?100:Math.max(20,100-ctrlPend*10), signo:ctrlPend===0?1:-1});
+  return factores;
+}
+
+// ââ Recomendaciones âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function generarRecomendaciones(scoreActual, scorePred){
+  const recs = [];
+  if(typeof CONFIG === 'undefined') return recs;
+  const pi = CONFIG.programa_integridad, cap = CONFIG.capacitaciones;
+
+  const ob_inc = pi.elementos_obligatorios.filter(e=>e.estado!=='completo');
+  if(ob_inc.length) recs.push({prioridad:'alta', impacto:'+8 pts', texto:`Completar ${ob_inc.length} elemento(s) obligatorio(s) del Art. 23: "${ob_inc.map(e=>typeof e.label==='object'?e.label.es:e.label).join('", "')}"`});
+
+  const cap_baj = cap.filter(c=>c.obligatorio&&c.completado<70);
+  if(cap_baj.length) recs.push({prioridad:'alta', impacto:'+5 pts', texto:`Elevar completitud de ${cap_baj.length} mÃ³dulo(s) obligatorio(s) al 80%+: ${cap_baj.map(c=>typeof c.modulo==='object'?c.modulo.es:c.modulo).join(', ')}`});
+
+  const dd_tot = CONFIG.cuits_verificados.length;
+  if(dd_tot < 5) recs.push({prioridad:'media', impacto:'+4 pts', texto:`Ampliar due diligence a ${5-dd_tot} proveedor(es) mÃ¡s (objetivo: 5 verificados)`});
+
+  const incs = JSON.parse(localStorage.getItem('inc_data')||'[]');
+  const incsCrit = incs.filter(i=>i.severidad==='critico'&&(i.estado==='abierto'||i.estado==='investigando'));
+  if(incsCrit.length) recs.push({prioridad:'alta', impacto:'+6 pts', texto:`Cerrar ${incsCrit.length} incidente(s) crÃ­tico(s) activo(s) â cada uno resta 3 pts al score`});
+
+  const op_pend = pi.elementos_opcionales.filter(e=>e.estado==='pendiente');
+  if(op_pend.length) recs.push({prioridad:'media', impacto:'+3 pts', texto:`Avanzar en opcionales pendientes: "${op_pend.slice(0,2).map(e=>typeof e.label==='object'?e.label.es:e.label).join('", "')}"${op_pend.length>2?` y ${op_pend.length-2} mÃ¡s`:''}`});
+
+  if(!pi.registrado_rite) recs.push({prioridad:'alta', impacto:'+2 pts', texto:'Registrar la empresa en RITE (rite.gob.ar) â requisito para contratar con el Estado'});
+
+  if(scorePred >= 75) recs.push({prioridad:'baja', impacto:'mantenimiento', texto:'Mantener el ritmo actual â la tendencia lleva al nivel Avanzado en el prÃ³ximo trimestre'});
+
+  return recs.slice(0,5);
+}
+
+// ââ Escenarios ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function calcEscenarios(reg, n){
+  const base = predecir(reg, n);
+  return {
+    pesimista: Math.max(0, base - 5),
+    base,
+    optimista: Math.min(100, base + 7),
+  };
+}
+
+// ââ Nivel âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function nivelInfo(s){ return s>=75?{label:'Avanzado',cls:'badge-avanzado'}:s>=45?{label:'Medio',cls:'badge-medio'}:{label:'Inicial',cls:'badge-inicial'}; }
+
+// ââ Render KPIs âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderKPIs(actual, pred, reg){
+  const delta = pred - actual;
+  const vel = historial.length>=2 ? historial[historial.length-1].score - historial[historial.length-2].score : 0;
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi azul"><div class="kpi-num">${actual}</div><div class="kpi-label">Score actual</div></div>
+    <div class="kpi morado"><div class="kpi-num">${pred}</div><div class="kpi-sub">${delta>=0?'+':''}${delta} vs ahora</div><div class="kpi-label">PredicciÃ³n prÃ³ximo trim.</div></div>
+    <div class="kpi ${vel>=5?'verde':vel>=0?'naranja':'rojo'}"><div class="kpi-num">${vel>=0?'+':''}${vel}</div><div class="kpi-label">Velocidad actual (pts/mes)</div></div>
+  `;
+}
+
+// ââ Render predicciÃ³n âââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderPrediccion(pred, reg, esc){
+  const conf = Math.round(Math.min(95, Math.max(40, reg.r2*100)));
+  const margen = Math.round((1-reg.r2)*15 + 3);
+  const niv = nivelInfo(pred);
+  document.getElementById('pred-score').textContent = pred;
+  document.getElementById('pred-intervalo').textContent = `Intervalo 80%: ${esc.pesimista} â ${esc.optimista}`;
+  document.getElementById('pred-nivel').innerHTML = `<span class="badge-nivel ${niv.cls}">${niv.label}</span>`;
+  document.getElementById('conf-pct').textContent = conf+'%';
+  document.getElementById('conf-fill').style.width = conf+'%';
+
+  const trend = reg.m > 2 ? 'acelerada' : reg.m > 0.5 ? 'constante' : reg.m > 0 ? 'lenta' : 'estancada o en descenso';
+  document.getElementById('pred-resumen').innerHTML = `
+    Tendencia <strong>${trend}</strong> (+${reg.m.toFixed(1)} pts/mes en promedio).<br>
+    Con el ritmo actual alcanzarÃ­as <strong>${pred} pts</strong> en 3 meses.<br>
+    Confianza: <strong>${conf}%</strong> (RÂ²=${reg.r2.toFixed(2)}, ${historial.length} puntos de datos).
+  `;
+}
+
+// ââ Render escenarios âââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderEscenarios(esc){
+  const escDefs = [
+    {key:'pesimista', label:'Pesimista', desc:'Si hay demoras en implementaciÃ³n o surgen incidentes nuevos', color:'var(--rojo)'},
+    {key:'base',      label:'Base',      desc:'Siguiendo la tendencia histÃ³rica actual sin cambios significativos', color:'var(--morado)'},
+    {key:'optimista', label:'Optimista', desc:'Si se ejecutan las recomendaciones de alta prioridad este trimestre', color:'var(--verde)'},
+  ];
+  document.getElementById('escenarios').innerHTML = escDefs.map(e=>`
+    <div class="escenario-card">
+      <div class="esc-label" style="color:${e.color}">${e.label}</div>
+      <div class="esc-score" style="color:${e.color}">${esc[e.key]}</div>
+      <div class="esc-desc">${e.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('escenario-desc').innerHTML =
+    `ð¡ El escenario <strong>optimista (${esc.optimista} pts)</strong> es alcanzable ejecutando las recomendaciones de alta prioridad. ` +
+    `El <strong>pesimista (${esc.pesimista} pts)</strong> ocurre si se abren nuevos incidentes crÃ­ticos o hay demoras en capacitaciones.`;
+}
+
+// ââ Render grÃ¡fico ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderGrafico(reg, pred, esc){
+  destroyC('ch-proyeccion');
+  const n = historial.length;
+  const meses = historial.map(h=>h.mes);
+  // Proyectar 3 meses
+  const ultimoMes = historial[n-1].mes;
+  const [mesN, anoN] = ultimoMes.split(' ');
+  const MESES_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  let mesIdx = MESES_ES.indexOf(mesN.substring(0,3));
+  let anio = parseInt(anoN);
+  const mesesProx = [];
+  for(let i=1;i<=3;i++){
+    mesIdx = (mesIdx+1)%12;
+    if(mesIdx===0) anio++;
+    mesesProx.push(MESES_ES[mesIdx]+' '+anio);
+  }
+
+  const labelsCompletos = [...meses, ...mesesProx];
+  const datosHistoricos = historial.map(h=>h.score);
+  const datosProyeccion = Array(n-1).fill(null).concat([historial[n-1].score, ...mesesProx.map((_,i)=>predecir(reg, n+i))]);
+  const bandaSup = Array(n).fill(null).concat(mesesProx.map((_,i)=>Math.min(100,predecir(reg,n+i)+Math.round((1-reg.r2)*12+3))));
+  const bandaInf = Array(n).fill(null).concat(mesesProx.map((_,i)=>Math.max(0,predecir(reg,n+i)-Math.round((1-reg.r2)*12+3))));
+
+  const ctx = document.getElementById('ch-proyeccion');
+  charts['ch-proyeccion'] = new Chart(ctx,{type:'line',
+    data:{labels:labelsCompletos,datasets:[
+      {label:'HistÃ³rico real',data:[...datosHistoricos,...Array(3).fill(null)],borderColor:'#1a3a5c',backgroundColor:'rgba(26,58,92,.08)',borderWidth:2.5,fill:true,tension:.35,pointRadius:4,pointBackgroundColor:'#1a3a5c'},
+      {label:'ProyecciÃ³n',data:datosProyeccion,borderColor:getComputedStyle(document.documentElement).getPropertyValue('--morado')||'#7b1fa2',borderWidth:2,borderDash:[6,4],fill:false,tension:.35,pointRadius:4,pointBackgroundColor:'#7b1fa2'},
+      {label:'Banda superior',data:bandaSup,borderColor:'transparent',backgroundColor:'rgba(123,31,162,.08)',fill:'+1',tension:.35,pointRadius:0,borderWidth:0},
+      {label:'Banda inferior',data:bandaInf,borderColor:'transparent',backgroundColor:'rgba(123,31,162,.08)',fill:false,tension:.35,pointRadius:0,borderWidth:0},
+    ]},
+    options:{scales:{
+      y:{min:0,max:100,ticks:{font:{size:9}},grid:{color:'rgba(0,0,0,.05)'}},
+      x:{ticks:{font:{size:9}},grid:{display:false}}
+    },plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10,filter:i=>i.datasetIndex<=1}},tooltip:{mode:'index',intersect:false}},animation:{duration:700}}
+  });
+}
+
+// ââ Render factores âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderFactores(){
+  const factores = analizarFactores();
+  if(!factores.length){ document.getElementById('factores').innerHTML='<div style="font-size:.82rem;color:var(--muted)">CargÃ¡ config.js para ver el anÃ¡lisis de factores.</div>'; return; }
+  document.getElementById('factores').innerHTML = factores.map(f=>`
+    <div class="factor-item">
+      <div class="factor-label">${f.label}</div>
+      <div class="factor-bar-wrap"><div class="factor-bar-fill" style="width:${f.pct}%;background:${f.color}"></div></div>
+      <div class="factor-imp" style="color:${f.color}">${f.impacto}</div>
+    </div>
+  `).join('');
+}
+
+// ââ Render recomendaciones ââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderRecomendaciones(actual, pred){
+  const recs = generarRecomendaciones(actual, pred);
+  if(!recs.length){ document.getElementById('recomendaciones').innerHTML='<div style="font-size:.82rem;color:var(--muted)">CargÃ¡ config.js para ver recomendaciones.</div>'; return; }
+  document.getElementById('recomendaciones').innerHTML = recs.map(r=>`
+    <div class="rec-item ${r.prioridad}">
+      <span class="rec-impacto">${r.impacto}</span>
+      <span>${r.texto}</span>
+    </div>
+  `).join('');
+}
+
+// ââ Historial editable ââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function renderHistorial(){
+  document.getElementById('hist-table').innerHTML = `
+    <thead><tr><th>#</th><th>Mes</th><th>Score real</th><th>Tendencia</th><th></th></tr></thead>
+    <tbody>
+      ${historial.map((h,i)=>{
+        const delta = i>0?h.score-historial[i-1].score:0;
+        const color = delta>0?'var(--verde)':delta<0?'var(--rojo)':'var(--muted)';
+        return `<tr>
+          <td style="color:var(--muted);font-size:.75rem">${i+1}</td>
+          <td><input value="${h.mes}" onchange="historial[${i}].mes=this.value" style="min-width:80px"></td>
+          <td><input type="number" value="${h.score}" min="0" max="100" onchange="historial[${i}].score=parseInt(this.value)||0"></td>
+          <td style="color:${color};font-weight:700;font-size:.8rem">${i>0?(delta>0?'â²':'â¼')+Math.abs(delta):'â'}</td>
+          <td><button onclick="eliminarFila(${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:.9rem">â</button></td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  `;
+}
+
+function eliminarFila(i){
+  if(historial.length<=3){ alert('NecesitÃ¡s al menos 3 puntos para la predicciÃ³n'); return; }
+  historial.splice(i,1);
+  renderHistorial();
+}
+
+function agregarMes(){
+  const ultimo = historial[historial.length-1];
+  historial.push({mes:'Nuevo', score:ultimo.score});
+  renderHistorial();
+}
+
+// ââ Main ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+function recalcular(){
+  const actual = getScoreActual();
+  // Asegurar que el Ãºltimo punto del historial sea el score actual
+  if(historial.length > 0) historial[historial.length-1].score = actual;
+
+  const reg = regresionLineal(historial);
+  const n = historial.length;
+  const pred = predecir(reg, n+2); // +3 meses (un trimestre)
+  const esc = calcEscenarios(reg, n+2);
+
+  renderKPIs(actual, pred, reg);
+  renderPrediccion(pred, reg, esc);
+  renderEscenarios(esc);
+  renderGrafico(reg, pred, esc);
+  renderFactores();
+  renderRecomendaciones(actual, pred);
+  renderHistorial();
+}
+
+recalcular();
+</script>
+</body>
+</html>

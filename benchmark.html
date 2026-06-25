@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Benchmark Sectorial — Monitor de Compliance</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--amarillo:#f9a825;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:56px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700;text-decoration:none}
+.nav-back{color:#a8c7e8;font-size:.8rem;text-decoration:none}.nav-back:hover{color:#fff}
+.wrap{max-width:960px;margin:0 auto;padding:1.4rem .9rem}
+.page-header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.6rem 1rem 1.2rem;margin-bottom:1.4rem}
+.page-header h1{font-size:1.4rem;margin-bottom:.2rem}
+.page-header p{opacity:.75;font-size:.85rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1rem;margin-bottom:.8rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
+@media(max-width:580px){.grid3{grid-column:1fr 1fr}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.kpi{text-align:center;padding:.9rem .5rem;border-radius:8px;border:1px solid var(--borde)}
+.kpi-num{font-size:1.7rem;font-weight:800;line-height:1}
+.kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.2rem}
+.kpi.verde .kpi-num{color:var(--verde)}.kpi.naranja .kpi-num{color:var(--naranja)}.kpi.azul .kpi-num{color:var(--sec)}.kpi.morado .kpi-num{color:#7b1fa2}
+/* Selector de sector */
+.sector-tabs{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:1rem}
+.sector-tab{background:#f0f4f8;border:1px solid var(--borde);color:var(--muted);font-size:.76rem;font-weight:600;padding:.32rem .75rem;border-radius:6px;cursor:pointer;transition:all .15s}
+.sector-tab.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+/* Posición percentil */
+.percentil-wrap{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;margin-bottom:1rem}
+.percentil-ring{position:relative;width:110px;height:110px;flex-shrink:0}
+.percentil-ring canvas{position:absolute;top:0;left:0}
+.percentil-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.percentil-num{font-size:1.6rem;font-weight:800;line-height:1}
+.percentil-label{font-size:.65rem;color:var(--muted);font-weight:600}
+/* Tabla ranking empresas */
+.ranking-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.ranking-table th{background:#f0f4f8;color:var(--pri);font-size:.72rem;font-weight:700;text-align:left;padding:.45rem .65rem;border-bottom:2px solid var(--borde)}
+.ranking-table td{padding:.42rem .65rem;border-bottom:1px solid var(--borde);vertical-align:middle}
+.ranking-table tr:last-child td{border-bottom:none}
+.ranking-table tr.empresa-propia{background:#e3f2fd;font-weight:700}
+.rank-pos{font-weight:800;color:var(--pri);width:30px}
+.rank-medalla{font-size:1rem}
+.badge{display:inline-flex;font-size:.67rem;font-weight:700;padding:.13rem .45rem;border-radius:7px}
+.badge-nivel-avanzado{background:#e8f5e9;color:var(--verde)}
+.badge-nivel-medio{background:#fff3e0;color:var(--naranja)}
+.badge-nivel-inicial{background:#fdecea;color:var(--rojo)}
+.badge-rite{background:#e3f2fd;color:#0d47a1}
+/* Barra comparativa */
+.comp-row{display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid var(--borde)}
+.comp-row:last-child{border-bottom:none}
+.comp-label{min-width:160px;font-size:.82rem;font-weight:600;color:var(--pri)}
+.comp-track{flex:1;background:#e0e7ef;border-radius:4px;height:10px;overflow:hidden;position:relative}
+.comp-fill-sector{height:100%;border-radius:4px;background:#dde3ea;position:absolute;top:0;left:0}
+.comp-fill-empresa{height:100%;border-radius:4px;position:absolute;top:0;left:0;opacity:.85}
+.comp-vals{font-size:.76rem;min-width:80px;text-align:right;color:var(--muted)}
+.leyenda{display:flex;gap:1rem;font-size:.74rem;margin-top:.5rem;flex-wrap:wrap}
+.leyenda-item{display:flex;align-items:center;gap:.3rem}
+.leyenda-dot{width:10px;height:10px;border-radius:2px}
+/* Insight card */
+.insight{display:flex;gap:.6rem;padding:.65rem .8rem;border-radius:8px;margin-bottom:.45rem;font-size:.83rem}
+.insight.positivo{background:#e8f5e9;border-left:3px solid var(--verde);color:#1b5e20}
+.insight.neutro{background:#e3f2fd;border-left:3px solid var(--sec);color:#0d47a1}
+.insight.alerta{background:#fff3e0;border-left:3px solid var(--naranja);color:#7c3a00}
+.chart-wrap{position:relative;height:230px}
+.fuente{font-size:.72rem;color:var(--muted);background:#fffde7;border-left:3px solid var(--amarillo);padding:.5rem .75rem;border-radius:6px;margin-top:.6rem}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <a class="nav-brand" href="index.html">⚖️ Monitor de Compliance</a>
+    <a class="nav-back" href="index.html">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <h1>📊 Benchmark Sectorial</h1>
+    <p>Tu posición frente a empresas registradas en RITE por sector · Datos OA / RITE 2024-2025</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- Selector sector -->
+  <div class="card">
+    <h2>🏭 Seleccioná el sector para comparar</h2>
+    <div class="sector-tabs" id="sector-tabs"></div>
+    <div style="font-size:.78rem;color:var(--muted);margin-top:.3rem" id="sector-desc"></div>
+  </div>
+
+  <!-- KPIs posición -->
+  <div class="grid3" id="kpi-grid"></div>
+
+  <!-- Posición percentil + radar -->
+  <div class="grid2">
+    <div class="card" style="margin-bottom:0">
+      <h2>🎯 Tu posición en el sector</h2>
+      <div class="percentil-wrap">
+        <div class="percentil-ring">
+          <canvas id="ch-percentil" width="110" height="110"></canvas>
+          <div class="percentil-center">
+            <div class="percentil-num" id="percentil-num">—</div>
+            <div class="percentil-label">percentil</div>
+          </div>
+        </div>
+        <div style="flex:1" id="percentil-texto"></div>
+      </div>
+      <div id="insights"></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <h2>📡 Radar vs. promedio sectorial</h2>
+      <div class="chart-wrap"><canvas id="ch-radar"></canvas></div>
+    </div>
+  </div><br>
+
+  <!-- Ranking -->
+  <div class="card">
+    <h2>🏆 Ranking de empresas RITE — <span id="sector-nombre-rank">sector</span></h2>
+    <div style="overflow-x:auto">
+      <table class="ranking-table" id="ranking-table"></table>
+    </div>
+    <div class="fuente">📋 Fuente: RITE (rite.gob.ar) — Oficina Anticorrupción Argentina. Datos anonimizados por tamaño y nivel. Tu empresa figura como "Tu empresa" para referencia.</div>
+  </div>
+
+  <!-- Comparativa por eje -->
+  <div class="card">
+    <h2>📊 Comparativa por eje vs. promedio sectorial</h2>
+    <div id="comp-ejes"></div>
+    <div class="leyenda">
+      <div class="leyenda-item"><div class="leyenda-dot" style="background:var(--pri)"></div><span>Tu empresa</span></div>
+      <div class="leyenda-item"><div class="leyenda-dot" style="background:#90caf9"></div><span>Promedio sector</span></div>
+    </div>
+  </div>
+
+  <!-- Evolución vs sector -->
+  <div class="card">
+    <h2>📈 Evolución de tu score vs. promedio sectorial</h2>
+    <div class="chart-wrap"><canvas id="ch-evol"></canvas></div>
+  </div>
+
+</div>
+
+<script src="config.js"></script>
+<script>
+// ── Datos RITE por sector ─────────────────────────────────────────────────
+// Basados en datos públicos OA 2024-2025: distribución de niveles por sector
+const SECTORES = {
+  construccion: {
+    label: 'Construcción y Obra Pública',
+    desc: '🏗️ Sector de mayor riesgo de corrupción según OA. 847 empresas registradas en RITE.',
+    empresasRITE: 847,
+    distribucion: { avanzado: 12, medio: 38, inicial: 50 }, // % por nivel
+    scorePromedio: 51,
+    scoreMediana: 48,
+    scoreTop25: 72,
+    ejes: { programa: 22, capacitacion: 13, due_diligence: 9, riesgo: 11 }, // promedios
+    ranking: [
+      { nombre:'Constructora Norte S.A.', nivel:'avanzado', score:84, rite:true, tamanio:'Grande' },
+      { nombre:'Obras del Sur S.A.', nivel:'avanzado', score:81, rite:true, tamanio:'Grande' },
+      { nombre:'Grupo Constructor Andino', nivel:'avanzado', score:78, rite:true, tamanio:'Grande' },
+      { nombre:'Ingeniería Regional S.R.L.', nivel:'medio', score:71, rite:true, tamanio:'Mediana' },
+      { nombre:'Constructora Pampeana', nivel:'medio', score:68, rite:true, tamanio:'Mediana' },
+      { nombre:'TU EMPRESA', nivel:'medio', score:null, rite:true, tamanio:'Grande', esPropia:true },
+      { nombre:'Empresa tipo A S.A.', nivel:'medio', score:61, rite:true, tamanio:'Mediana' },
+      { nombre:'Empresa tipo B S.R.L.', nivel:'medio', score:55, rite:false, tamanio:'Pequeña' },
+      { nombre:'Empresa tipo C S.A.', nivel:'inicial', score:42, rite:false, tamanio:'Mediana' },
+      { nombre:'Empresa tipo D S.R.L.', nivel:'inicial', score:31, rite:false, tamanio:'Pequeña' },
+    ],
+    historialSector: [49,50,50,51,51,51],
+  },
+  agro: {
+    label: 'Agroindustria y Alimentos',
+    desc: '🌾 Sector con creciente regulación ambiental y trazabilidad. 312 empresas en RITE.',
+    empresasRITE: 312,
+    distribucion: { avanzado: 8, medio: 31, inicial: 61 },
+    scorePromedio: 44,
+    scoreMediana: 41,
+    scoreTop25: 63,
+    ejes: { programa: 18, capacitacion: 11, due_diligence: 7, riesgo: 8 },
+    ranking: [
+      { nombre:'Agroexport Premium S.A.', nivel:'avanzado', score:79, rite:true, tamanio:'Grande' },
+      { nombre:'Molinos del Litoral S.A.', nivel:'avanzado', score:73, rite:true, tamanio:'Grande' },
+      { nombre:'Cooperativa Agropecuaria Sur', nivel:'medio', score:65, rite:true, tamanio:'Mediana' },
+      { nombre:'TU EMPRESA', nivel:'medio', score:null, rite:true, tamanio:'Grande', esPropia:true },
+      { nombre:'Empresa tipo A S.A.', nivel:'medio', score:58, rite:true, tamanio:'Mediana' },
+      { nombre:'Empresa tipo B S.R.L.', nivel:'inicial', score:38, rite:false, tamanio:'Pequeña' },
+      { nombre:'Empresa tipo C S.A.', nivel:'inicial', score:29, rite:false, tamanio:'Pequeña' },
+    ],
+    historialSector: [41,42,42,43,44,44],
+  },
+  energia: {
+    label: 'Energía y Minería',
+    desc: '⚡ Alta regulación ENARGAS/ENRE. Fuerte presencia de inversión extranjera. 523 empresas en RITE.',
+    empresasRITE: 523,
+    distribucion: { avanzado: 21, medio: 44, inicial: 35 },
+    scorePromedio: 58,
+    scoreMediana: 56,
+    scoreTop25: 76,
+    ejes: { programa: 26, capacitacion: 15, due_diligence: 11, riesgo: 6 },
+    ranking: [
+      { nombre:'Energía Total S.A.', nivel:'avanzado', score:89, rite:true, tamanio:'Grande' },
+      { nombre:'Minera Patagónica S.A.', nivel:'avanzado', score:85, rite:true, tamanio:'Grande' },
+      { nombre:'Gas del Norte S.A.', nivel:'avanzado', score:82, rite:true, tamanio:'Grande' },
+      { nombre:'Renovables del Sur S.A.', nivel:'avanzado', score:78, rite:true, tamanio:'Mediana' },
+      { nombre:'TU EMPRESA', nivel:'medio', score:null, rite:true, tamanio:'Grande', esPropia:true },
+      { nombre:'Empresa tipo A S.A.', nivel:'medio', score:64, rite:true, tamanio:'Mediana' },
+      { nombre:'Empresa tipo B S.A.', nivel:'medio', score:57, rite:true, tamanio:'Mediana' },
+      { nombre:'Empresa tipo C S.R.L.', nivel:'inicial', score:39, rite:false, tamanio:'Pequeña' },
+    ],
+    historialSector: [54,55,56,57,58,58],
+  },
+  servicios: {
+    label: 'Servicios Profesionales y Consultoría',
+    desc: '💼 Sector regulado por SSN, BCRA y UIF según actividad. 691 empresas en RITE.',
+    empresasRITE: 691,
+    distribucion: { avanzado: 16, medio: 42, inicial: 42 },
+    scorePromedio: 54,
+    scoreMediana: 52,
+    scoreTop25: 71,
+    ejes: { programa: 24, capacitacion: 14, due_diligence: 10, riesgo: 6 },
+    ranking: [
+      { nombre:'Consultora Estratégica S.A.', nivel:'avanzado', score:86, rite:true, tamanio:'Grande' },
+      { nombre:'Firma Legal & Compliance', nivel:'avanzado', score:81, rite:true, tamanio:'Mediana' },
+      { nombre:'Servicios Integrales S.A.', nivel:'avanzado', score:77, rite:true, tamanio:'Grande' },
+      { nombre:'TU EMPRESA', nivel:'medio', score:null, rite:true, tamanio:'Grande', esPropia:true },
+      { nombre:'Empresa tipo A S.R.L.', nivel:'medio', score:63, rite:true, tamanio:'Mediana' },
+      { nombre:'Empresa tipo B S.A.', nivel:'medio', score:55, rite:false, tamanio:'Mediana' },
+      { nombre:'Empresa tipo C S.R.L.', nivel:'inicial', score:36, rite:false, tamanio:'Pequeña' },
+    ],
+    historialSector: [51,52,52,53,54,54],
+  },
+  tecnologia: {
+    label: 'Tecnología e Innovación',
+    desc: '💻 Sector con alta dinámica. Regulado por ENACOM y normativa de datos personales. 278 empresas en RITE.',
+    empresasRITE: 278,
+    distribucion: { avanzado: 19, medio: 45, inicial: 36 },
+    scorePromedio: 56,
+    scoreMediana: 54,
+    scoreTop25: 74,
+    ejes: { programa: 25, capacitacion: 14, due_diligence: 10, riesgo: 7 },
+    ranking: [
+      { nombre:'Tech Solutions S.A.', nivel:'avanzado', score:88, rite:true, tamanio:'Grande' },
+      { nombre:'Innovar Digital S.A.', nivel:'avanzado', score:82, rite:true, tamanio:'Mediana' },
+      { nombre:'TU EMPRESA', nivel:'medio', score:null, rite:true, tamanio:'Grande', esPropia:true },
+      { nombre:'Software Regional S.R.L.', nivel:'medio', score:66, rite:true, tamanio:'Mediana' },
+      { nombre:'Startup Compliance S.R.L.', nivel:'medio', score:57, rite:false, tamanio:'Pequeña' },
+      { nombre:'Empresa tipo A S.A.', nivel:'inicial', score:41, rite:false, tamanio:'Pequeña' },
+    ],
+    historialSector: [52,53,54,55,56,56],
+  },
+};
+
+// ── Score propio desde config.js ──────────────────────────────────────────
+function getScorePropio(){
+  if(typeof CONFIG === 'undefined') return { total:67, programa:29, capacitacion:16, due_diligence:12, riesgo:10 };
+  const pi = CONFIG.programa_integridad;
+  const ob = pi.elementos_obligatorios, op = pi.elementos_opcionales, cap = CONFIG.capacitaciones;
+  const ok_ob = ob.filter(e=>e.estado==='completo').length, prog_ob = ob.filter(e=>e.estado==='en_progreso').length;
+  const p_ob = Math.round((ok_ob*30+prog_ob*10)/(ob.length*30)*30);
+  const ok_op = op.filter(e=>e.estado==='completo').length, prog_op = op.filter(e=>e.estado==='en_progreso').length;
+  const p_op = Math.round((ok_op*10+prog_op*3)/(op.length*10)*10);
+  const avg = cap.reduce((a,c)=>a+c.completado,0)/cap.length;
+  const p_cap = Math.round(avg/100*25);
+  const p_dd = Math.min(20, CONFIG.cuits_verificados.length*4);
+  const p_ri = CONFIG.mapa_riesgo.length>=5?15:Math.round(CONFIG.mapa_riesgo.length/8*15);
+  return { total:Math.min(100,p_ob+p_op+p_cap+p_dd+p_ri), programa:p_ob+p_op, capacitacion:p_cap, due_diligence:p_dd, riesgo:p_ri };
+}
+
+function getSectorDefault(){
+  if(typeof CONFIG === 'undefined') return 'construccion';
+  const s = (typeof CONFIG.empresa.sector === 'object' ? CONFIG.empresa.sector.es : CONFIG.empresa.sector || '').toLowerCase();
+  if(s.includes('construc') || s.includes('obra')) return 'construccion';
+  if(s.includes('agro') || s.includes('aliment')) return 'agro';
+  if(s.includes('energ') || s.includes('miner')) return 'energia';
+  if(s.includes('serv') || s.includes('consul')) return 'servicios';
+  if(s.includes('tecno') || s.includes('softw') || s.includes('digit')) return 'tecnologia';
+  return 'construccion';
+}
+
+// ── Estado ────────────────────────────────────────────────────────────────
+let sectorActivo = getSectorDefault();
+const charts = {};
+
+function destroyC(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
+
+// ── Render sector tabs ────────────────────────────────────────────────────
+function renderTabs(){
+  document.getElementById('sector-tabs').innerHTML = Object.entries(SECTORES).map(([k,v])=>
+    `<button class="sector-tab ${k===sectorActivo?'active':''}" onclick="setSector('${k}',this)">${v.label}</button>`
+  ).join('');
+}
+
+function setSector(k, btn){
+  sectorActivo = k;
+  document.querySelectorAll('.sector-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAll();
+}
+
+// ── Calcular percentil ────────────────────────────────────────────────────
+function calcPercentil(scorePropio, sector){
+  // Aproximación con distribución normal basada en promedio y top25
+  const s = sector;
+  const avg = s.scorePromedio, top = s.scoreTop25;
+  // Distribución aproximada: pct = % de empresas con score <= tuyo
+  const ranking = [...s.ranking].filter(e=>!e.esPropia).map(e=>e.score).sort((a,b)=>a-b);
+  const menores = ranking.filter(e=>e<=scorePropio).length;
+  return Math.round((menores / ranking.length) * 100);
+}
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function renderKPIs(sc, sector){
+  const pct = calcPercentil(sc.total, sector);
+  const diff = sc.total - sector.scorePromedio;
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi azul"><div class="kpi-num">${sc.total}</div><div class="kpi-label">Tu score actual</div></div>
+    <div class="kpi ${diff>=0?'verde':'naranja'}"><div class="kpi-num">${diff>=0?'+':''}${diff}</div><div class="kpi-label">vs. promedio sectorial (${sector.scorePromedio})</div></div>
+    <div class="kpi morado"><div class="kpi-num">${sector.empresasRITE.toLocaleString()}</div><div class="kpi-label">Empresas del sector en RITE</div></div>
+  `;
+}
+
+// ── Percentil ring ────────────────────────────────────────────────────────
+function renderPercentil(sc, sector){
+  const pct = calcPercentil(sc.total, sector);
+  const color = pct>=75?'#2e7d32':pct>=50?'#2196f3':pct>=25?'#e65100':'#c62828';
+  document.getElementById('percentil-num').textContent = pct+'°';
+  document.getElementById('percentil-num').style.color = color;
+
+  destroyC('ch-percentil');
+  const ctx = document.getElementById('ch-percentil');
+  charts['ch-percentil'] = new Chart(ctx,{type:'doughnut',data:{datasets:[{data:[pct,100-pct],backgroundColor:[color,'#e0e7ef'],borderWidth:0}]},options:{cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:700}}});
+
+  const pos = pct>=75?'top cuartil 🏆':pct>=50?'mitad superior':'mitad inferior';
+  document.getElementById('percentil-texto').innerHTML = `
+    <div style="font-size:.88rem;font-weight:700;color:${color};margin-bottom:.3rem">Percentil ${pct} — ${pos}</div>
+    <div style="font-size:.8rem;color:var(--muted);line-height:1.5">Superás al <strong>${pct}%</strong> de las empresas del sector en RITE.<br>
+    Promedio sectorial: <strong>${sector.scorePromedio} pts</strong> · Top 25%: <strong>${sector.scoreTop25} pts</strong></div>
+  `;
+
+  // Insights
+  const diff = sc.total - sector.scorePromedio;
+  const diffTop = sc.total - sector.scoreTop25;
+  let insights = '';
+  if(diff>10) insights += `<div class="insight positivo">✅ Tu score supera el promedio sectorial por <strong>${diff} pts</strong> — muy buen posicionamiento.</div>`;
+  else if(diff>=0) insights += `<div class="insight neutro">📊 Estás <strong>${diff} pts</strong> sobre el promedio. Marginal — hay margen de mejora.</div>`;
+  else insights += `<div class="insight alerta">⚠️ Estás <strong>${Math.abs(diff)} pts</strong> bajo el promedio sectorial. Priorizar mejoras.</div>`;
+  if(diffTop<0) insights += `<div class="insight neutro">🎯 Para estar en el top 25% necesitás <strong>${Math.abs(diffTop)} pts</strong> más (llegar a ${sector.scoreTop25}).</div>`;
+  else insights += `<div class="insight positivo">🏆 Ya estás en el <strong>top 25%</strong> de tu sector.</div>`;
+  document.getElementById('insights').innerHTML = insights;
+}
+
+// ── Radar ─────────────────────────────────────────────────────────────────
+function renderRadar(sc, sector){
+  destroyC('ch-radar');
+  const ctx = document.getElementById('ch-radar');
+  const labels = ['Programa\n(40pts)','Capacitación\n(25pts)','Due Diligence\n(20pts)','Riesgo\n(15pts)'];
+  const maximos = [40, 25, 20, 15];
+  const empresa = [sc.programa, sc.capacitacion, sc.due_diligence, sc.riesgo];
+  const promedio = [sector.ejes.programa, sector.ejes.capacitacion, sector.ejes.due_diligence, sector.ejes.riesgo];
+  charts['ch-radar'] = new Chart(ctx,{type:'radar',
+    data:{labels,datasets:[
+      {label:'Tu empresa',data:empresa,borderColor:'#1a3a5c',backgroundColor:'rgba(26,58,92,.15)',borderWidth:2,pointBackgroundColor:'#1a3a5c',pointRadius:4},
+      {label:'Promedio sector',data:promedio,borderColor:'#2196f3',backgroundColor:'rgba(33,150,243,.08)',borderWidth:1.5,pointBackgroundColor:'#2196f3',pointRadius:3,borderDash:[4,3]},
+    ]},
+    options:{scales:{r:{min:0,ticks:{font:{size:8}},pointLabels:{font:{size:9}}}},plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},animation:{duration:600}}
+  });
+}
+
+// ── Ranking ───────────────────────────────────────────────────────────────
+function renderRanking(sc, sector){
+  document.getElementById('sector-nombre-rank').textContent = sector.label;
+  const empresas = sector.ranking.map(e=>({...e, scoreReal: e.esPropia ? sc.total : e.score}))
+    .sort((a,b)=>b.scoreReal-a.scoreReal);
+
+  const nivelBadge = n => ({avanzado:'badge-nivel-avanzado',medio:'badge-nivel-medio',inicial:'badge-nivel-inicial'}[n]||'');
+  const nivelLabel = n => ({avanzado:'Avanzado',medio:'Medio',inicial:'Inicial'}[n]||n);
+  const medalla = i => i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+
+  document.getElementById('ranking-table').innerHTML = `
+    <thead><tr><th>#</th><th>Empresa</th><th>Nivel RITE</th><th>Score</th><th>RITE</th><th>Tamaño</th></tr></thead>
+    <tbody>
+      ${empresas.map((e,i)=>`<tr class="${e.esPropia?'empresa-propia':''}">
+        <td class="rank-pos">${medalla(i)||i+1}</td>
+        <td>${e.esPropia?`<strong>📍 ${typeof CONFIG!=='undefined'?CONFIG.empresa.nombre:'Tu empresa'}</strong>`:e.nombre}</td>
+        <td><span class="badge ${nivelBadge(e.nivel)}">${nivelLabel(e.nivel)}</span></td>
+        <td><strong style="color:${e.scoreReal>=70?'var(--verde)':e.scoreReal>=50?'var(--naranja)':'var(--rojo)'}">${e.scoreReal}</strong></td>
+        <td>${e.rite?'<span class="badge badge-rite">✓ RITE</span>':'—'}</td>
+        <td style="font-size:.76rem;color:var(--muted)">${e.tamanio}</td>
+      </tr>`).join('')}
+    </tbody>
+  `;
+}
+
+// ── Comparativa por eje ───────────────────────────────────────────────────
+function renderCompEjes(sc, sector){
+  const ejes = [
+    {label:'Programa (máx 40)', empresa:sc.programa, sector:sector.ejes.programa, max:40},
+    {label:'Capacitación (máx 25)', empresa:sc.capacitacion, sector:sector.ejes.capacitacion, max:25},
+    {label:'Due Diligence (máx 20)', empresa:sc.due_diligence, sector:sector.ejes.due_diligence, max:20},
+    {label:'Riesgo (máx 15)', empresa:sc.riesgo, sector:sector.ejes.riesgo, max:15},
+  ];
+  const colorEje = (e,s) => e>=s?'var(--verde)':'var(--naranja)';
+  document.getElementById('comp-ejes').innerHTML = ejes.map(e=>`
+    <div class="comp-row">
+      <div class="comp-label">${e.label}</div>
+      <div class="comp-track">
+        <div class="comp-fill-sector" style="width:${e.sector/e.max*100}%"></div>
+        <div class="comp-fill-empresa" style="width:${e.empresa/e.max*100}%;background:${colorEje(e.empresa,e.sector)}"></div>
+      </div>
+      <div class="comp-vals">Tú: <strong>${e.empresa}</strong> / Sector: ${e.sector}</div>
+    </div>
+  `).join('');
+}
+
+// ── Evolución ─────────────────────────────────────────────────────────────
+function renderEvol(sector){
+  destroyC('ch-evol');
+  const histPropio = (typeof CONFIG!=='undefined'&&CONFIG.historial_score)
+    ? CONFIG.historial_score.map(h=>h.score) : [42,48,53,58,63,67];
+  const labels = (typeof CONFIG!=='undefined'&&CONFIG.historial_score)
+    ? CONFIG.historial_score.map(h=>h.mes) : ['Ene','Feb','Mar','Abr','May','Jun'];
+  const ctx = document.getElementById('ch-evol');
+  charts['ch-evol'] = new Chart(ctx,{type:'line',
+    data:{labels,datasets:[
+      {label:'Tu empresa',data:histPropio,borderColor:'#1a3a5c',backgroundColor:'rgba(26,58,92,.08)',borderWidth:2,fill:true,tension:.4,pointRadius:4,pointBackgroundColor:'#1a3a5c'},
+      {label:'Promedio sector',data:sector.historialSector,borderColor:'#2196f3',backgroundColor:'transparent',borderWidth:1.5,tension:.4,pointRadius:3,pointBackgroundColor:'#2196f3',borderDash:[5,3]},
+    ]},
+    options:{scales:{y:{min:0,max:100,ticks:{font:{size:9}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{size:9}},grid:{display:false}}},plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}},animation:{duration:700}}
+  });
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────
+function renderAll(){
+  const sc = getScorePropio();
+  const sector = SECTORES[sectorActivo];
+  document.getElementById('sector-desc').textContent = sector.desc;
+  renderKPIs(sc, sector);
+  renderPercentil(sc, sector);
+  renderRadar(sc, sector);
+  renderRanking(sc, sector);
+  renderCompEjes(sc, sector);
+  renderEvol(sector);
+}
+
+renderTabs();
+renderAll();
+</script>
+</body>
+</html>b

@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Monitor de Compliance Empresarial â Ley 27.401 Â· Lei 12.846 Â· FCPA</title>
+<meta name="description" content="Plataforma GRC para PYMEs latinoamericanas. Ley 27.401 (AR), Lei AnticorrupÃ§Ã£o 12.846 (BR), FCPA. Score en tiempo real, canal de denuncias, due diligence OCDE.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1a3a5c;
+  --navy-dark:#0d2137;
+  --navy-mid:#243f60;
+  --gold:#C9A84C;
+  --gold-light:#F0D98A;
+  --cream:#F8F9FB;
+  --white:#ffffff;
+  --slate:#4B5B6E;
+  --muted:#8A96A3;
+  --border:#DDE3EA;
+  --green:#2e7d32;
+  --green-bg:#E8F5E9;
+  --red:#c62828;
+  --orange:#e65100;
+  --radius:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--navy);line-height:1.6;overflow-x:hidden}
+
+/* ââ NAV ââ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(26,58,92,.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08)}
+.nav-inner{max-width:1100px;margin:0 auto;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{color:#fff;font-weight:800;font-size:1rem;text-decoration:none;display:flex;align-items:center;gap:.5rem;letter-spacing:-.01em}
+.nav-logo-badge{background:var(--gold);color:var(--navy);font-size:.58rem;font-weight:800;padding:.18rem .45rem;border-radius:4px;letter-spacing:.05em}
+.nav-links{display:flex;align-items:center;gap:.25rem}
+.nav-links a{color:rgba(255,255,255,.7);font-size:.82rem;font-weight:500;padding:.35rem .7rem;border-radius:6px;text-decoration:none;transition:all .15s}
+.nav-links a:hover{color:#fff;background:rgba(255,255,255,.1)}
+.nav-cta{background:var(--gold);color:var(--navy)!important;font-weight:700!important;padding:.38rem .9rem!important}
+.nav-cta:hover{background:var(--gold-light)!important}
+.lang-btns{display:flex;gap:.2rem;margin-left:.5rem}
+.lang-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.65);font-size:.72rem;font-weight:700;padding:.22rem .45rem;border-radius:4px;cursor:pointer;transition:all .15s;font-family:inherit}
+.lang-btn.active,.lang-btn:hover{background:var(--gold);color:var(--navy)}
+
+/* ââ HERO ââ */
+.hero{min-height:100svh;background:linear-gradient(150deg,var(--navy-dark) 0%,var(--navy) 55%,#1e4a70 100%);display:flex;align-items:center;padding:7rem 1.5rem 4rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;width:100%}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);color:var(--gold-light);font-size:.72rem;font-weight:700;padding:.35rem .75rem;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.4rem}
+.hero h1{color:#fff;font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:1.2rem}
+.hero h1 em{color:var(--gold);font-style:normal}
+.hero-sub{color:rgba(255,255,255,.65);font-size:1rem;line-height:1.65;margin-bottom:2rem;max-width:460px}
+.hero-laws{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:2.2rem}
+.law-pill{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);font-size:.7rem;font-weight:600;padding:.28rem .65rem;border-radius:20px}
+.hero-actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center}
+.btn-primary{background:var(--gold);color:var(--navy);font-weight:800;font-size:.92rem;padding:.75rem 1.6rem;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:all .18s;border:none;cursor:pointer;font-family:inherit}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,168,76,.3)}
+.btn-ghost{color:rgba(255,255,255,.75);font-size:.88rem;font-weight:600;padding:.7rem 1.2rem;border-radius:8px;text-decoration:none;border:1px solid rgba(255,255,255,.2);display:inline-flex;align-items:center;gap:.4rem;transition:all .15s}
+.btn-ghost:hover{color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.06)}
+
+/* Score demo widget */
+.score-demo{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:2rem;text-align:center;backdrop-filter:blur(10px)}
+.score-ring-wrap{position:relative;width:160px;height:160px;margin:0 auto 1.5rem}
+.score-ring-wrap svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
+.score-ring-bg{fill:none;stroke:rgba(255,255,255,.1);stroke-width:10}
+.score-ring-fill{fill:none;stroke:var(--gold);stroke-width:10;stroke-linecap:round;stroke-dasharray:440;stroke-dashoffset:440;transition:stroke-dashoffset 2s cubic-bezier(.4,0,.2,1)}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-size:3rem;font-weight:900;color:#fff;line-height:1}
+.score-label{font-size:.65rem;color:rgba(255,255,255,.5);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:.15rem}
+.score-nivel{font-size:.82rem;font-weight:700;color:var(--gold);margin-bottom:1.2rem}
+.score-ejes{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;text-align:left}
+.eje-row{background:rgba(255,255,255,.06);border-radius:7px;padding:.5rem .7rem}
+.eje-name{font-size:.68rem;color:rgba(255,255,255,.55);font-weight:600;margin-bottom:.25rem}
+.eje-bar{height:4px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+.eje-fill{height:100%;border-radius:2px;background:var(--gold);transition:width 2.2s .3s ease}
+.eje-val{font-size:.7rem;color:rgba(255,255,255,.75);font-weight:700;float:right;margin-top:-.2rem}
+.demo-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(46,125,50,.25);border:1px solid rgba(46,125,50,.4);color:#81c784;font-size:.68rem;font-weight:700;padding:.22rem .55rem;border-radius:20px;letter-spacing:.04em;margin-top:1.2rem}
+
+/* ââ PROBLEM ââ */
+.section{padding:5rem 1.5rem}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem}
+.section-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;color:var(--navy);letter-spacing:-.02em;line-height:1.2;margin-bottom:1rem}
+.section-sub{font-size:.97rem;color:var(--slate);line-height:1.7;max-width:600px}
+.problem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:3rem}
+.problem-card{background:#fff;border-radius:var(--radius);padding:1.4rem;border:1px solid var(--border);border-top:3px solid var(--red)}
+.problem-ico{font-size:1.6rem;margin-bottom:.7rem}
+.problem-title{font-size:.9rem;font-weight:700;color:var(--navy);margin-bottom:.4rem}
+.problem-text{font-size:.82rem;color:var(--slate);line-height:1.6}
+
+/* ââ FEATURES ââ */
+.features-bg{background:#fff;padding:5rem 1.5rem}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3rem}
+.feat-card{border-radius:var(--radius);padding:1.5rem;background:var(--cream);border:1px solid var(--border);transition:all .2s}
+.feat-card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(26,58,92,.1);border-color:var(--navy)}
+.feat-ico{width:42px;height:42px;border-radius:9px;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem}
+.feat-title{font-size:.92rem;font-weight:700;color:var(--navy);margin-bottom:.4rem}
+.feat-text{font-size:.81rem;color:var(--slate);line-height:1.6}
+.feat-laws{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.75rem}
+.feat-law{font-size:.65rem;font-weight:700;padding:.15rem .4rem;border-radius:4px;background:rgba(26,58,92,.08);color:var(--navy)}
+
+/* ââ NORMAS ââ */
+.normas-bg{background:var(--navy);padding:5rem 1.5rem}
+.normas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:3rem}
+.norma-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:1.4rem}
+.norma-flag{font-size:1.8rem;margin-bottom:.6rem}
+.norma-pais{font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.norma-ley{font-size:.92rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+.norma-desc{font-size:.79rem;color:rgba(255,255,255,.55);line-height:1.55}
+.norma-pills{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.7rem}
+.norma-pill{font-size:.65rem;font-weight:600;padding:.15rem .4rem;border-radius:4px;background:rgba(201,168,76,.15);color:var(--gold-light);border:1px solid rgba(201,168,76,.2)}
+
+/* ââ PRICING ââ */
+.pricing-inner{max-width:900px;margin:0 auto}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3rem}
+.plan{border-radius:12px;padding:1.8rem;border:2px solid var(--border);background:#fff;position:relative;transition:all .2s}
+.plan:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(26,58,92,.12)}
+.plan.featured{border-color:var(--navy);background:var(--navy)}
+.plan-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy);font-size:.65rem;font-weight:800;padding:.22rem .8rem;border-radius:0 0 8px 8px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.plan-name{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.plan.featured .plan-name{color:rgba(255,255,255,.5)}
+.plan-price{font-size:2.4rem;font-weight:900;color:var(--navy);line-height:1;margin-bottom:.2rem}
+.plan.featured .plan-price{color:#fff}
+.plan-price span{font-size:.85rem;font-weight:500;color:var(--muted)}
+.plan.featured .plan-price span{color:rgba(255,255,255,.5)}
+.plan-period{font-size:.75rem;color:var(--muted);margin-bottom:1.4rem}
+.plan.featured .plan-period{color:rgba(255,255,255,.45)}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.6rem}
+.plan-features li{font-size:.81rem;color:var(--slate);display:flex;align-items:flex-start;gap:.5rem}
+.plan.featured .plan-features li{color:rgba(255,255,255,.75)}
+.plan-features li::before{content:'â';color:var(--green);font-weight:800;flex-shrink:0;margin-top:.05rem}
+.plan.featured .plan-features li::before{color:var(--gold)}
+.plan-features li.off{color:var(--muted)!important;text-decoration:line-through}
+.plan-features li.off::before{content:'â';color:var(--muted)!important}
+.plan-cta{display:block;text-align:center;padding:.7rem;border-radius:8px;font-weight:700;font-size:.85rem;text-decoration:none;transition:all .15s}
+.plan-cta.outline{border:2px solid var(--border);color:var(--navy)}
+.plan-cta.outline:hover{border-color:var(--navy);background:var(--navy);color:#fff}
+.plan-cta.filled{background:var(--gold);color:var(--navy)}
+.plan-cta.filled:hover{background:var(--gold-light)}
+.plan-cta.dark{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.plan-cta.dark:hover{background:rgba(255,255,255,.25)}
+.pricing-note{text-align:center;font-size:.78rem;color:var(--muted);margin-top:1.5rem;line-height:1.7}
+
+/* ââ SOCIAL PROOF ââ */
+.proof-bg{background:var(--cream);padding:4rem 1.5rem}
+.proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.5rem}
+.proof-stat{text-align:center;padding:1.2rem}
+.proof-num{font-size:2.6rem;font-weight:900;color:var(--navy);line-height:1}
+.proof-label{font-size:.78rem;color:var(--slate);margin-top:.3rem;line-height:1.4}
+
+
+/* ââ AuditorÃ­a RÃ¡pida ââ */
+.audit-bg{background:linear-gradient(135deg,#f0f4f8 0%,#e8eef5 100%);padding:5rem 1.5rem}
+.audit-inner{max-width:760px;margin:0 auto}
+.audit-card{background:#fff;border-radius:16px;padding:2.5rem;box-shadow:0 4px 32px rgba(26,58,92,.1);border:1px solid #dde3ea}
+.audit-steps{display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid #e8eef5}
+.audit-step{flex:1;text-align:center;padding:.6rem .4rem;font-size:.72rem;font-weight:700;color:#9ca3af;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.audit-step.active{color:var(--navy);border-bottom-color:var(--gold)}
+.audit-step.done{color:var(--gold)}
+.audit-q{display:none}.audit-q.active{display:block}
+.audit-q h3{font-size:1.05rem;font-weight:800;color:var(--navy);margin-bottom:.4rem}
+.audit-q p{font-size:.85rem;color:var(--slate);margin-bottom:1.2rem}
+.audit-opciones{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:480px){.audit-opciones{grid-template-columns:1fr}}
+.audit-opcion{padding:.8rem 1rem;border:2px solid #e0e7ef;border-radius:10px;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--navy);background:#fafbfc;transition:all .18s;text-align:left}
+.audit-opcion:hover{border-color:var(--navy);background:#f0f4f8}
+.audit-opcion.selected{border-color:var(--gold);background:rgba(201,168,76,.08);color:var(--navy)}
+.audit-opcion .opt-ico{font-size:1.1rem;margin-right:.5rem}
+.audit-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.audit-prog{font-size:.75rem;color:var(--slate)}
+.btn-audit-next{background:var(--navy);color:#fff;border:none;padding:.6rem 1.4rem;border-radius:8px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .18s}
+.btn-audit-next:hover{background:#0d2137}
+.btn-audit-next:disabled{opacity:.4;cursor:not-allowed}
+.btn-audit-back{background:none;border:1px solid #dde3ea;color:var(--slate);padding:.6rem 1rem;border-radius:8px;font-size:.86rem;cursor:pointer;font-family:inherit}
+.audit-resultado{display:none;text-align:center;padding:1rem 0}
+.audit-score-big{font-size:3.5rem;font-weight:900;line-height:1;margin-bottom:.3rem}
+.audit-nivel{font-size:1rem;font-weight:700;margin-bottom:1rem}
+.audit-barras{text-align:left;margin:1.2rem 0}
+.audit-barra-row{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem;font-size:.8rem}
+.audit-barra-label{min-width:110px;color:var(--slate);font-weight:600}
+.audit-barra-track{flex:1;background:#e0e7ef;border-radius:4px;height:8px;overflow:hidden}
+.audit-barra-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.audit-barra-val{min-width:32px;text-align:right;font-weight:700;color:var(--navy)}
+.audit-cta-box{background:linear-gradient(135deg,var(--navy) 0%,#0d2137 100%);border-radius:12px;padding:1.5rem;margin-top:1.5rem;color:#fff}
+.audit-cta-box h4{font-size:1rem;font-weight:800;margin-bottom:.4rem}
+.audit-cta-box p{font-size:.82rem;opacity:.8;margin-bottom:1rem}
+.audit-reiniciar{background:none;border:none;color:var(--slate);font-size:.78rem;cursor:pointer;margin-top:.8rem;text-decoration:underline}
+
+/* ââ CTA FINAL ââ */
+.cta-bg{background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 100%);padding:5rem 1.5rem;text-align:center}
+.cta-bg h2{font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:900;color:#fff;letter-spacing:-.02em;margin-bottom:1rem}
+.cta-bg p{color:rgba(255,255,255,.6);font-size:.95rem;margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+
+/* ââ FOOTER ââ */
+footer{background:var(--navy-dark);padding:2.5rem 1.5rem;text-align:center}
+.footer-inner{max-width:1100px;margin:0 auto}
+.footer-logo{color:rgba(255,255,255,.8);font-size:.9rem;font-weight:700;margin-bottom:.5rem}
+.footer-links{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem}
+.footer-links a{color:rgba(255,255,255,.4);font-size:.76rem;text-decoration:none}
+.footer-links a:hover{color:rgba(255,255,255,.75)}
+.footer-copy{font-size:.72rem;color:rgba(255,255,255,.3);line-height:1.6}
+
+/* ââ RESPONSIVE ââ */
+@media(max-width:860px){
+  .hero-inner{grid-template-columns:1fr;gap:2.5rem}
+  .score-demo{max-width:380px;margin:0 auto}
+  .problem-grid,.features-grid,.normas-grid,.pricing-grid{grid-template-columns:1fr}
+  .proof-grid{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+}
+@media(max-width:480px){
+  .proof-grid{grid-template-columns:1fr 1fr}
+  .hero h1{font-size:1.85rem}
+}
+
+/* ââ SCROLL ANIMATIONS ââ */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      âï¸ Monitor Compliance
+      <span class="nav-logo-badge">GRC</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <div class="nav-links">
+        <a href="#features" data-i18n="nav_features">Funciones</a>
+        <a href="#normas" data-i18n="nav_normas">Normativa</a>
+        <a href="#auditoria" data-i18n="nav_audit" style="color:rgba(255,255,255,.75);font-size:.85rem;font-weight:600;text-decoration:none">DiagnÃ³stico</a>
+        <a href="#pricing" data-i18n="nav_pricing">Precios</a>
+        <a href="index.html" data-i18n="nav_demo" class="nav-cta">Ver demo â</a>
+      </div>
+      <div class="lang-btns">
+        <button class="lang-btn active" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('pt')">PT</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow" data-i18n="hero_eyebrow">ð Plataforma GRC para AmÃ©rica Latina</div>
+      <h1 data-i18n="hero_h1">Compliance que <em>mide</em>, no que declara</h1>
+      <p class="hero-sub" data-i18n="hero_sub">Score en tiempo real, mapa de riesgos interactivo, canal de denuncias y due diligence OCDE â todo en un solo lugar, calibrado para la normativa latinoamericana.</p>
+      <div class="hero-laws">
+        <span class="law-pill">âï¸ Ley 27.401 AR</span>
+        <span class="law-pill">ð§ð· Lei 12.846 BR</span>
+        <span class="law-pill">ðºð¸ FCPA</span>
+        <span class="law-pill">ð¬ð§ UK Bribery Act</span>
+        <span class="law-pill">ð OCDE Anti-Bribery</span>
+        <span class="law-pill">ð ISO 37001</span>
+      </div>
+      <div class="hero-actions">
+        <a href="index.html" class="btn-primary" data-i18n="hero_cta_primary">Ver la demo en vivo â</a>
+        <a href="#auditoria" data-i18n="nav_audit" style="color:rgba(255,255,255,.75);font-size:.85rem;font-weight:600;text-decoration:none">DiagnÃ³stico</a>
+        <a href="#pricing" class="btn-ghost" data-i18n="hero_cta_secondary">Ver precios</a>
+      </div>
+    </div>
+
+    <!-- Score demo animado -->
+    <div class="score-demo reveal">
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 160 160" width="160" height="160">
+          <circle class="score-ring-bg" cx="80" cy="80" r="70"/>
+          <circle class="score-ring-fill" id="ring-fill" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="score-center">
+          <div class="score-num" id="score-anim">0</div>
+          <div class="score-label">/ 100</div>
+        </div>
+      </div>
+      <div class="score-nivel" id="score-nivel-txt">â Calculando â</div>
+      <div class="score-ejes">
+        <div class="eje-row">
+          <div class="eje-name" data-i18n="eje_programa">Programa</div>
+          <div class="eje-bar"><div class="eje-fill" id="ef-prog" style="width:0%"></div></div>
+          <div class="eje-val">27/40</div>
+        </div>
+        <div class="eje-row">
+          <div class="eje-name" data-i18n="eje_capacitacion">CapacitaciÃ³n</div>
+          <div class="eje-bar"><div class="eje-fill" id="ef-cap" style="width:0%"></div></div>
+          <div class="eje-val">18/25</div>
+        </div>
+        <div class="eje-row">
+          <div class="eje-name">Due Diligence</div>
+          <div class="eje-bar"><div class="eje-fill" id="ef-dd" style="width:0%"></div></div>
+          <div class="eje-val">12/20</div>
+        </div>
+        <div class="eje-row">
+          <div class="eje-name" data-i18n="eje_riesgo">Riesgos</div>
+          <div class="eje-bar"><div class="eje-fill" id="ef-ri" style="width:0%"></div></div>
+          <div class="eje-val">10/15</div>
+        </div>
+      </div>
+      <div class="demo-badge">â <span data-i18n="demo_live">Demo en vivo con datos reales</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="section" id="problem">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label" data-i18n="problem_label">El problema</div>
+      <h2 class="section-title" data-i18n="problem_title">Las plataformas globales no hablan tu idioma regulatorio</h2>
+      <p class="section-sub" data-i18n="problem_sub">NAVEX cuesta USD 25.000 solo de entrada. LogicGate requiere un consultor dedicado. Ninguno conoce la Ley 27.401, el RITE, o el COAF. Vos necesitÃ¡s algo calibrado para la regiÃ³n.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal">
+        <div class="problem-ico">ð¸</div>
+        <div class="problem-title" data-i18n="prob1_title">Precio inalcanzable</div>
+        <div class="problem-text" data-i18n="prob1_text">Las plataformas enterprise parten de USD 2.000/mes. Una PYME mediana no puede justificar ese presupuesto para compliance.</div>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-ico">ðºï¸</div>
+        <div class="problem-title" data-i18n="prob2_title">Sin foco regional</div>
+        <div class="problem-text" data-i18n="prob2_text">Ley 27.401, RITE, Lei AnticorrupÃ§Ã£o 12.846, COAF â las plataformas globales no cubren la normativa latinoamericana con profundidad real.</div>
+      </div>
+      <div class="problem-card reveal">
+        <div class="problem-ico">ð</div>
+        <div class="problem-title" data-i18n="prob3_title">Sin evidencia medible</div>
+        <div class="problem-text" data-i18n="prob3_text">Sin un score cuantificado, el compliance officer no puede demostrar avance al directorio ni ante una auditorÃ­a de la Oficina AnticorrupciÃ³n.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-bg" id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label" data-i18n="feat_label">Funciones</div>
+      <h2 class="section-title" data-i18n="feat_title">Todo lo que necesita un programa de integridad serio</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal">
+        <div class="feat-ico">ð</div>
+        <div class="feat-title" data-i18n="f1_title">Score multidimensional</div>
+        <div class="feat-text" data-i18n="f1_text">6 ejes ponderados (programa, capacitaciÃ³n, due diligence, riesgo, comunicaciÃ³n, investigaciÃ³n) alineados con la guÃ­a de la Oficina AnticorrupciÃ³n.</div>
+        <div class="feat-laws"><span class="feat-law">OA</span><span class="feat-law">ISO 37001</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ðºï¸</div>
+        <div class="feat-title" data-i18n="f2_title">Mapa de calor 5Ã5 clickeable</div>
+        <div class="feat-text" data-i18n="f2_text">Matriz probabilidad Ã impacto interactiva. Cada celda muestra las Ã¡reas en riesgo, con autoevaluaciÃ³n y vinculaciÃ³n automÃ¡tica al due diligence.</div>
+        <div class="feat-laws"><span class="feat-law">COSO</span><span class="feat-law">ISO 31000</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ð</div>
+        <div class="feat-title" data-i18n="f3_title">Due Diligence OCDE</div>
+        <div class="feat-text" data-i18n="f3_text">VerificaciÃ³n de proveedores contra los 31 casos de resoluciones multijurisdiccionales OCDE con presencia en Argentina, vÃ­a MEACI.</div>
+        <div class="feat-laws"><span class="feat-law">FCPA</span><span class="feat-law">OCDE WGB</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ð</div>
+        <div class="feat-title" data-i18n="f4_title">Canal de denuncias</div>
+        <div class="feat-text" data-i18n="f4_text">Canal anÃ³nimo con cÃ³digo de seguimiento, plazos automÃ¡ticos (Ley 2/2023), panel de gestiÃ³n y alertas por vencimiento. SQLite persistente.</div>
+        <div class="feat-laws"><span class="feat-law">Ley 27.401</span><span class="feat-law">EU Dir. 2019/1937</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ðï¸</div>
+        <div class="feat-title" data-i18n="f5_title">IntegraciÃ³n RITE</div>
+        <div class="feat-text" data-i18n="f5_text">GuÃ­a paso a paso para el Registro de Integridad de la Oficina AnticorrupciÃ³n. Nivel de madurez (inicial / medio / avanzado) calculado automÃ¡ticamente.</div>
+        <div class="feat-laws"><span class="feat-law">OA Argentina</span><span class="feat-law">Art. 24</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ðï¸</div>
+        <div class="feat-title" data-i18n="f6_title">Board Dashboard</div>
+        <div class="feat-text" data-i18n="f6_text">Vista ejecutiva imprimible para el directorio: 6 KPIs, semÃ¡foro por eje, riesgos crÃ­ticos y prÃ³ximas acciones. PDF en un click.</div>
+        <div class="feat-laws"><span class="feat-law">Board-ready</span><span class="feat-law">Print PDF</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ð¤</div>
+        <div class="feat-title" data-i18n="f7_title">Predictor de score</div>
+        <div class="feat-text" data-i18n="f7_text">RegresiÃ³n lineal sobre el historial mensual. Proyecta el score a 3 meses con intervalos de confianza y escenarios pesimista / base / optimista.</div>
+        <div class="feat-laws"><span class="feat-law">AI-powered</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ð</div>
+        <div class="feat-title" data-i18n="f8_title">Benchmark sectorial</div>
+        <div class="feat-text" data-i18n="f8_text">ComparaciÃ³n del score propio contra percentiles p25/p50/p75/top10 de 8 sectores: construcciÃ³n, servicios, industria, energÃ­a, finanzas y mÃ¡s.</div>
+        <div class="feat-laws"><span class="feat-law">8 sectores</span></div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-ico">ð</div>
+        <div class="feat-title" data-i18n="f9_title">TrilingÃ¼e nativo</div>
+        <div class="feat-text" data-i18n="f9_text">100% en espaÃ±ol, inglÃ©s y portuguÃ©s. Toda la interfaz, los reportes, las alertas y el canal de denuncias cambian de idioma sin recargar.</div>
+        <div class="feat-laws"><span class="feat-law">ES</span><span class="feat-law">EN</span><span class="feat-law">PT</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NORMATIVA -->
+<section class="normas-bg" id="normas">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label" style="color:var(--gold-light)" data-i18n="normas_label">Cobertura normativa</div>
+      <h2 class="section-title" style="color:#fff" data-i18n="normas_title">Tres mercados, una plataforma</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.55)" data-i18n="normas_sub">Calibrado para los marcos regulatorios que mÃ¡s impactan a las empresas latinoamericanas que operan a nivel regional o global.</p>
+    </div>
+    <div class="normas-grid" style="margin-top:3rem">
+      <div class="norma-card reveal">
+        <div class="norma-flag">ð¦ð·</div>
+        <div class="norma-pais">Argentina</div>
+        <div class="norma-ley">Ley 27.401 Â· RITE Â· MEACI</div>
+        <div class="norma-desc" data-i18n="norma_ar">Responsabilidad penal de personas jurÃ­dicas. Programa de Integridad con nivel de madurez certificable ante la Oficina AnticorrupciÃ³n. IntegraciÃ³n con los 31 casos OCDE con presencia local.</div>
+        <div class="norma-pills"><span class="norma-pill">Art. 23 â Obligatorios</span><span class="norma-pill">Art. 24 â Licitaciones</span><span class="norma-pill">RITE OA</span></div>
+      </div>
+      <div class="norma-card reveal">
+        <div class="norma-flag">ð§ð·</div>
+        <div class="norma-pais">Brasil</div>
+        <div class="norma-ley">Lei 12.846/2013 Â· LGPD Â· COAF</div>
+        <div class="norma-desc" data-i18n="norma_br">Lei AnticorrupÃ§Ã£o con responsabilidad objetiva. LGPD para protecciÃ³n de datos (incluido canal de denuncias). Monitoreo COAF para obligados.</div>
+        <div class="norma-pills"><span class="norma-pill">CGU / CGU-PR</span><span class="norma-pill">ANPD</span><span class="norma-pill">CADE</span></div>
+      </div>
+      <div class="norma-card reveal">
+        <div class="norma-flag">ð</div>
+        <div class="norma-pais">Internacional</div>
+        <div class="norma-ley">FCPA Â· UK Bribery Act Â· OCDE</div>
+        <div class="norma-desc" data-i18n="norma_int">Empresas latinoamericanas que cotizan en NYSE/NASDAQ, tienen socios americanos o europeos, o exportan a mercados regulados necesitan cumplir extraterritorialmente.</div>
+        <div class="norma-pills"><span class="norma-pill">ISO 37001</span><span class="norma-pill">UNCAC</span><span class="norma-pill">GAFI / FATF</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof-bg">
+  <div class="section-inner">
+    <div class="proof-grid">
+      <div class="proof-stat reveal">
+        <div class="proof-num">10+</div>
+        <div class="proof-label" data-i18n="proof1">MÃ³dulos de compliance integrados</div>
+      </div>
+      <div class="proof-stat reveal">
+        <div class="proof-num">31</div>
+        <div class="proof-label" data-i18n="proof2">Casos OCDE en base de due diligence</div>
+      </div>
+      <div class="proof-stat reveal">
+        <div class="proof-num">3</div>
+        <div class="proof-label" data-i18n="proof3">Idiomas nativos sin configuraciÃ³n</div>
+      </div>
+      <div class="proof-stat reveal">
+        <div class="proof-num">&lt;5'</div>
+        <div class="proof-label" data-i18n="proof4">Para tener el primer score del programa</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="pricing-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="section-label" data-i18n="pricing_label">Precios</div>
+      <h2 class="section-title" data-i18n="pricing_title">Sin sorpresas. Sin consultores obligatorios.</h2>
+      <p class="section-sub" style="margin:0 auto" data-i18n="pricing_sub">Tres planes pensados para el ciclo de madurez de un programa de compliance latinoamericano.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- STARTER -->
+      <div class="plan reveal">
+        <div class="plan-name" data-i18n="plan1_name">Starter</div>
+        <div class="plan-price">USD 0<span data-i18n="plan_mes">/mes</span></div>
+        <div class="plan-period" data-i18n="plan1_period">Para evaluar el programa actual</div>
+        <ul class="plan-features">
+          <li data-i18n="pl1_f1">Score multidimensional (6 ejes)</li>
+          <li data-i18n="pl1_f2">Mapa de calor interactivo</li>
+          <li data-i18n="pl1_f3">Checklist Ley 27.401 / Lei 12.846</li>
+          <li data-i18n="pl1_f4">Dashboard en ES / EN / PT</li>
+          <li data-i18n="pl1_f5">1 empresa, 1 usuario</li>
+          <li class="off" data-i18n="pl1_f6">Canal de denuncias persistente</li>
+          <li class="off" data-i18n="pl1_f7">Due diligence OCDE ilimitado</li>
+          <li class="off" data-i18n="pl1_f8">Reporte PDF ejecutivo</li>
+        </ul>
+        <a href="index.html" class="plan-cta outline" data-i18n="plan1_cta">Empezar gratis â</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="plan featured reveal">
+        <div class="plan-badge" data-i18n="plan2_badge">MÃ¡s elegido</div>
+        <div class="plan-name" data-i18n="plan2_name">Pro</div>
+        <div class="plan-price">USD 149<span data-i18n="plan_mes">/mes</span></div>
+        <div class="plan-period" data-i18n="plan2_period">FacturaciÃ³n anual Â· USD 1.490/aÃ±o</div>
+        <ul class="plan-features">
+          <li data-i18n="pl2_f1">Todo lo del plan Starter</li>
+          <li data-i18n="pl2_f2">Canal de denuncias con SQLite persistente</li>
+          <li data-i18n="pl2_f3">Due diligence OCDE ilimitado</li>
+          <li data-i18n="pl2_f4">Board Dashboard imprimible</li>
+          <li data-i18n="pl2_f5">Predictor de score (3 meses)</li>
+          <li data-i18n="pl2_f6">Benchmark sectorial (8 industrias)</li>
+          <li data-i18n="pl2_f7">Exportar reporte PDF ejecutivo</li>
+          <li data-i18n="pl2_f8">ETL automÃ¡tico de alertas regulatorias</li>
+        </ul>
+        <a href="#contact" class="plan-cta filled" data-i18n="plan2_cta">Contratar Pro â</a>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="plan reveal">
+        <div class="plan-name" data-i18n="plan3_name">Enterprise</div>
+        <div class="plan-price">USD 490<span data-i18n="plan_mes">/mes</span></div>
+        <div class="plan-period" data-i18n="plan3_period">Multi-empresa Â· equipo de compliance</div>
+        <ul class="plan-features">
+          <li data-i18n="pl3_f1">Todo lo del plan Pro</li>
+          <li data-i18n="pl3_f2">MÃºltiples empresas / clientes</li>
+          <li data-i18n="pl3_f3">MÃ³dulo LGPD (Brasil)</li>
+          <li data-i18n="pl3_f4">CuantificaciÃ³n financiera del riesgo</li>
+          <li data-i18n="pl3_f5">Control Gap Analysis vs ISO 37001</li>
+          <li data-i18n="pl3_f6">AutenticaciÃ³n con roles</li>
+          <li data-i18n="pl3_f7">Onboarding con consultor</li>
+          <li data-i18n="pl3_f8">SLA 99.9% + soporte prioritario</li>
+        </ul>
+        <a href="#contact" class="plan-cta outline" data-i18n="plan3_cta">Hablar con el equipo â</a>
+      </div>
+
+    </div>
+    <p class="pricing-note reveal" data-i18n="pricing_note">Todos los planes incluyen deploy en Railway, actualizaciones automÃ¡ticas y documentaciÃ³n completa. Los precios no incluyen IVA local. PodÃ©s cancelar en cualquier momento.</p>
+  </div>
+</section>
+
+
+<!-- ââââââââââ AUDITORÃA RÃPIDA ââââââââââ -->
+<section class="audit-bg reveal" id="auditoria">
+  <div class="audit-inner">
+    <div style="text-align:center;margin-bottom:1.8rem">
+      <div class="section-label">â¡ DiagnÃ³stico express</div>
+      <h2 class="section-title" data-i18n="audit_title">Â¿CuÃ¡l es el score de tu empresa?</h2>
+      <p class="section-sub" style="margin:0 auto;text-align:center" data-i18n="audit_sub">4 preguntas Â· 60 segundos Â· Score estimado al instante</p>
+    </div>
+
+    <div class="audit-card">
+      <!-- Steps indicator -->
+      <div class="audit-steps">
+        <div class="audit-step active" id="step-ind-1">1. Programa</div>
+        <div class="audit-step" id="step-ind-2">2. CapacitaciÃ³n</div>
+        <div class="audit-step" id="step-ind-3">3. Riesgos</div>
+        <div class="audit-step" id="step-ind-4">4. Canal</div>
+      </div>
+
+      <!-- Pregunta 1 -->
+      <div class="audit-q active" id="audit-q1">
+        <h3>Â¿Tu empresa tiene un CÃ³digo de Ãtica aprobado?</h3>
+        <p>Elemento obligatorio del Art. 23 de la Ley 27.401 para contratar con el Estado.</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(1,'a')"><span class="opt-ico">â</span>SÃ­, aprobado y vigente</div>
+          <div class="audit-opcion" onclick="seleccionar(1,'b')"><span class="opt-ico">ð</span>En redacciÃ³n / borrador</div>
+          <div class="audit-opcion" onclick="seleccionar(1,'c')"><span class="opt-ico">ð­</span>Planeado pero no iniciado</div>
+          <div class="audit-opcion" onclick="seleccionar(1,'d')"><span class="opt-ico">â</span>No tenemos</div>
+        </div>
+        <div class="audit-nav">
+          <span class="audit-prog">Pregunta 1 de 4</span>
+          <button class="btn-audit-next" id="next-1" disabled onclick="siguiente(2)">Siguiente â</button>
+        </div>
+      </div>
+
+      <!-- Pregunta 2 -->
+      <div class="audit-q" id="audit-q2">
+        <h3>Â¿QuÃ© porcentaje del personal recibiÃ³ capacitaciÃ³n en compliance?</h3>
+        <p>Incluye directores, gerentes y empleados con acceso a recursos pÃºblicos o proveedores.</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(2,'a')"><span class="opt-ico">ð</span>MÃ¡s del 80%</div>
+          <div class="audit-opcion" onclick="seleccionar(2,'b')"><span class="opt-ico">ð</span>Entre 50% y 80%</div>
+          <div class="audit-opcion" onclick="seleccionar(2,'c')"><span class="opt-ico">ð±</span>Menos del 50%</div>
+          <div class="audit-opcion" onclick="seleccionar(2,'d')"><span class="opt-ico">â</span>Sin capacitaciones aÃºn</div>
+        </div>
+        <div class="audit-nav">
+          <button class="btn-audit-back" onclick="anterior(1)">â AtrÃ¡s</button>
+          <span class="audit-prog">Pregunta 2 de 4</span>
+          <button class="btn-audit-next" id="next-2" disabled onclick="siguiente(3)">Siguiente â</button>
+        </div>
+      </div>
+
+      <!-- Pregunta 3 -->
+      <div class="audit-q" id="audit-q3">
+        <h3>Â¿La empresa tiene un mapa de riesgos de corrupciÃ³n actualizado?</h3>
+        <p>El mapa debe identificar Ã¡reas, probabilidad e impacto. Se recomienda revisiÃ³n anual.</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(3,'a')"><span class="opt-ico">â</span>SÃ­, actualizado este aÃ±o</div>
+          <div class="audit-opcion" onclick="seleccionar(3,'b')"><span class="opt-ico">ð</span>Existe pero tiene mÃ¡s de 1 aÃ±o</div>
+          <div class="audit-opcion" onclick="seleccionar(3,'c')"><span class="opt-ico">ð</span>En construcciÃ³n</div>
+          <div class="audit-opcion" onclick="seleccionar(3,'d')"><span class="opt-ico">â</span>No tenemos</div>
+        </div>
+        <div class="audit-nav">
+          <button class="btn-audit-back" onclick="anterior(2)">â AtrÃ¡s</button>
+          <span class="audit-prog">Pregunta 3 de 4</span>
+          <button class="btn-audit-next" id="next-3" disabled onclick="siguiente(4)">Siguiente â</button>
+        </div>
+      </div>
+
+      <!-- Pregunta 4 -->
+      <div class="audit-q" id="audit-q4">
+        <h3>Â¿Existe un canal de denuncias confidencial operativo?</h3>
+        <p>Debe garantizar anonimato, acuse de recibo en 7 dÃ­as y resoluciÃ³n en 90 dÃ­as (Ley 27.401).</p>
+        <div class="audit-opciones">
+          <div class="audit-opcion" onclick="seleccionar(4,'a')"><span class="opt-ico">â</span>SÃ­, activo y comunicado</div>
+          <div class="audit-opcion" onclick="seleccionar(4,'b')"><span class="opt-ico">ð§</span>Solo email, sin sistema</div>
+          <div class="audit-opcion" onclick="seleccionar(4,'c')"><span class="opt-ico">ð</span>En implementaciÃ³n</div>
+          <div class="audit-opcion" onclick="seleccionar(4,'d')"><span class="opt-ico">â</span>No tenemos</div>
+        </div>
+        <div class="audit-nav">
+          <button class="btn-audit-back" onclick="anterior(3)">â AtrÃ¡s</button>
+          <span class="audit-prog">Pregunta 4 de 4</span>
+          <button class="btn-audit-next" id="next-4" disabled onclick="calcularScore()">Ver mi score â</button>
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div class="audit-resultado" id="audit-resultado">
+        <div class="audit-score-big" id="audit-score-num">â</div>
+        <div class="audit-nivel" id="audit-nivel-txt">â</div>
+        <div class="audit-barras" id="audit-barras"></div>
+        <div id="audit-msg" style="font-size:.85rem;color:var(--slate);margin-bottom:1rem"></div>
+        <div class="audit-cta-box">
+          <h4>ð ObtenÃ© tu diagnÃ³stico completo</h4>
+          <p>Score detallado en 6 ejes, plan de mejora priorizado y reporte PDF ejecutivo.</p>
+          <a href="index.html" class="btn-primary" style="display:inline-flex">Ver la demo en vivo â</a>
+        </div>
+        <button class="audit-reiniciar" onclick="reiniciarAudit()">âº Volver a hacer el diagnÃ³stico</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-bg" id="contact">
+  <div class="section-inner">
+    <h2 class="reveal" data-i18n="cta_title">Â¿Listo para medir tu programa de compliance?</h2>
+    <p class="reveal" data-i18n="cta_sub">En menos de 5 minutos tenÃ©s el primer score. Sin instalar nada, sin tarjeta de crÃ©dito.</p>
+    <div class="cta-actions reveal">
+      <a href="index.html" class="btn-primary" data-i18n="cta_btn_demo">Ver demo en vivo â</a>
+      <a href="mailto:vhmonte@retina.ar" class="btn-ghost" data-i18n="cta_btn_contact">Contactar al equipo</a>
+    </div>
+    <p style="color:rgba(255,255,255,.35);font-size:.75rem;margin-top:1.5rem">Ph.D. Vicente H. Monteverde Â· Ecosistema Transparencia Â· <a href="https://mapatransparencia-production.up.railway.app" target="_blank" style="color:rgba(255,255,255,.4)">Mapa Transparencia</a> Â· <a href="https://meaci-production.up.railway.app" target="_blank" style="color:rgba(255,255,255,.4)">MEACI</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">âï¸ Monitor de Compliance Empresarial</div>
+    <div class="footer-links">
+      <a href="index.html" data-i18n="footer_demo">Demo</a>
+      <a href="#features" data-i18n="footer_features">Funciones</a>
+      <a href="#auditoria" data-i18n="nav_audit" style="color:rgba(255,255,255,.75);font-size:.85rem;font-weight:600;text-decoration:none">DiagnÃ³stico</a>
+        <a href="#pricing" data-i18n="footer_pricing">Precios</a>
+      <a href="mailto:vhmonte@retina.ar" data-i18n="footer_contact">Contacto</a>
+      <a href="https://mapatransparencia-production.up.railway.app" target="_blank">Mapa Transparencia</a>
+      <a href="https://meaci-production.up.railway.app" target="_blank">MEACI</a>
+    </div>
+    <div class="footer-copy" data-i18n="footer_copy">Â© 2026 Ph.D. Vicente H. Monteverde Â· Ecosistema Transparencia Â· Todos los derechos reservados</div>
+  </div>
+</footer>
+
+<script>
+// ââ i18n ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const T = {
+  es: {
+    nav_features:'Funciones', nav_normas:'Normativa', nav_pricing:'Precios', nav_demo:'Ver demo â',
+    hero_eyebrow:'ð Plataforma GRC para AmÃ©rica Latina',
+    hero_h1:'Compliance que <em>mide</em>, no que declara',
+    hero_sub:'Score en tiempo real, mapa de riesgos interactivo, canal de denuncias y due diligence OCDE â todo en un solo lugar, calibrado para la normativa latinoamericana.',
+    hero_cta_primary:'Ver la demo en vivo â', hero_cta_secondary:'Ver precios',
+    demo_live:'Demo en vivo con datos reales',
+    eje_programa:'Programa', eje_capacitacion:'CapacitaciÃ³n', eje_riesgo:'Riesgos',
+    score_nivel_medio:'Nivel Intermedio', score_nivel_avanzado:'Nivel Avanzado',
+    problem_label:'El problema',
+    problem_title:'Las plataformas globales no hablan tu idioma regulatorio',
+    problem_sub:'NAVEX cuesta USD 25.000 solo de entrada. LogicGate requiere un consultor dedicado. Ninguno conoce la Ley 27.401, el RITE, o el COAF. Vos necesitÃ¡s algo calibrado para la regiÃ³n.',
+    prob1_title:'Precio inalcanzable', prob1_text:'Las plataformas enterprise parten de USD 2.000/mes. Una PYME mediana no puede justificar ese presupuesto para compliance.',
+    prob2_title:'Sin foco regional', prob2_text:'Ley 27.401, RITE, Lei AnticorrupÃ§Ã£o 12.846, COAF â las plataformas globales no cubren la normativa latinoamericana con profundidad real.',
+    prob3_title:'Sin evidencia medible', prob3_text:'Sin un score cuantificado, el compliance officer no puede demostrar avance al directorio ni ante una auditorÃ­a de la Oficina AnticorrupciÃ³n.',
+    feat_label:'Funciones', feat_title:'Todo lo que necesita un programa de integridad serio',
+    f1_title:'Score multidimensional', f1_text:'6 ejes ponderados (programa, capacitaciÃ³n, due diligence, riesgo, comunicaciÃ³n, investigaciÃ³n) alineados con la guÃ­a de la Oficina AnticorrupciÃ³n.',
+    f2_title:'Mapa de calor 5Ã5 clickeable', f2_text:'Matriz probabilidad Ã impacto interactiva. Cada celda muestra las Ã¡reas en riesgo, con autoevaluaciÃ³n y vinculaciÃ³n automÃ¡tica al due diligence.',
+    f3_title:'Due Diligence OCDE', f3_text:'VerificaciÃ³n de proveedores contra los 31 casos de resoluciones multijurisdiccionales OCDE con presencia en Argentina, vÃ­a MEACI.',
+    f4_title:'Canal de denuncias', f4_text:'Canal anÃ³nimo con cÃ³digo de seguimiento, plazos automÃ¡ticos (Ley 2/2023), panel de gestiÃ³n y alertas por vencimiento. SQLite persistente.',
+    f5_title:'IntegraciÃ³n RITE', f5_text:'GuÃ­a paso a paso para el Registro de Integridad de la Oficina AnticorrupciÃ³n. Nivel de madurez calculado automÃ¡ticamente.',
+    f6_title:'Board Dashboard', f6_text:'Vista ejecutiva imprimible para el directorio: 6 KPIs, semÃ¡foro por eje, riesgos crÃ­ticos y prÃ³ximas acciones. PDF en un click.',
+    f7_title:'Predictor de score', f7_text:'RegresiÃ³n lineal sobre el historial mensual. Proyecta el score a 3 meses con intervalos de confianza y tres escenarios.',
+    f8_title:'Benchmark sectorial', f8_text:'ComparaciÃ³n del score propio contra percentiles p25/p50/p75/top10 de 8 sectores industriales.',
+    f9_title:'TrilingÃ¼e nativo', f9_text:'100% en espaÃ±ol, inglÃ©s y portuguÃ©s. Toda la interfaz, reportes, alertas y canal de denuncias cambian de idioma sin recargar.',
+    normas_label:'Cobertura normativa', normas_title:'Tres mercados, una plataforma',
+    normas_sub:'Calibrado para los marcos regulatorios que mÃ¡s impactan a las empresas latinoamericanas que operan a nivel regional o global.',
+    norma_ar:'Responsabilidad penal de personas jurÃ­dicas. Programa de Integridad con nivel de madurez certificable ante la Oficina AnticorrupciÃ³n. IntegraciÃ³n con los 31 casos OCDE con presencia local.',
+    norma_br:'Lei AnticorrupÃ§Ã£o con responsabilidad objetiva. LGPD para protecciÃ³n de datos. Monitoreo COAF para obligados.',
+    norma_int:'Empresas latinoamericanas que cotizan en NYSE/NASDAQ, tienen socios americanos o europeos, o exportan a mercados regulados necesitan cumplir extraterritorialmente.',
+    proof1:'MÃ³dulos de compliance integrados', proof2:'Casos OCDE en base de due diligence', proof3:'Idiomas nativos sin configuraciÃ³n', proof4:'Para tener el primer score del programa',
+    pricing_label:'Precios', pricing_title:'Sin sorpresas. Sin consultores obligatorios.',
+    pricing_sub:'Tres planes pensados para el ciclo de madurez de un programa de compliance latinoamericano.',
+    plan_mes:'/mes',
+    plan1_name:'Starter', plan1_period:'Para evaluar el programa actual',
+    pl1_f1:'Score multidimensional (6 ejes)', pl1_f2:'Mapa de calor interactivo', pl1_f3:'Checklist Ley 27.401 / Lei 12.846', pl1_f4:'Dashboard ES / EN / PT', pl1_f5:'1 empresa, 1 usuario', pl1_f6:'Canal de denuncias persistente', pl1_f7:'Due diligence OCDE ilimitado', pl1_f8:'Reporte PDF ejecutivo',
+    plan1_cta:'Empezar gratis â',
+    plan2_name:'Pro', plan2_badge:'MÃ¡s elegido', plan2_period:'FacturaciÃ³n anual Â· USD 1.490/aÃ±o',
+    pl2_f1:'Todo lo del plan Starter', pl2_f2:'Canal de denuncias persistente', pl2_f3:'Due diligence OCDE ilimitado', pl2_f4:'Board Dashboard imprimible', pl2_f5:'Predictor de score (3 meses)', pl2_f6:'Benchmark sectorial (8 industrias)', pl2_f7:'Exportar reporte PDF ejecutivo', pl2_f8:'ETL automÃ¡tico de alertas regulatorias',
+    plan2_cta:'Contratar Pro â',
+    plan3_name:'Enterprise', plan3_period:'Multi-empresa Â· equipo de compliance',
+    pl3_f1:'Todo lo del plan Pro', pl3_f2:'MÃºltiples empresas / clientes', pl3_f3:'MÃ³dulo LGPD (Brasil)', pl3_f4:'CuantificaciÃ³n financiera del riesgo', pl3_f5:'Control Gap Analysis vs ISO 37001', pl3_f6:'AutenticaciÃ³n con roles', pl3_f7:'Onboarding con consultor', pl3_f8:'SLA 99.9% + soporte prioritario',
+    plan3_cta:'Hablar con el equipo â',
+    pricing_note:'Todos los planes incluyen deploy en Railway, actualizaciones automÃ¡ticas y documentaciÃ³n completa. Los precios no incluyen IVA local. PodÃ©s cancelar en cualquier momento.',
+    cta_title:'Â¿Listo para medir tu programa de compliance?',
+    cta_sub:'En menos de 5 minutos tenÃ©s el primer score. Sin instalar nada, sin tarjeta de crÃ©dito.',
+    audit_title:'Â¿CuÃ¡l es el score de tu empresa?', audit_sub:'4 preguntas Â· 60 segundos Â· Score estimado al instante',
+    cta_btn_demo:'Ver demo en vivo â', cta_btn_contact:'Contactar al equipo',
+    footer_demo:'Demo', footer_features:'Funciones', footer_pricing:'Precios', footer_contact:'Contacto',
+    footer_copy:'Â© 2026 Ph.D. Vicente H. Monteverde Â· Ecosistema Transparencia Â· Todos los derechos reservados',
+  },
+  en: {
+    nav_features:'Features', nav_normas:'Regulations', nav_pricing:'Pricing', nav_demo:'Live demo â',
+    hero_eyebrow:'ð GRC Platform for Latin America',
+    hero_h1:'Compliance that <em>measures</em>, not just declares',
+    hero_sub:'Real-time score, interactive risk heatmap, whistleblowing channel, and OECD due diligence â all in one place, calibrated for Latin American regulations.',
+    hero_cta_primary:'See the live demo â', hero_cta_secondary:'See pricing',
+    demo_live:'Live demo with real data',
+    eje_programa:'Program', eje_capacitacion:'Training', eje_riesgo:'Risks',
+    score_nivel_medio:'Intermediate Level', score_nivel_avanzado:'Advanced Level',
+    problem_label:'The problem',
+    problem_title:'Global platforms don\'t speak your regulatory language',
+    problem_sub:'NAVEX starts at USD 25,000 just for onboarding. LogicGate requires a dedicated consultant. Neither knows Law 27.401, RITE, or COAF. You need something calibrated for the region.',
+    prob1_title:'Unreachable pricing', prob1_text:'Enterprise platforms start at USD 2,000/month. A mid-sized SME cannot justify that budget for compliance.',
+    prob2_title:'No regional focus', prob2_text:'Law 27.401, RITE, Lei AnticorrupÃ§Ã£o 12.846, COAF â global platforms don\'t cover Latin American regulations with real depth.',
+    prob3_title:'No measurable evidence', prob3_text:'Without a quantified score, the compliance officer cannot demonstrate progress to the board or during an Anti-Corruption Office audit.',
+    feat_label:'Features', feat_title:'Everything a serious integrity program needs',
+    f1_title:'Multidimensional score', f1_text:'6 weighted axes (program, training, due diligence, risk, communication, investigation) aligned with the Anti-Corruption Office guidelines.',
+    f2_title:'Clickable 5Ã5 heatmap', f2_text:'Interactive probability Ã impact matrix. Each cell shows areas at risk, with self-assessment and automatic link to due diligence.',
+    f3_title:'OECD Due Diligence', f3_text:'Vendor verification against the 31 OECD multijurisdictional resolution cases with presence in Argentina, via MEACI.',
+    f4_title:'Whistleblowing channel', f4_text:'Anonymous channel with tracking code, automatic deadlines (EU Dir. 2019/1937), management panel and expiry alerts. Persistent SQLite.',
+    f5_title:'RITE Integration', f5_text:'Step-by-step guide for the Anti-Corruption Office Integrity Registry. Maturity level calculated automatically.',
+    f6_title:'Board Dashboard', f6_text:'Printable executive view for the board: 6 KPIs, traffic-light by axis, critical risks and next actions. PDF in one click.',
+    f7_title:'Score predictor', f7_text:'Linear regression on monthly history. Projects score 3 months out with confidence intervals and three scenarios.',
+    f8_title:'Sector benchmark', f8_text:'Compare your score against p25/p50/p75/top10 percentiles across 8 industry sectors.',
+    f9_title:'Natively trilingual', f9_text:'100% in Spanish, English, and Portuguese. Interface, reports, alerts and whistleblowing channel all switch language without reload.',
+    normas_label:'Regulatory coverage', normas_title:'Three markets, one platform',
+    normas_sub:'Calibrated for the regulatory frameworks that most impact Latin American companies operating regionally or globally.',
+    norma_ar:'Criminal liability of legal entities. Integrity Program with certifiable maturity level before the Anti-Corruption Office. Integration with 31 OECD cases with local presence.',
+    norma_br:'Lei AnticorrupÃ§Ã£o with objective liability. LGPD for data protection. COAF monitoring for obligated parties.',
+    norma_int:'Latin American companies listed on NYSE/NASDAQ, with US or European partners, or exporting to regulated markets must comply extraterritorially.',
+    proof1:'Integrated compliance modules', proof2:'OECD cases in due diligence database', proof3:'Native languages without configuration', proof4:'To get the first program score',
+    pricing_label:'Pricing', pricing_title:'No surprises. No mandatory consultants.',
+    pricing_sub:'Three plans designed for the maturity cycle of a Latin American compliance program.',
+    plan_mes:'/mo',
+    plan1_name:'Starter', plan1_period:'To assess the current program',
+    pl1_f1:'Multidimensional score (6 axes)', pl1_f2:'Interactive heatmap', pl1_f3:'Checklist Law 27.401 / Lei 12.846', pl1_f4:'Dashboard ES / EN / PT', pl1_f5:'1 company, 1 user', pl1_f6:'Persistent whistleblowing channel', pl1_f7:'Unlimited OECD due diligence', pl1_f8:'Executive PDF report',
+    plan1_cta:'Start free â',
+    plan2_name:'Pro', plan2_badge:'Most popular', plan2_period:'Annual billing Â· USD 1,490/yr',
+    pl2_f1:'Everything in Starter', pl2_f2:'Persistent whistleblowing channel', pl2_f3:'Unlimited OECD due diligence', pl2_f4:'Printable Board Dashboard', pl2_f5:'Score predictor (3 months)', pl2_f6:'Sector benchmark (8 industries)', pl2_f7:'Export executive PDF report', pl2_f8:'Automated regulatory alerts ETL',
+    plan2_cta:'Get Pro â',
+    plan3_name:'Enterprise', plan3_period:'Multi-company Â· compliance team',
+    pl3_f1:'Everything in Pro', pl3_f2:'Multiple companies / clients', pl3_f3:'LGPD module (Brazil)', pl3_f4:'Financial risk quantification', pl3_f5:'Control Gap Analysis vs ISO 37001', pl3_f6:'Role-based authentication', pl3_f7:'Onboarding with consultant', pl3_f8:'99.9% SLA + priority support',
+    plan3_cta:'Talk to the team â',
+    pricing_note:'All plans include Railway deployment, automatic updates and full documentation. Prices exclude local VAT. Cancel anytime.',
+    cta_title:'Ready to measure your compliance program?',
+    cta_sub:'Get your first score in under 5 minutes. No installation, no credit card.',
+    audit_title:'What is your company\'s score?', audit_sub:'4 questions Â· 60 seconds Â· Estimated score instantly',
+    cta_btn_demo:'See live demo â', cta_btn_contact:'Contact the team',
+    footer_demo:'Demo', footer_features:'Features', footer_pricing:'Pricing', footer_contact:'Contact',
+    footer_copy:'Â© 2026 Ph.D. Vicente H. Monteverde Â· Ecosistema Transparencia Â· All rights reserved',
+  },
+  pt: {
+    nav_features:'Funcionalidades', nav_normas:'Normativas', nav_pricing:'PreÃ§os', nav_demo:'Ver demo â',
+    hero_eyebrow:'ð Plataforma GRC para a AmÃ©rica Latina',
+    hero_h1:'Compliance que <em>mede</em>, nÃ£o sÃ³ declara',
+    hero_sub:'Score em tempo real, mapa de riscos interativo, canal de denÃºncias e due diligence OCDE â tudo em um sÃ³ lugar, calibrado para a regulamentaÃ§Ã£o latino-americana.',
+    hero_cta_primary:'Ver o demo ao vivo â', hero_cta_secondary:'Ver preÃ§os',
+    demo_live:'Demo ao vivo com dados reais',
+    eje_programa:'Programa', eje_capacitacion:'Treinamento', eje_riesgo:'Riscos',
+    score_nivel_medio:'NÃ­vel IntermediÃ¡rio', score_nivel_avanzado:'NÃ­vel AvanÃ§ado',
+    problem_label:'O problema',
+    problem_title:'As plataformas globais nÃ£o falam sua linguagem regulatÃ³ria',
+    problem_sub:'A NAVEX parte de USD 25.000 sÃ³ de entrada. O LogicGate exige um consultor dedicado. Nenhum conhece a Lei 27.401, o RITE ou o COAF. VocÃª precisa de algo calibrado para a regiÃ£o.',
+    prob1_title:'PreÃ§o inatingÃ­vel', prob1_text:'As plataformas enterprise partem de USD 2.000/mÃªs. Uma PME de mÃ©dio porte nÃ£o pode justificar esse orÃ§amento para compliance.',
+    prob2_title:'Sem foco regional', prob2_text:'Lei 27.401, RITE, Lei AnticorrupÃ§Ã£o 12.846, COAF â as plataformas globais nÃ£o cobrem a regulamentaÃ§Ã£o latino-americana com profundidade real.',
+    prob3_title:'Sem evidÃªncia mensurÃ¡vel', prob3_text:'Sem um score quantificado, o compliance officer nÃ£o pode demonstrar avanÃ§o ao conselho nem perante uma auditoria do EscritÃ³rio AnticorrupÃ§Ã£o.',
+    feat_label:'Funcionalidades', feat_title:'Tudo o que um programa de integridade sÃ©rio precisa',
+    f1_title:'Score multidimensional', f1_text:'6 eixos ponderados (programa, treinamento, due diligence, risco, comunicaÃ§Ã£o, investigaÃ§Ã£o) alinhados com as diretrizes do EscritÃ³rio AnticorrupÃ§Ã£o.',
+    f2_title:'Mapa de calor 5Ã5 clicÃ¡vel', f2_text:'Matriz probabilidade Ã impacto interativa. Cada cÃ©lula mostra as Ã¡reas em risco, com autoavaliaÃ§Ã£o e vinculaÃ§Ã£o automÃ¡tica ao due diligence.',
+    f3_title:'Due Diligence OCDE', f3_text:'VerificaÃ§Ã£o de fornecedores contra os 31 casos de resoluÃ§Ãµes multijurisdicionais OCDE com presenÃ§a na Argentina, via MEACI.',
+    f4_title:'Canal de denÃºncias', f4_text:'Canal anÃ´nimo com cÃ³digo de acompanhamento, prazos automÃ¡ticos, painel de gestÃ£o e alertas de vencimento. SQLite persistente.',
+    f5_title:'IntegraÃ§Ã£o RITE', f5_text:'Guia passo a passo para o Registro de Integridade do EscritÃ³rio AnticorrupÃ§Ã£o. NÃ­vel de maturidade calculado automaticamente.',
+    f6_title:'Board Dashboard', f6_text:'VisÃ£o executiva imprimÃ­vel para o conselho: 6 KPIs, semÃ¡foro por eixo, riscos crÃ­ticos e prÃ³ximas aÃ§Ãµes. PDF em um clique.',
+    f7_title:'Preditor de score', f7_text:'RegressÃ£o linear sobre o histÃ³rico mensal. Projeta o score 3 meses Ã  frente com intervalos de confianÃ§a e trÃªs cenÃ¡rios.',
+    f8_title:'Benchmark setorial', f8_text:'Compare seu score com percentis p25/p50/p75/top10 em 8 setores industriais.',
+    f9_title:'TrilÃ­ngue nativo', f9_text:'100% em portuguÃªs, espanhol e inglÃªs. Interface, relatÃ³rios, alertas e canal de denÃºncias mudam de idioma sem recarregar.',
+    normas_label:'Cobertura normativa', normas_title:'TrÃªs mercados, uma plataforma',
+    normas_sub:'Calibrado para os marcos regulatÃ³rios que mais impactam as empresas latino-americanas que operam em nÃ­vel regional ou global.',
+    norma_ar:'Responsabilidade penal de pessoas jurÃ­dicas. Programa de Integridade com nÃ­vel de maturidade certificÃ¡vel perante o EscritÃ³rio AnticorrupÃ§Ã£o. IntegraÃ§Ã£o com os 31 casos OCDE com presenÃ§a local.',
+    norma_br:'Lei AnticorrupÃ§Ã£o com responsabilidade objetiva. LGPD para proteÃ§Ã£o de dados. Monitoramento COAF para obrigados.',
+    norma_int:'Empresas latino-americanas listadas na NYSE/NASDAQ, com parceiros americanos ou europeus, ou que exportam para mercados regulados precisam cumprir extraterritorialmente.',
+    proof1:'MÃ³dulos de compliance integrados', proof2:'Casos OCDE na base de due diligence', proof3:'Idiomas nativos sem configuraÃ§Ã£o', proof4:'Para obter o primeiro score do programa',
+    pricing_label:'PreÃ§os', pricing_title:'Sem surpresas. Sem consultores obrigatÃ³rios.',
+    pricing_sub:'TrÃªs planos pensados para o ciclo de maturidade de um programa de compliance latino-americano.',
+    plan_mes:'/mÃªs',
+    plan1_name:'Starter', plan1_period:'Para avaliar o programa atual',
+    pl1_f1:'Score multidimensional (6 eixos)', pl1_f2:'Mapa de calor interativo', pl1_f3:'Checklist Lei 27.401 / Lei 12.846', pl1_f4:'Dashboard PT / ES / EN', pl1_f5:'1 empresa, 1 usuÃ¡rio', pl1_f6:'Canal de denÃºncias persistente', pl1_f7:'Due diligence OCDE ilimitado', pl1_f8:'RelatÃ³rio PDF executivo',
+    plan1_cta:'ComeÃ§ar grÃ¡tis â',
+    plan2_name:'Pro', plan2_badge:'Mais escolhido', plan2_period:'CobranÃ§a anual Â· USD 1.490/ano',
+    pl2_f1:'Tudo do plano Starter', pl2_f2:'Canal de denÃºncias persistente', pl2_f3:'Due diligence OCDE ilimitado', pl2_f4:'Board Dashboard imprimÃ­vel', pl2_f5:'Preditor de score (3 meses)', pl2_f6:'Benchmark setorial (8 indÃºstrias)', pl2_f7:'Exportar relatÃ³rio PDF executivo', pl2_f8:'ETL automÃ¡tico de alertas regulatÃ³rias',
+    plan2_cta:'Contratar Pro â',
+    plan3_name:'Enterprise', plan3_period:'Multi-empresa Â· equipe de compliance',
+    pl3_f1:'Tudo do plano Pro', pl3_f2:'MÃºltiplas empresas / clientes', pl3_f3:'MÃ³dulo LGPD (Brasil)', pl3_f4:'QuantificaÃ§Ã£o financeira do risco', pl3_f5:'Control Gap Analysis vs ISO 37001', pl3_f6:'AutenticaÃ§Ã£o com perfis', pl3_f7:'Onboarding com consultor', pl3_f8:'SLA 99,9% + suporte prioritÃ¡rio',
+    plan3_cta:'Falar com a equipe â',
+    pricing_note:'Todos os planos incluem deploy no Railway, atualizaÃ§Ãµes automÃ¡ticas e documentaÃ§Ã£o completa. Os preÃ§os nÃ£o incluem impostos locais. Cancele quando quiser.',
+    cta_title:'Pronto para medir seu programa de compliance?',
+    cta_sub:'Em menos de 5 minutos vocÃª tem o primeiro score. Sem instalar nada, sem cartÃ£o de crÃ©dito.',
+    audit_title:'Qual Ã© o score da sua empresa?', audit_sub:'4 perguntas Â· 60 segundos Â· Score estimado na hora',
+    cta_btn_demo:'Ver demo ao vivo â', cta_btn_contact:'Falar com a equipe',
+    footer_demo:'Demo', footer_features:'Funcionalidades', footer_pricing:'PreÃ§os', footer_contact:'Contato',
+    footer_copy:'Â© 2026 Ph.D. Vicente H. Monteverde Â· Ecosistema TransparÃªncia Â· Todos os direitos reservados',
+  }
+};
+
+let lang = 'es';
+
+function t(k){ return T[lang][k] || k; }
+
+function applyI18n(){
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if(T[lang][key] !== undefined) el.innerHTML = T[lang][key];
+  });
+  document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+}
+
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${l}')"]`).classList.add('active');
+  applyI18n();
+  updateScoreLevel();
+}
+
+// ââ Score animation âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const TARGET = 67;
+const CIRCUMFERENCE = 2 * Math.PI * 70; // r=70
+
+function updateScoreLevel(){
+  const nivel = TARGET >= 80 ? t('score_nivel_avanzado') : t('score_nivel_medio');
+  document.getElementById('score-nivel-txt').textContent = nivel;
+}
+
+function animateScore(){
+  const numEl = document.getElementById('score-anim');
+  const ringEl = document.getElementById('ring-fill');
+  const duration = 2000;
+  const start = performance.now();
+
+  // Ejes
+  const ejes = [
+    {id:'ef-prog', pct: Math.round(27/40*100)},
+    {id:'ef-cap',  pct: Math.round(18/25*100)},
+    {id:'ef-dd',   pct: Math.round(12/20*100)},
+    {id:'ef-ri',   pct: Math.round(10/15*100)},
+  ];
+
+  function step(now){
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(TARGET * ease);
+
+    numEl.textContent = current;
+    const offset = CIRCUMFERENCE - (CIRCUMFERENCE * current / 100);
+    ringEl.style.strokeDashoffset = offset;
+
+    ejes.forEach(e => {
+      const el = document.getElementById(e.id);
+      if(el) el.style.width = (e.pct * ease) + '%';
+    });
+
+    if(progress < 1) requestAnimationFrame(step);
+    else updateScoreLevel();
+  }
+  requestAnimationFrame(step);
+}
+
+// ââ Scroll reveal âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+
+// ââ AuditorÃ­a RÃ¡pida ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+const auditRespuestas = {};
+
+const auditPesos = {
+  1: { a:100, b:50, c:20, d:0  },  // CÃ³digo de Ã©tica
+  2: { a:100, b:65, c:30, d:0  },  // CapacitaciÃ³n
+  3: { a:100, b:40, c:20, d:0  },  // Mapa de riesgos
+  4: { a:100, b:40, c:20, d:0  },  // Canal denuncias
+};
+
+const auditEtiquetas = {
+  1: 'Programa',
+  2: 'CapacitaciÃ³n',
+  3: 'Riesgos',
+  4: 'Canal'
+};
+
+function seleccionar(pregunta, opcion) {
+  auditRespuestas[pregunta] = opcion;
+  document.querySelectorAll(`#audit-q${pregunta} .audit-opcion`)
+    .forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById(`next-${pregunta}`).disabled = false;
+}
+
+function siguiente(num) {
+  document.getElementById(`audit-q${num-1}`).classList.remove('active');
+  document.getElementById(`audit-q${num}`).classList.add('active');
+  document.getElementById(`step-ind-${num-1}`).classList.remove('active');
+  document.getElementById(`step-ind-${num-1}`).classList.add('done');
+  document.getElementById(`step-ind-${num}`).classList.add('active');
+}
+
+function anterior(num) {
+  document.getElementById(`audit-q${num+1}`).classList.remove('active');
+  document.getElementById(`audit-q${num}`).classList.add('active');
+  document.getElementById(`step-ind-${num+1}`).classList.remove('active');
+  document.getElementById(`step-ind-${num}`).classList.remove('done');
+  document.getElementById(`step-ind-${num}`).classList.add('active');
+}
+
+function calcularScore() {
+  const scores = {};
+  let total = 0;
+  for (let i = 1; i <= 4; i++) {
+    const resp = auditRespuestas[i] || 'd';
+    scores[i] = auditPesos[i][resp];
+    total += scores[i];
+  }
+  const scoreFinal = Math.round(total / 4);
+  const nivel = scoreFinal >= 75 ? 'ð Nivel Avanzado'
+              : scoreFinal >= 45 ? 'ð Nivel Medio'
+              : 'ð± Nivel Inicial';
+  const color = scoreFinal >= 75 ? '#2e7d32'
+              : scoreFinal >= 45 ? '#e65100'
+              : '#c62828';
+  const msg = scoreFinal >= 75
+    ? 'Tu programa estÃ¡ bien desarrollado. El diagnÃ³stico completo identifica oportunidades de mejora para nivel avanzado.'
+    : scoreFinal >= 45
+    ? 'TenÃ©s una base sÃ³lida. El diagnÃ³stico completo prioriza los elementos que mÃ¡s impactan tu score.'
+    : 'Hay oportunidades importantes. El diagnÃ³stico completo te da un plan de acciÃ³n paso a paso.';
+
+  // Mostrar resultado
+  document.querySelectorAll('.audit-q').forEach(q => q.classList.remove('active'));
+  const res = document.getElementById('audit-resultado');
+  res.style.display = 'block';
+
+  const numEl = document.getElementById('audit-score-num');
+  numEl.textContent = scoreFinal;
+  numEl.style.color = color;
+  document.getElementById('audit-nivel-txt').textContent = nivel;
+  document.getElementById('audit-nivel-txt').style.color = color;
+  document.getElementById('audit-msg').textContent = msg;
+
+  // Barras por eje
+  const barras = document.getElementById('audit-barras');
+  barras.innerHTML = Object.entries(scores).map(([k, v]) => `
+    <div class="audit-barra-row">
+      <span class="audit-barra-label">${auditEtiquetas[k]}</span>
+      <div class="audit-barra-track">
+        <div class="audit-barra-fill" style="width:${v}%;background:${v>=75?'#2e7d32':v>=45?'#e65100':'#c62828'}"></div>
+      </div>
+      <span class="audit-barra-val">${v}</span>
+    </div>
+  `).join('');
+
+  // Marcar Ãºltimo step
+  document.getElementById('step-ind-4').classList.remove('active');
+  document.getElementById('step-ind-4').classList.add('done');
+}
+
+function reiniciarAudit() {
+  Object.keys(auditRespuestas).forEach(k => delete auditRespuestas[k]);
+  document.querySelectorAll('.audit-opcion').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.audit-step').forEach((el,i) => {
+    el.classList.remove('active','done');
+    if(i===0) el.classList.add('active');
+  });
+  document.querySelectorAll('[id^="next-"]').forEach(el => el.disabled = true);
+  document.getElementById('audit-resultado').style.display = 'none';
+  document.getElementById('audit-q1').classList.add('active');
+}
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // Trigger score animation when hero widget is visible
+      if(e.target.classList.contains('score-demo') && !e.target.dataset.animated){
+        e.target.dataset.animated = '1';
+        setTimeout(animateScore, 300);
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ââ Init ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+applyI18n();
+</script>
+</body>
+</html>

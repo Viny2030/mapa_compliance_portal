@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Registro de Incidentes — Monitor de Compliance</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--amarillo:#f9a825;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:56px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.5rem;text-decoration:none}
+.nav-back{color:#a8c7e8;font-size:.8rem;text-decoration:none;display:flex;align-items:center;gap:.3rem}
+.nav-back:hover{color:#fff}
+.wrap{max-width:960px;margin:0 auto;padding:1.4rem .9rem}
+.page-header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.6rem 1rem 1.2rem;margin-bottom:1.4rem}
+.page-header h1{font-size:1.4rem;margin-bottom:.2rem}
+.page-header p{opacity:.75;font-size:.85rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1rem;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:1.2rem}
+@media(max-width:580px){.grid3{grid-template-columns:1fr 1fr}}
+.kpi{text-align:center;padding:.8rem .5rem;border-radius:8px;border:1px solid var(--borde)}
+.kpi-num{font-size:1.6rem;font-weight:800;line-height:1}
+.kpi-label{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:.2rem}
+.kpi.rojo .kpi-num{color:var(--rojo)}.kpi.naranja .kpi-num{color:var(--naranja)}.kpi.verde .kpi-num{color:var(--verde)}.kpi.azul .kpi-num{color:var(--sec)}
+/* Formulario */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:.3rem}
+.form-group.full{grid-column:1/-1}
+label{font-size:.78rem;font-weight:600;color:var(--pri)}
+input,select,textarea{font-family:inherit;font-size:.86rem;padding:.5rem .75rem;border:1px solid var(--borde);border-radius:6px;background:#fff;color:var(--texto);width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+textarea{resize:vertical;min-height:70px}
+.btn{background:var(--pri);color:#fff;border:none;padding:.5rem 1.2rem;border-radius:6px;font-size:.86rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn:hover{background:#0d2137}
+.btn.verde{background:var(--verde)}.btn.verde:hover{background:#1b5e20}
+.btn.rojo{background:var(--rojo)}.btn.rojo:hover{background:#7f1d1d}
+.btn.gris{background:#6b7280}.btn.gris:hover{background:#4b5563}
+.btn-sm{padding:.3rem .75rem;font-size:.78rem}
+/* Filtros */
+.filtros{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.filtro-btn{background:#f0f4f8;border:1px solid var(--borde);color:var(--muted);font-size:.76rem;font-weight:600;padding:.3rem .7rem;border-radius:5px;cursor:pointer;transition:all .15s}
+.filtro-btn.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+.search-inc{flex:1;min-width:180px;font-family:inherit;font-size:.83rem;padding:.38rem .75rem;border:1px solid var(--borde);border-radius:6px}
+/* Tabla de incidentes */
+.inc-list{display:flex;flex-direction:column;gap:.5rem}
+.inc-card{border:1px solid var(--borde);border-radius:8px;padding:.8rem 1rem;background:#fafbfc;cursor:pointer;transition:box-shadow .15s}
+.inc-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.inc-head{display:flex;align-items:flex-start;gap:.6rem;flex-wrap:wrap}
+.inc-id{font-size:.7rem;font-weight:700;color:var(--muted);font-family:monospace;flex-shrink:0;margin-top:.15rem}
+.inc-titulo{font-size:.9rem;font-weight:700;flex:1}
+.inc-meta{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem;align-items:center}
+.badge{display:inline-flex;align-items:center;font-size:.68rem;font-weight:700;padding:.15rem .5rem;border-radius:8px}
+.badge-sev-critico{background:#fdecea;color:var(--rojo)}
+.badge-sev-alto{background:#fff3e0;color:var(--naranja)}
+.badge-sev-medio{background:#fff8e1;color:#f57f17}
+.badge-sev-bajo{background:#e8f5e9;color:var(--verde)}
+.badge-est-abierto{background:#fdecea;color:var(--rojo)}
+.badge-est-investigando{background:#e3f2fd;color:#0d47a1}
+.badge-est-cerrado{background:#e8f5e9;color:var(--verde)}
+.badge-est-archivado{background:#f5f5f5;color:#757575}
+.badge-tipo{background:#ede7f6;color:#4a148c}
+.inc-desc{font-size:.8rem;color:var(--muted);margin-top:.4rem;line-height:1.4}
+.inc-acciones{display:flex;gap:.4rem;margin-top:.6rem;flex-wrap:wrap}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:1.4rem;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.modal-header h3{color:var(--pri);font-size:1rem}
+.close-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1}
+.modal-footer{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--borde);flex-wrap:wrap}
+/* Timeline acciones correctivas */
+.timeline{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+.tl-item{display:flex;gap:.7rem;align-items:flex-start}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--sec);flex-shrink:0;margin-top:.35rem}
+.tl-dot.verde{background:var(--verde)}.tl-dot.naranja{background:var(--naranja)}.tl-dot.rojo{background:var(--rojo)}
+.tl-content{flex:1;font-size:.82rem}
+.tl-fecha{font-size:.72rem;color:var(--muted)}
+/* Estado vacío */
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--muted)}
+.empty-ico{font-size:2.5rem;margin-bottom:.5rem}
+.toast{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--pri);color:#fff;padding:.65rem 1.1rem;border-radius:8px;font-size:.85rem;font-weight:600;z-index:999;opacity:0;transform:translateY(10px);transition:all .3s}
+.toast.show{opacity:1;transform:translateY(0)}
+.req::after{content:" *";color:var(--rojo)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <a class="nav-brand" href="index.html">⚖️ Monitor de Compliance</a>
+    <a class="nav-back" href="index.html">← Volver al Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <h1>🚨 Registro de Incidentes</h1>
+    <p>Log de violaciones, incumplimientos y near-misses · Ley 27.401 Art. 23</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- KPIs -->
+  <div class="grid3" id="kpi-grid"></div>
+
+  <!-- Nuevo incidente -->
+  <div class="card">
+    <h2>➕ Registrar nuevo incidente</h2>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="req">Título / descripción breve</label>
+        <input type="text" id="f-titulo" placeholder="Ej: Pago no autorizado a proveedor estatal">
+      </div>
+      <div class="form-group">
+        <label class="req">Tipo</label>
+        <select id="f-tipo">
+          <option value="">— Seleccionar —</option>
+          <option>Cohecho / Soborno</option>
+          <option>Conflicto de intereses</option>
+          <option>Fraude interno</option>
+          <option>Incumplimiento Código de Ética</option>
+          <option>Violación de contrataciones públicas</option>
+          <option>Lavado de activos</option>
+          <option>Near-miss</option>
+          <option>Represalia a denunciante</option>
+          <option>Uso indebido de información</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="req">Severidad</label>
+        <select id="f-severidad">
+          <option value="">— Seleccionar —</option>
+          <option value="critico">🔴 Crítico</option>
+          <option value="alto">🟠 Alto</option>
+          <option value="medio">🟡 Medio</option>
+          <option value="bajo">🟢 Bajo</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="req">Área involucrada</label>
+        <select id="f-area">
+          <option value="">— Seleccionar —</option>
+          <option>Comercial / Ventas</option>
+          <option>Compras y Abastecimiento</option>
+          <option>Finanzas y Contabilidad</option>
+          <option>Recursos Humanos</option>
+          <option>Gobierno Corporativo</option>
+          <option>Operaciones / Producción</option>
+          <option>Tecnología e Información</option>
+          <option>Relaciones Institucionales</option>
+          <option>Legal</option>
+          <option>Dirección / Alta Gerencia</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fecha del hecho</label>
+        <input type="date" id="f-fecha">
+      </div>
+      <div class="form-group">
+        <label>Detectado por</label>
+        <input type="text" id="f-detector" placeholder="Ej: Canal de denuncias, auditoría, RRHH">
+      </div>
+      <div class="form-group full">
+        <label>Descripción detallada</label>
+        <textarea id="f-descripcion" placeholder="Describir el incidente con el mayor nivel de detalle posible…"></textarea>
+      </div>
+      <div class="form-group full">
+        <label>Primera acción correctiva</label>
+        <input type="text" id="f-accion1" placeholder="Ej: Suspensión preventiva del responsable, notificación al Directorio…">
+      </div>
+    </div>
+    <div style="margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn verde" onclick="registrarIncidente()">Registrar incidente →</button>
+      <button class="btn gris" onclick="limpiarForm()">Limpiar</button>
+    </div>
+  </div>
+
+  <!-- Filtros y lista -->
+  <div class="card">
+    <h2>📋 Incidentes registrados</h2>
+    <div class="filtros">
+      <input class="search-inc" type="text" id="search" placeholder="🔍 Buscar…" oninput="renderLista()">
+      <button class="filtro-btn active" onclick="setFiltro('todos',this)">Todos</button>
+      <button class="filtro-btn" onclick="setFiltro('abierto',this)">🔴 Abierto</button>
+      <button class="filtro-btn" onclick="setFiltro('investigando',this)">🔵 Investigando</button>
+      <button class="filtro-btn" onclick="setFiltro('cerrado',this)">🟢 Cerrado</button>
+    </div>
+    <div class="inc-list" id="inc-list"></div>
+  </div>
+
+</div>
+
+<!-- Modal detalle / edición -->
+<div class="modal-overlay" id="modal" onclick="cerrarModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-titulo">Detalle del incidente</h3>
+      <button class="close-btn" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn gris btn-sm" onclick="document.getElementById('modal').classList.remove('open')">Cerrar</button>
+      <button class="btn btn-sm" id="modal-btn-estado" onclick="cambiarEstado()">Avanzar estado →</button>
+      <button class="btn rojo btn-sm" onclick="eliminarIncidente()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Estado ────────────────────────────────────────────────────────────────
+let incidentes = JSON.parse(localStorage.getItem('inc_data') || '[]');
+let filtroActivo = 'todos';
+let idActivo = null;
+
+// Datos de demo si está vacío
+if(incidentes.length === 0){
+  incidentes = [
+    { id:'INC-001', titulo:'Pago duplicado a proveedor estatal', tipo:'Fraude interno', severidad:'alto',
+      area:'Finanzas y Contabilidad', fecha:'2026-05-10', detector:'Auditoría interna',
+      estado:'cerrado', descripcion:'Se detectó doble imputación de factura por $850.000 a proveedor de servicios contratado con el Municipio de San Martín.',
+      acciones:[
+        {fecha:'2026-05-11', texto:'Revisión de registros contables. Suspensión preventiva del responsable.', autor:'Compliance'},
+        {fecha:'2026-05-18', texto:'Investigación interna concluida. Error operativo confirmado, sin dolo.', autor:'Legal'},
+        {fecha:'2026-05-25', texto:'Devolución procesada. Procedimiento de doble firma implementado.', autor:'Finanzas'},
+      ],
+      fechaRegistro:'2026-05-10' },
+    { id:'INC-002', titulo:'Conflicto de interés no declarado en licitación LP-2026-04', tipo:'Conflicto de intereses', severidad:'critico',
+      area:'Comercial / Ventas', fecha:'2026-06-01', detector:'Canal de denuncias',
+      estado:'investigando', descripcion:'Denuncia anónima indica que el Gerente Comercial es socio oculto de uno de los oferentes en la licitación LP-2026-04 por $12M.',
+      acciones:[
+        {fecha:'2026-06-02', texto:'Apertura de investigación interna. Suspensión del Gerente Comercial.', autor:'Compliance'},
+        {fecha:'2026-06-08', texto:'Solicitud de información patrimonial al ANSES y RPI.', autor:'Legal'},
+      ],
+      fechaRegistro:'2026-06-01' },
+    { id:'INC-003', titulo:'Near-miss: regalo de proveedor fuera de política', tipo:'Near-miss', severidad:'bajo',
+      area:'Compras y Abastecimiento', fecha:'2026-06-10', detector:'Auto-reporte empleado',
+      estado:'cerrado', descripcion:'Empleado de Compras recibió y rechazó un obsequio (caja de vinos) de un proveedor durante las fiestas. Valor estimado $45.000.',
+      acciones:[
+        {fecha:'2026-06-10', texto:'Empleado rechazó el regalo y lo reportó dentro de las 24hs.', autor:'Empleado - Compras'},
+        {fecha:'2026-06-11', texto:'Proveedor notificado sobre Política de Regalos GR-002.', autor:'Compliance'},
+      ],
+      fechaRegistro:'2026-06-10' },
+  ];
+  guardar();
+}
+
+function guardar(){ localStorage.setItem('inc_data', JSON.stringify(incidentes)); }
+
+function genId(){
+  const nums = incidentes.map(i=>parseInt(i.id.replace('INC-',''))||0);
+  const next = (nums.length ? Math.max(...nums) : 0) + 1;
+  return 'INC-' + String(next).padStart(3,'0');
+}
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function renderKPIs(){
+  const abiertos = incidentes.filter(i=>i.estado==='abierto').length;
+  const investigando = incidentes.filter(i=>i.estado==='investigando').length;
+  const criticos = incidentes.filter(i=>i.severidad==='critico'&&i.estado!=='cerrado'&&i.estado!=='archivado').length;
+  const cerrados = incidentes.filter(i=>i.estado==='cerrado').length;
+  const total = incidentes.length;
+  const tasaCierre = total ? Math.round(cerrados/total*100) : 0;
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi rojo"><div class="kpi-num">${abiertos + investigando}</div><div class="kpi-label">Activos (abiertos + invest.)</div></div>
+    <div class="kpi naranja"><div class="kpi-num">${criticos}</div><div class="kpi-label">Críticos sin cerrar</div></div>
+    <div class="kpi verde"><div class="kpi-num">${tasaCierre}%</div><div class="kpi-label">Tasa de cierre (${cerrados}/${total})</div></div>
+  `;
+}
+
+// ── Lista ─────────────────────────────────────────────────────────────────
+function setFiltro(f, btn){
+  filtroActivo = f;
+  document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLista();
+}
+
+function renderLista(){
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  let lista = incidentes.filter(i=>{
+    if(filtroActivo !== 'todos' && i.estado !== filtroActivo) return false;
+    if(q && !i.titulo.toLowerCase().includes(q) && !i.tipo.toLowerCase().includes(q) && !i.area.toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b)=>b.fechaRegistro.localeCompare(a.fechaRegistro));
+
+  const cont = document.getElementById('inc-list');
+  if(!lista.length){
+    cont.innerHTML = `<div class="empty"><div class="empty-ico">📭</div><div>Sin incidentes que coincidan con el filtro.</div></div>`;
+    return;
+  }
+  cont.innerHTML = lista.map(i=>`
+    <div class="inc-card" onclick="abrirModal('${i.id}')">
+      <div class="inc-head">
+        <span class="inc-id">${i.id}</span>
+        <span class="inc-titulo">${i.titulo}</span>
+        <span class="badge badge-sev-${i.severidad}">${sevLabel(i.severidad)}</span>
+        <span class="badge badge-est-${i.estado}">${estLabel(i.estado)}</span>
+      </div>
+      <div class="inc-meta">
+        <span class="badge badge-tipo">${i.tipo}</span>
+        <span style="font-size:.74rem;color:var(--muted)">📍 ${i.area}</span>
+        <span style="font-size:.74rem;color:var(--muted)">📅 ${i.fecha}</span>
+        <span style="font-size:.74rem;color:var(--muted)">🔍 ${i.detector}</span>
+      </div>
+      ${i.descripcion ? `<div class="inc-desc">${i.descripcion.substring(0,120)}${i.descripcion.length>120?'…':''}</div>` : ''}
+      <div class="inc-acciones">
+        <span style="font-size:.74rem;color:var(--muted)">${i.acciones.length} acción(es) correctiva(s)</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Labels ────────────────────────────────────────────────────────────────
+function sevLabel(s){ return {critico:'🔴 Crítico',alto:'🟠 Alto',medio:'🟡 Medio',bajo:'🟢 Bajo'}[s]||s; }
+function estLabel(s){ return {abierto:'🔴 Abierto',investigando:'🔵 Investigando',cerrado:'🟢 Cerrado',archivado:'⚫ Archivado'}[s]||s; }
+
+// ── Modal ─────────────────────────────────────────────────────────────────
+function abrirModal(id){
+  idActivo = id;
+  const i = incidentes.find(x=>x.id===id);
+  if(!i) return;
+  document.getElementById('modal-titulo').textContent = `${i.id} — ${i.titulo}`;
+
+  const siguienteEstado = {abierto:'investigando',investigando:'cerrado',cerrado:'archivado'}[i.estado];
+  const btnEstado = document.getElementById('modal-btn-estado');
+  if(siguienteEstado){
+    btnEstado.style.display='';
+    btnEstado.textContent = `→ Mover a: ${estLabel(siguienteEstado)}`;
+  } else {
+    btnEstado.style.display='none';
+  }
+
+  document.getElementById('modal-body').innerHTML = `
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.9rem">
+      <span class="badge badge-sev-${i.severidad}">${sevLabel(i.severidad)}</span>
+      <span class="badge badge-est-${i.estado}">${estLabel(i.estado)}</span>
+      <span class="badge badge-tipo">${i.tipo}</span>
+    </div>
+    <dl>
+      ${fila('Área',i.area)}
+      ${fila('Fecha del hecho',i.fecha)}
+      ${fila('Detectado por',i.detector)}
+    </dl>
+    <p style="font-size:.85rem;margin-top:.7rem;line-height:1.6">${i.descripcion}</p>
+    <h4 style="color:var(--pri);font-size:.85rem;margin:1rem 0 .4rem">📋 Acciones correctivas</h4>
+    <div class="timeline">
+      ${i.acciones.map(a=>`
+        <div class="tl-item">
+          <div class="tl-dot verde"></div>
+          <div class="tl-content">
+            <div>${a.texto}</div>
+            <div class="tl-fecha">${a.fecha} · ${a.autor}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--borde)">
+      <label style="font-size:.78rem;font-weight:600;color:var(--pri);display:block;margin-bottom:.3rem">Agregar acción correctiva</label>
+      <div style="display:flex;gap:.4rem">
+        <input type="text" id="nueva-accion" placeholder="Descripción de la acción tomada…" style="flex:1;font-size:.83rem;padding:.4rem .65rem;border:1px solid var(--borde);border-radius:6px">
+        <button class="btn btn-sm verde" onclick="agregarAccion()">+ Agregar</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+function fila(k,v){ return v?`<div style="display:flex;gap:.5rem;font-size:.83rem;padding:.2rem 0"><dt style="font-weight:600;min-width:130px;color:var(--pri)">${k}</dt><dd>${v}</dd></div>`:''; }
+
+function cerrarModal(e){ if(e.target===document.getElementById('modal')) document.getElementById('modal').classList.remove('open'); }
+
+function cambiarEstado(){
+  const i = incidentes.find(x=>x.id===idActivo);
+  if(!i) return;
+  const siguiente = {abierto:'investigando',investigando:'cerrado',cerrado:'archivado'}[i.estado];
+  if(!siguiente) return;
+  i.acciones.push({fecha: new Date().toISOString().slice(0,10), texto:`Estado cambiado a: ${estLabel(siguiente)}`, autor:'Sistema'});
+  i.estado = siguiente;
+  guardar(); renderKPIs(); renderLista();
+  abrirModal(idActivo);
+  toast(`Estado actualizado: ${estLabel(siguiente)}`);
+}
+
+function agregarAccion(){
+  const inp = document.getElementById('nueva-accion');
+  const txt = inp.value.trim();
+  if(!txt) return;
+  const i = incidentes.find(x=>x.id===idActivo);
+  if(!i) return;
+  i.acciones.push({fecha: new Date().toISOString().slice(0,10), texto:txt, autor:'Compliance'});
+  guardar(); inp.value='';
+  abrirModal(idActivo);
+  toast('Acción registrada');
+}
+
+function eliminarIncidente(){
+  if(!confirm('¿Eliminar este incidente permanentemente?')) return;
+  incidentes = incidentes.filter(x=>x.id!==idActivo);
+  guardar(); renderKPIs(); renderLista();
+  document.getElementById('modal').classList.remove('open');
+  toast('Incidente eliminado');
+}
+
+// ── Formulario ────────────────────────────────────────────────────────────
+function registrarIncidente(){
+  const titulo = document.getElementById('f-titulo').value.trim();
+  const tipo = document.getElementById('f-tipo').value;
+  const severidad = document.getElementById('f-severidad').value;
+  const area = document.getElementById('f-area').value;
+  if(!titulo || !tipo || !severidad || !area){
+    toast('⚠️ Completá los campos obligatorios (*)'); return;
+  }
+  const nuevo = {
+    id: genId(),
+    titulo, tipo, severidad, area,
+    fecha: document.getElementById('f-fecha').value || new Date().toISOString().slice(0,10),
+    detector: document.getElementById('f-detector').value.trim() || 'No especificado',
+    estado: 'abierto',
+    descripcion: document.getElementById('f-descripcion').value.trim(),
+    acciones: [],
+    fechaRegistro: new Date().toISOString().slice(0,10),
+  };
+  const acc1 = document.getElementById('f-accion1').value.trim();
+  if(acc1) nuevo.acciones.push({fecha: nuevo.fechaRegistro, texto: acc1, autor:'Compliance'});
+  incidentes.unshift(nuevo);
+  guardar(); limpiarForm(); renderKPIs(); renderLista();
+  toast(`✅ ${nuevo.id} registrado`);
+}
+
+function limpiarForm(){
+  ['f-titulo','f-tipo','f-severidad','f-area','f-fecha','f-detector','f-descripcion','f-accion1']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+renderKPIs();
+renderLista();
+</script>
+</body>
+</html>

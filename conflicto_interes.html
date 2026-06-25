@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Conflicto de Intereses — Monitor de Compliance</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:56px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700;text-decoration:none}
+.nav-back{color:#a8c7e8;font-size:.8rem;text-decoration:none}.nav-back:hover{color:#fff}
+.wrap{max-width:920px;margin:0 auto;padding:1.4rem .9rem}
+.page-header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.6rem 1rem 1.2rem;margin-bottom:1.4rem}
+.page-header h1{font-size:1.4rem;margin-bottom:.2rem}
+.page-header p{opacity:.75;font-size:.85rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1rem;margin-bottom:.9rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1.2rem}
+@media(max-width:640px){.grid4{grid-template-columns:repeat(2,1fr)}}
+.kpi{text-align:center;padding:.8rem .5rem;border-radius:8px;border:1px solid var(--borde)}
+.kpi-num{font-size:1.6rem;font-weight:800;line-height:1}
+.kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.2rem}
+.kpi.verde .kpi-num{color:var(--verde)}.kpi.rojo .kpi-num{color:var(--rojo)}.kpi.naranja .kpi-num{color:var(--naranja)}.kpi.azul .kpi-num{color:var(--sec)}
+/* Tabs vista */
+.view-tabs{display:flex;gap:.3rem;margin-bottom:1rem;border-bottom:2px solid var(--borde);padding-bottom:.5rem;flex-wrap:wrap}
+.view-tab{background:none;border:none;font-size:.84rem;font-weight:600;color:var(--muted);padding:.35rem .85rem;border-radius:6px;cursor:pointer}
+.view-tab.active{background:var(--pri);color:#fff}
+/* Formulario DDJJ */
+.form-section{background:#f8fafc;border-radius:8px;padding:1rem;margin-bottom:.8rem;border-left:3px solid var(--sec)}
+.form-section h3{font-size:.86rem;font-weight:700;color:var(--pri);margin-bottom:.65rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+@media(max-width:580px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:.28rem}
+.form-group.full{grid-column:1/-1}
+label{font-size:.76rem;font-weight:600;color:var(--pri)}
+input,select,textarea{font-family:inherit;font-size:.85rem;padding:.45rem .7rem;border:1px solid var(--borde);border-radius:6px;width:100%;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+textarea{resize:vertical;min-height:65px}
+/* Radio group */
+.radio-group{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.2rem}
+.radio-opt{display:flex;align-items:center;gap:.3rem;font-size:.83rem;cursor:pointer;padding:.3rem .65rem;border:1px solid var(--borde);border-radius:6px;background:#fff;transition:all .15s}
+.radio-opt:has(input:checked){border-color:var(--sec);background:#e3f2fd;font-weight:600}
+.radio-opt input{width:auto;padding:0;margin:0}
+/* Checkbox legal */
+.check-legal{display:flex;align-items:flex-start;gap:.5rem;background:#e8f5e9;border-radius:7px;padding:.75rem;margin:.8rem 0;cursor:pointer}
+.check-legal input{width:16px;height:16px;flex-shrink:0;margin-top:.15rem;cursor:pointer}
+.check-legal label{font-size:.82rem;cursor:pointer;line-height:1.5}
+/* Botones */
+.btn{background:var(--pri);color:#fff;border:none;padding:.45rem 1.1rem;border-radius:6px;font-size:.83rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn:hover{background:#0d2137}
+.btn.verde{background:var(--verde)}.btn.verde:hover{background:#1b5e20}
+.btn.naranja{background:var(--naranja)}
+.btn.gris{background:#6b7280}
+.btn.rojo{background:var(--rojo)}
+.btn-sm{padding:.28rem .65rem;font-size:.76rem}
+/* Lista DDJJ */
+.ddjj-card{border:1px solid var(--borde);border-radius:9px;padding:.85rem 1rem;margin-bottom:.5rem;background:#fafbfc;cursor:pointer;transition:box-shadow .15s}
+.ddjj-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ddjj-head{display:flex;align-items:flex-start;gap:.5rem;flex-wrap:wrap}
+.ddjj-nombre{font-size:.9rem;font-weight:700;flex:1}
+.badge{display:inline-flex;font-size:.67rem;font-weight:700;padding:.13rem .45rem;border-radius:7px}
+.badge-pendiente{background:#fff3e0;color:var(--naranja)}
+.badge-aprobado{background:#e8f5e9;color:var(--verde)}
+.badge-rechazado{background:#fdecea;color:var(--rojo)}
+.badge-conflicto{background:#fdecea;color:var(--rojo)}
+.badge-sin-conflicto{background:#e8f5e9;color:var(--verde)}
+.badge-parcial{background:#fff3e0;color:var(--naranja)}
+.ddjj-meta{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem;font-size:.76rem;color:var(--muted)}
+/* Workflow steps */
+.workflow{display:flex;gap:0;margin:.8rem 0;flex-wrap:wrap}
+.wf-step{flex:1;min-width:120px;text-align:center;padding:.5rem .3rem;position:relative}
+.wf-step:not(:last-child)::after{content:'→';position:absolute;right:-6px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.9rem}
+.wf-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;margin:0 auto .25rem;border:2px solid var(--borde);color:var(--muted);background:#f0f4f8}
+.wf-dot.activo{background:var(--sec);border-color:var(--sec);color:#fff}
+.wf-dot.completo{background:var(--verde);border-color:var(--verde);color:#fff}
+.wf-dot.rechazado{background:var(--rojo);border-color:var(--rojo);color:#fff}
+.wf-label{font-size:.68rem;color:var(--muted);line-height:1.3}
+.wf-label.activo{color:var(--sec);font-weight:700}
+.wf-label.completo{color:var(--verde);font-weight:700}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:1.4rem;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.modal-header h3{color:var(--pri);font-size:.95rem;flex:1;padding-right:.5rem}
+.close-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)}
+.modal-footer{display:flex;gap:.4rem;justify-content:flex-end;margin-top:.9rem;padding-top:.7rem;border-top:1px solid var(--borde);flex-wrap:wrap}
+.detalle-fila{display:flex;gap:.5rem;padding:.22rem 0;font-size:.83rem;border-bottom:1px solid #f0f4f8}
+.detalle-fila:last-child{border-bottom:none}
+.detalle-fila dt{font-weight:600;min-width:180px;color:var(--pri);flex-shrink:0}
+.hist-item{display:flex;gap:.5rem;font-size:.8rem;padding:.3rem 0;border-bottom:1px solid var(--borde)}
+.hist-item:last-child{border-bottom:none}
+.toast{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--pri);color:#fff;padding:.6rem 1rem;border-radius:8px;font-size:.84rem;font-weight:600;z-index:999;opacity:0;transform:translateY(8px);transition:all .3s}
+.toast.show{opacity:1;transform:translateY(0)}
+.empty{text-align:center;padding:2rem;color:var(--muted)}
+.alerta{display:flex;gap:.5rem;padding:.6rem .8rem;border-radius:7px;font-size:.83rem;margin-bottom:.5rem}
+.alerta.naranja{background:#fff3e0;border-left:3px solid var(--naranja);color:#7c3a00}
+.alerta.verde{background:#e8f5e9;border-left:3px solid var(--verde);color:#1b5e20}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <a class="nav-brand" href="index.html">⚖️ Monitor de Compliance</a>
+    <a class="nav-back" href="index.html">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <h1>⚖️ Conflicto de Intereses</h1>
+    <p>Declaración jurada digital con workflow de aprobación · Art. 23 inc. g) Ley 27.401</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="grid4" id="kpi-grid"></div>
+
+  <div class="card">
+    <div class="view-tabs">
+      <button class="view-tab active" onclick="setVista('lista',this)">📋 Declaraciones</button>
+      <button class="view-tab" onclick="setVista('nueva',this)">➕ Nueva DDJJ</button>
+      <button class="view-tab" onclick="setVista('aprobador',this)">👔 Aprobador</button>
+    </div>
+
+    <!-- Vista lista -->
+    <div id="vista-lista">
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem">
+        <button class="btn-filt btn btn-sm active" onclick="setFiltro('todos',this)" style="background:var(--pri)">Todas</button>
+        <button class="btn-filt btn btn-sm gris" onclick="setFiltro('pendiente',this)">⏳ Pendientes</button>
+        <button class="btn-filt btn btn-sm gris" onclick="setFiltro('aprobado',this)">✅ Aprobadas</button>
+        <button class="btn-filt btn btn-sm gris" onclick="setFiltro('rechazado',this)">❌ Rechazadas</button>
+      </div>
+      <div id="ddjj-list"></div>
+    </div>
+
+    <!-- Vista nueva DDJJ -->
+    <div id="vista-nueva" style="display:none">
+      <div class="alerta naranja"><span>⚠️</span><span>Esta declaración tiene carácter de declaración jurada. La falsedad u omisión de datos puede acarrear consecuencias disciplinarias y legales (Art. 275 CP).</span></div>
+
+      <div class="form-section">
+        <h3>👤 Datos del declarante</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Nombre completo *</label><input type="text" id="f-nombre" placeholder="Apellido y nombre completo"></div>
+          <div class="form-group"><label>CUIL</label><input type="text" id="f-cuil" placeholder="20-12345678-9"></div>
+          <div class="form-group"><label>Cargo / Función *</label><input type="text" id="f-cargo" placeholder="Ej: Gerente Comercial"></div>
+          <div class="form-group"><label>Área</label>
+            <select id="f-area">
+              <option>Comercial / Ventas</option><option>Compras y Abastecimiento</option>
+              <option>Finanzas y Contabilidad</option><option>Recursos Humanos</option>
+              <option>Gobierno Corporativo</option><option>Legal</option>
+              <option>Dirección / Alta Gerencia</option><option>Tecnología</option><option>Otra</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>🔍 Declaración de situación</h3>
+        <div class="form-group full" style="margin-bottom:.7rem">
+          <label>¿Tenés algún interés personal, familiar o económico que pueda influir en el ejercicio de tus funciones? *</label>
+          <div class="radio-group" id="rg-conflicto">
+            <label class="radio-opt"><input type="radio" name="conflicto" value="sin_conflicto"> Sin conflicto de intereses</label>
+            <label class="radio-opt"><input type="radio" name="conflicto" value="con_conflicto"> Declaro un potencial conflicto</label>
+            <label class="radio-opt"><input type="radio" name="conflicto" value="parcial"> Situación a evaluar</label>
+          </div>
+        </div>
+        <div id="detalle-conflicto" style="display:none">
+          <div class="form-grid">
+            <div class="form-group"><label>Tipo de conflicto</label>
+              <select id="f-tipo-conf">
+                <option>Participación societaria en proveedor/cliente</option>
+                <option>Vínculo familiar con funcionario público</option>
+                <option>Cargo simultáneo en empresa competidora</option>
+                <option>Recepción de beneficios de terceros</option>
+                <option>Interés en contrato/licitación</option>
+                <option>Otro</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Empresa / persona involucrada</label><input type="text" id="f-empresa-conf" placeholder="Nombre de la empresa o persona"></div>
+            <div class="form-group full"><label>Descripción detallada *</label><textarea id="f-desc-conf" placeholder="Describí con detalle la situación que podría constituir un conflicto de intereses…"></textarea></div>
+            <div class="form-group full"><label>Acción propuesta / medida de mitigación</label><textarea id="f-mitigacion" placeholder="Ej: Abstención de participar en el proceso de evaluación de dicho proveedor…"></textarea></div>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:.5rem">
+          <label>Período que abarca esta declaración</label>
+          <div class="form-grid">
+            <input type="date" id="f-desde" placeholder="Desde">
+            <input type="date" id="f-hasta" placeholder="Hasta">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:.5rem">
+          <label>Observaciones adicionales</label>
+          <textarea id="f-obs" placeholder="Cualquier información adicional relevante…"></textarea>
+        </div>
+      </div>
+
+      <div class="check-legal">
+        <input type="checkbox" id="chk-legal">
+        <label for="chk-legal">Declaro bajo juramento que los datos consignados son correctos y completos, y me comprometo a actualizar esta declaración ante cualquier cambio en mi situación. Entiendo que la falsedad u omisión de datos puede derivar en sanciones disciplinarias y responsabilidad penal (Art. 275 del Código Penal).</label>
+      </div>
+
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn verde" onclick="presentarDDJJ()">Presentar declaración →</button>
+        <button class="btn gris" onclick="limpiarForm()">Limpiar</button>
+      </div>
+    </div>
+
+    <!-- Vista aprobador -->
+    <div id="vista-aprobador" style="display:none">
+      <div class="alerta verde"><span>👔</span><span>Vista del Responsable de Compliance. Revisá y resolvé las declaraciones pendientes de aprobación.</span></div>
+      <div id="lista-pendientes-aprobador"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal detalle DDJJ -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modal-titulo">Declaración Jurada</h3>
+      <button class="close-btn" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script>
+// ── Estado ────────────────────────────────────────────────────────────────
+let ddjjs = JSON.parse(localStorage.getItem('ddjj_data') || 'null');
+let filtroActivo = 'todos';
+let idActivo = null;
+let counter;
+
+if(!ddjjs){
+  ddjjs = [
+    { id:'DDJJ-001', nombre:'Dra. María González', cuil:'27-28765432-1', cargo:'Responsable de Compliance',
+      area:'Legal', conflicto:'sin_conflicto', tipoConflicto:'', empresaConf:'', descConflicto:'', mitigacion:'',
+      desde:'2026-01-01', hasta:'2026-12-31', obs:'', estado:'aprobado',
+      fechaPresentacion:'2026-01-10', fechaResolucion:'2026-01-12',
+      comentarioAprobador:'Declaración completa y sin inconsistencias.',
+      historial:[
+        {fecha:'2026-01-10',accion:'Presentación de DDJJ',autor:'Dra. María González'},
+        {fecha:'2026-01-12',accion:'Aprobada por Compliance Officer',autor:'Sistema'},
+      ]},
+    { id:'DDJJ-002', nombre:'Lic. Carlos Rodríguez', cuil:'20-31234567-8', cargo:'Gerente Comercial',
+      area:'Comercial / Ventas', conflicto:'con_conflicto', tipoConflicto:'Participación societaria en proveedor/cliente',
+      empresaConf:'Proveedor XYZ S.R.L.', descConflicto:'Soy socio minoritario (15%) de Proveedor XYZ S.R.L., empresa que participa en la licitación LP-2026-04.',
+      mitigacion:'Me abstendré de participar en el proceso de evaluación y adjudicación de la licitación LP-2026-04.',
+      desde:'2026-06-01', hasta:'2026-12-31', obs:'', estado:'pendiente',
+      fechaPresentacion:'2026-06-15', fechaResolucion:null, comentarioAprobador:'',
+      historial:[
+        {fecha:'2026-06-15',accion:'Presentación de DDJJ — declara conflicto de interés',autor:'Lic. Carlos Rodríguez'},
+      ]},
+    { id:'DDJJ-003', nombre:'Cont. Laura Méndez', cuil:'27-33456789-0', cargo:'Gerente de Finanzas',
+      area:'Finanzas y Contabilidad', conflicto:'sin_conflicto', tipoConflicto:'', empresaConf:'', descConflicto:'', mitigacion:'',
+      desde:'2026-01-01', hasta:'2026-12-31', obs:'Actualización anual de declaración.', estado:'pendiente',
+      fechaPresentacion:'2026-06-10', fechaResolucion:null, comentarioAprobador:'',
+      historial:[
+        {fecha:'2026-06-10',accion:'Presentación de DDJJ',autor:'Cont. Laura Méndez'},
+      ]},
+  ];
+  guardar();
+}
+counter = ddjjs.length + 1;
+
+function guardar(){ localStorage.setItem('ddjj_data', JSON.stringify(ddjjs)); }
+function genId(){ return 'DDJJ-'+String(counter).padStart(3,'0'); }
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function renderKPIs(){
+  const total = ddjjs.length;
+  const pendientes = ddjjs.filter(d=>d.estado==='pendiente').length;
+  const conConflicto = ddjjs.filter(d=>d.conflicto==='con_conflicto').length;
+  const aprobadas = ddjjs.filter(d=>d.estado==='aprobado').length;
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi azul"><div class="kpi-num">${total}</div><div class="kpi-label">Declaraciones totales</div></div>
+    <div class="kpi ${pendientes>0?'naranja':'verde'}"><div class="kpi-num">${pendientes}</div><div class="kpi-label">Pendientes de revisión</div></div>
+    <div class="kpi ${conConflicto>0?'rojo':'verde'}"><div class="kpi-num">${conConflicto}</div><div class="kpi-label">Declaran conflicto</div></div>
+    <div class="kpi verde"><div class="kpi-num">${aprobadas}</div><div class="kpi-label">Aprobadas</div></div>
+  `;
+}
+
+// ── Vista lista ───────────────────────────────────────────────────────────
+function setFiltro(f, btn){
+  filtroActivo = f;
+  document.querySelectorAll('.btn-filt').forEach(b=>{ b.style.background='#6b7280'; });
+  btn.style.background = 'var(--pri)';
+  renderLista();
+}
+
+function estadoBadge(e){ return {pendiente:'badge-pendiente',aprobado:'badge-aprobado',rechazado:'badge-rechazado'}[e]||''; }
+function estadoLabel(e){ return {pendiente:'⏳ Pendiente',aprobado:'✅ Aprobada',rechazado:'❌ Rechazada'}[e]||e; }
+function conflictoBadge(c){ return c==='con_conflicto'?'badge-conflicto':c==='parcial'?'badge-parcial':'badge-sin-conflicto'; }
+function confLabel(c){ return {sin_conflicto:'Sin conflicto',con_conflicto:'⚠️ Declara conflicto',parcial:'A evaluar'}[c]||c; }
+
+function renderLista(){
+  const lista = ddjjs.filter(d=> filtroActivo==='todos' || d.estado===filtroActivo)
+    .sort((a,b)=>b.fechaPresentacion.localeCompare(a.fechaPresentacion));
+  const cont = document.getElementById('ddjj-list');
+  if(!lista.length){ cont.innerHTML='<div class="empty">📭 Sin declaraciones.</div>'; return; }
+  cont.innerHTML = lista.map(d=>`
+    <div class="ddjj-card" onclick="verDetalle('${d.id}')">
+      <div class="ddjj-head">
+        <div style="flex:1">
+          <div class="ddjj-nombre">${d.nombre}</div>
+          <div style="font-size:.74rem;color:var(--muted)">${d.cargo} · ${d.area}</div>
+        </div>
+        <span class="badge ${estadoBadge(d.estado)}">${estadoLabel(d.estado)}</span>
+        <span class="badge ${conflictoBadge(d.conflicto)}">${confLabel(d.conflicto)}</span>
+      </div>
+      <div class="ddjj-meta">
+        <span>📅 Presentada: ${d.fechaPresentacion}</span>
+        <span>📋 Período: ${d.desde} al ${d.hasta}</span>
+        <span style="font-family:monospace;font-size:.7rem">${d.id}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Vista aprobador ───────────────────────────────────────────────────────
+function renderAprobador(){
+  const pendientes = ddjjs.filter(d=>d.estado==='pendiente');
+  const cont = document.getElementById('lista-pendientes-aprobador');
+  if(!pendientes.length){
+    cont.innerHTML='<div class="empty">✅ Sin declaraciones pendientes de revisión.</div>'; return;
+  }
+  cont.innerHTML = pendientes.map(d=>`
+    <div style="border:1px solid var(--borde);border-radius:9px;padding:.9rem;margin-bottom:.7rem;background:#fafbfc">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">
+        <div>
+          <div style="font-size:.9rem;font-weight:700">${d.nombre} <span style="font-size:.72rem;font-family:monospace;color:var(--muted)">${d.id}</span></div>
+          <div style="font-size:.76rem;color:var(--muted)">${d.cargo} · ${d.area} · Presentada: ${d.fechaPresentacion}</div>
+        </div>
+        <span class="badge ${conflictoBadge(d.conflicto)}">${confLabel(d.conflicto)}</span>
+      </div>
+      ${d.conflicto==='con_conflicto'?`
+        <div style="background:#fdecea;border-radius:7px;padding:.6rem .8rem;font-size:.82rem;margin-bottom:.6rem">
+          <strong>Conflicto declarado:</strong> ${d.tipoConflicto}<br>
+          <strong>Empresa/persona:</strong> ${d.empresaConf}<br>
+          ${d.descConflicto}
+          ${d.mitigacion?`<br><strong>Mitigación propuesta:</strong> ${d.mitigacion}`:''}
+        </div>`:''}
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center">
+        <input type="text" id="com-${d.id}" placeholder="Comentario del aprobador…" style="flex:1;min-width:200px;font-size:.82rem;padding:.38rem .65rem;border:1px solid var(--borde);border-radius:6px">
+        <button class="btn verde btn-sm" onclick="resolverDDJJ('${d.id}','aprobado')">✅ Aprobar</button>
+        <button class="btn rojo btn-sm" onclick="resolverDDJJ('${d.id}','rechazado')">❌ Rechazar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Modal detalle ─────────────────────────────────────────────────────────
+function verDetalle(id){
+  idActivo = id;
+  const d = ddjjs.find(x=>x.id===id);
+  if(!d) return;
+  document.getElementById('modal-titulo').textContent = `${d.id} — ${d.nombre}`;
+
+  // Workflow visual
+  const estados = ['Presentada','En revisión','Resuelta'];
+  const estadoIdx = d.estado==='pendiente'?1:2;
+  const wf = estados.map((s,i)=>`
+    <div class="wf-step">
+      <div class="wf-dot ${i<estadoIdx?'completo':i===estadoIdx&&d.estado!=='pendiente'?d.estado==='aprobado'?'completo':'rechazado':i<=estadoIdx?'activo':''}">${i<estadoIdx||i===estadoIdx?'✓':i+1}</div>
+      <div class="wf-label ${i===estadoIdx?d.estado==='pendiente'?'activo':'completo':i<estadoIdx?'completo':''}">${s}</div>
+    </div>`).join('');
+
+  document.getElementById('modal-body').innerHTML = `
+    <div class="workflow">${wf}</div>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge ${estadoBadge(d.estado)}">${estadoLabel(d.estado)}</span>
+      <span class="badge ${conflictoBadge(d.conflicto)}">${confLabel(d.conflicto)}</span>
+    </div>
+    <dl style="margin-bottom:.8rem">
+      ${fd('Cargo',d.cargo)}${fd('Área',d.area)}${fd('CUIL',d.cuil)}
+      ${fd('Período',`${d.desde} al ${d.hasta}`)}
+      ${fd('Presentada',d.fechaPresentacion)}
+      ${d.fechaResolucion?fd('Resuelta',d.fechaResolucion):''}
+    </dl>
+    ${d.conflicto==='con_conflicto'?`
+      <div style="background:#fdecea;border-radius:8px;padding:.8rem;margin-bottom:.7rem;font-size:.83rem">
+        <strong>⚠️ Conflicto declarado</strong><br>
+        <strong>Tipo:</strong> ${d.tipoConflicto}<br>
+        <strong>Empresa/persona:</strong> ${d.empresaConf}<br>
+        <strong>Descripción:</strong> ${d.descConflicto}<br>
+        ${d.mitigacion?`<strong>Mitigación:</strong> ${d.mitigacion}`:''}
+      </div>`:''}
+    ${d.obs?`<div style="font-size:.82rem;color:#444;margin-bottom:.7rem"><strong>Observaciones:</strong> ${d.obs}</div>`:''}
+    ${d.comentarioAprobador?`<div style="background:#e8f5e9;border-radius:7px;padding:.6rem .8rem;font-size:.82rem;margin-bottom:.7rem">💬 <strong>Compliance:</strong> ${d.comentarioAprobador}</div>`:''}
+    <div style="font-size:.8rem;font-weight:700;color:var(--pri);margin-bottom:.4rem">📋 Historial</div>
+    <div>${d.historial.map(h=>`<div class="hist-item"><span style="color:var(--muted);min-width:85px">${h.fecha}</span><span style="flex:1">${h.accion}</span><span style="color:var(--muted)">${h.autor}</span></div>`).join('')}</div>
+    <div style="margin-top:.7rem;padding:.6rem;background:#fffde7;border-left:3px solid var(--amarillo);border-radius:6px;font-size:.74rem;color:var(--muted)">
+      📋 Válido como evidencia ante auditorías externas y Oficina Anticorrupción.
+    </div>
+  `;
+
+  document.getElementById('modal-footer').innerHTML = `
+    <button class="btn rojo btn-sm" onclick="eliminarDDJJ()">Eliminar</button>
+    <button class="btn gris btn-sm" onclick="document.getElementById('modal').classList.remove('open')">Cerrar</button>
+    ${d.estado==='pendiente'?`
+      <button class="btn verde btn-sm" onclick="resolverDDJJModal('aprobado')">✅ Aprobar</button>
+      <button class="btn rojo btn-sm" onclick="resolverDDJJModal('rechazado')">❌ Rechazar</button>`:''}
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+
+function fd(k,v){ return v?`<div class="detalle-fila"><dt>${k}</dt><dd>${v}</dd></div>`:''; }
+
+// ── Resolución ────────────────────────────────────────────────────────────
+function resolverDDJJ(id, resolucion){
+  const comentario = (document.getElementById('com-'+id)||{}).value||'';
+  _resolver(id, resolucion, comentario);
+}
+function resolverDDJJModal(resolucion){
+  _resolver(idActivo, resolucion, '');
+  document.getElementById('modal').classList.remove('open');
+}
+function _resolver(id, resolucion, comentario){
+  const d = ddjjs.find(x=>x.id===id);
+  if(!d) return;
+  d.estado = resolucion;
+  d.fechaResolucion = new Date().toISOString().slice(0,10);
+  d.comentarioAprobador = comentario;
+  d.historial.push({fecha:d.fechaResolucion, accion:`${resolucion==='aprobado'?'Aprobada':'Rechazada'} por Compliance Officer`, autor:'Compliance'});
+  guardar(); renderAll();
+  toast(`${resolucion==='aprobado'?'✅ Aprobada':'❌ Rechazada'}: ${d.nombre}`);
+}
+
+// ── Presentar nueva DDJJ ──────────────────────────────────────────────────
+document.addEventListener('change', e=>{
+  if(e.target.name==='conflicto'){
+    const mostrar = e.target.value!=='sin_conflicto';
+    document.getElementById('detalle-conflicto').style.display = mostrar?'block':'none';
+  }
+});
+
+function presentarDDJJ(){
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const cargo = document.getElementById('f-cargo').value.trim();
+  const conflicto = document.querySelector('input[name="conflicto"]:checked');
+  if(!nombre||!cargo||!conflicto){ toast('⚠️ Completá nombre, cargo y situación de conflicto'); return; }
+  if(!document.getElementById('chk-legal').checked){ toast('⚠️ Debés aceptar la declaración jurada'); return; }
+  const tieneConf = conflicto.value!=='sin_conflicto';
+  if(tieneConf && !document.getElementById('f-desc-conf').value.trim()){ toast('⚠️ Describí el conflicto en detalle'); return; }
+
+  const nuevo = {
+    id: genId(), nombre, cargo,
+    cuil: document.getElementById('f-cuil').value.trim(),
+    area: document.getElementById('f-area').value,
+    conflicto: conflicto.value,
+    tipoConflicto: tieneConf ? document.getElementById('f-tipo-conf').value : '',
+    empresaConf: tieneConf ? document.getElementById('f-empresa-conf').value.trim() : '',
+    descConflicto: tieneConf ? document.getElementById('f-desc-conf').value.trim() : '',
+    mitigacion: tieneConf ? document.getElementById('f-mitigacion').value.trim() : '',
+    desde: document.getElementById('f-desde').value || new Date().toISOString().slice(0,10),
+    hasta: document.getElementById('f-hasta').value || new Date(new Date().setFullYear(new Date().getFullYear()+1)).toISOString().slice(0,10),
+    obs: document.getElementById('f-obs').value.trim(),
+    estado: 'pendiente',
+    fechaPresentacion: new Date().toISOString().slice(0,10),
+    fechaResolucion: null, comentarioAprobador: '',
+    historial:[{fecha:new Date().toISOString().slice(0,10), accion:`Presentación de DDJJ${tieneConf?' — declara conflicto de interés':''}`, autor:nombre}],
+  };
+  counter++;
+  ddjjs.unshift(nuevo);
+  guardar(); limpiarForm(); renderAll();
+  setVista('lista', document.querySelector('.view-tab'));
+  toast(`✅ ${nuevo.id} presentada correctamente`);
+}
+
+function limpiarForm(){
+  ['f-nombre','f-cuil','f-cargo','f-desde','f-hasta','f-obs','f-empresa-conf','f-desc-conf','f-mitigacion'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.querySelectorAll('input[name="conflicto"]').forEach(r=>r.checked=false);
+  document.getElementById('detalle-conflicto').style.display='none';
+  document.getElementById('chk-legal').checked=false;
+}
+
+function eliminarDDJJ(){
+  if(!confirm('¿Eliminar esta declaración?')) return;
+  ddjjs = ddjjs.filter(x=>x.id!==idActivo);
+  guardar(); renderAll();
+  document.getElementById('modal').classList.remove('open');
+  toast('Declaración eliminada');
+}
+
+// ── Vistas ────────────────────────────────────────────────────────────────
+function setVista(v, btn){
+  ['lista','nueva','aprobador'].forEach(id=>document.getElementById('vista-'+id).style.display='none');
+  document.getElementById('vista-'+v).style.display='block';
+  document.querySelectorAll('.view-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(v==='aprobador') renderAprobador();
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function renderAll(){ renderKPIs(); renderLista(); renderAprobador(); }
+
+renderAll();
+</script>
+</body>
+</html>

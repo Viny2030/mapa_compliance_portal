@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gestión Documental — Monitor de Compliance</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:56px;line-height:1.6}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700;text-decoration:none}
+.nav-back{color:#a8c7e8;font-size:.8rem;text-decoration:none}
+.nav-back:hover{color:#fff}
+.wrap{max-width:960px;margin:0 auto;padding:1.4rem .9rem}
+.page-header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.6rem 1rem 1.2rem;margin-bottom:1.4rem}
+.page-header h1{font-size:1.4rem;margin-bottom:.2rem}
+.page-header p{opacity:.75;font-size:.85rem}
+.card{background:var(--card);border-radius:10px;padding:1.2rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1rem;border-top:3px solid var(--pri)}
+.card h2{color:var(--pri);font-size:1rem;margin-bottom:.9rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1.2rem}
+@media(max-width:640px){.grid4{grid-template-columns:repeat(2,1fr)}}
+.kpi{text-align:center;padding:.8rem .5rem;border-radius:8px;border:1px solid var(--borde)}
+.kpi-num{font-size:1.6rem;font-weight:800;line-height:1}
+.kpi-label{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:.2rem}
+.kpi.verde .kpi-num{color:var(--verde)}.kpi.rojo .kpi-num{color:var(--rojo)}.kpi.naranja .kpi-num{color:var(--naranja)}.kpi.azul .kpi-num{color:var(--sec)}
+/* Filtros */
+.filtros{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center}
+.filtro-btn{background:#f0f4f8;border:1px solid var(--borde);color:var(--muted);font-size:.74rem;font-weight:600;padding:.28rem .65rem;border-radius:5px;cursor:pointer;transition:all .15s}
+.filtro-btn.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+.search-doc{flex:1;min-width:160px;font-size:.83rem;padding:.35rem .7rem;border:1px solid var(--borde);border-radius:6px;font-family:inherit}
+/* Doc cards */
+.doc-card{border:1px solid var(--borde);border-radius:9px;padding:.9rem 1rem;margin-bottom:.5rem;background:#fafbfc;cursor:pointer;transition:box-shadow .15s}
+.doc-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.doc-card.vencido{border-left:4px solid var(--rojo)}
+.doc-card.prox-venc{border-left:4px solid var(--naranja)}
+.doc-card.vigente{border-left:4px solid var(--verde)}
+.doc-head{display:flex;align-items:flex-start;gap:.5rem;flex-wrap:wrap}
+.doc-ico{font-size:1.3rem;flex-shrink:0}
+.doc-info{flex:1}
+.doc-nombre{font-size:.9rem;font-weight:700;color:var(--pri)}
+.doc-codigo{font-size:.7rem;color:var(--muted);font-family:monospace}
+.doc-meta{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem;align-items:center}
+.badge{display:inline-flex;align-items:center;font-size:.67rem;font-weight:700;padding:.13rem .45rem;border-radius:7px}
+.badge-tipo{background:#e3f2fd;color:#0d47a1}
+.badge-vigente{background:#e8f5e9;color:var(--verde)}
+.badge-vencido{background:#fdecea;color:var(--rojo)}
+.badge-prox{background:#fff3e0;color:var(--naranja)}
+.badge-borrador{background:#f5f5f5;color:#757575}
+.badge-version{background:#ede7f6;color:#4a148c}
+/* Versiones timeline */
+.ver-list{display:flex;flex-direction:column;gap:.3rem;margin:.5rem 0}
+.ver-item{display:flex;gap:.5rem;align-items:flex-start;font-size:.8rem;padding:.3rem .5rem;background:#f0f4f8;border-radius:6px}
+.ver-num{font-family:monospace;font-weight:700;color:var(--pri);min-width:38px;flex-shrink:0}
+.ver-fecha{color:var(--muted);font-size:.72rem;min-width:80px}
+.ver-nota{flex:1}
+.ver-actual{background:#e8f5e9}
+/* Trazabilidad lecturas */
+.lect-row{display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem;border-bottom:1px solid var(--borde);font-size:.8rem}
+.lect-row:last-child{border-bottom:none}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:12px;padding:1.4rem;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.modal-header h3{color:var(--pri);font-size:.95rem;flex:1;padding-right:.5rem}
+.close-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted)}
+.form-group{display:flex;flex-direction:column;gap:.28rem;margin-bottom:.65rem}
+.form-group label{font-size:.76rem;font-weight:600;color:var(--pri)}
+input,select,textarea{font-family:inherit;font-size:.85rem;padding:.45rem .7rem;border:1px solid var(--borde);border-radius:6px;width:100%}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--sec);border-color:var(--sec)}
+textarea{resize:vertical;min-height:60px}
+.btn{background:var(--pri);color:#fff;border:none;padding:.42rem 1rem;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:hover{background:#0d2137}
+.btn.verde{background:var(--verde)}.btn.verde:hover{background:#1b5e20}
+.btn.naranja{background:var(--naranja)}
+.btn.gris{background:#6b7280}
+.btn.rojo{background:var(--rojo)}
+.btn-sm{padding:.28rem .65rem;font-size:.76rem}
+.modal-footer{display:flex;gap:.4rem;justify-content:flex-end;margin-top:.9rem;padding-top:.7rem;border-top:1px solid var(--borde);flex-wrap:wrap}
+.seccion-titulo{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:.4rem 0;border-bottom:2px solid var(--borde);margin:.7rem 0 .5rem}
+.toast{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--pri);color:#fff;padding:.6rem 1rem;border-radius:8px;font-size:.84rem;font-weight:600;z-index:999;opacity:0;transform:translateY(8px);transition:all .3s}
+.toast.show{opacity:1;transform:translateY(0)}
+.empty{text-align:center;padding:2rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-top">
+    <a class="nav-brand" href="index.html">⚖️ Monitor de Compliance</a>
+    <a class="nav-back" href="index.html">← Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="wrap" style="padding-top:0;padding-bottom:0">
+    <h1>📁 Gestión Documental</h1>
+    <p>Versionado · Recordatorios de vencimiento · Trazabilidad de lecturas · Art. 23 Ley 27.401</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="grid4" id="kpi-grid"></div>
+
+  <!-- Lista documentos -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem">
+      <h2 style="margin:0">📋 Documentos del Programa</h2>
+      <button class="btn btn-sm verde" onclick="abrirModalNuevo()">+ Nuevo documento</button>
+    </div>
+    <div class="filtros">
+      <input class="search-doc" type="text" id="search" placeholder="🔍 Buscar…" oninput="renderLista()">
+      <button class="filtro-btn active" onclick="setFiltro('todos',this)">Todos</button>
+      <button class="filtro-btn" onclick="setFiltro('vencido',this)">🔴 Vencidos</button>
+      <button class="filtro-btn" onclick="setFiltro('prox',this)">🟠 Próx. vencimiento</button>
+      <button class="filtro-btn" onclick="setFiltro('vigente',this)">🟢 Vigentes</button>
+    </div>
+    <div id="doc-list"></div>
+  </div>
+
+</div>
+
+<!-- Modal nuevo documento -->
+<div class="modal-overlay" id="modal-nuevo" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Nuevo documento</h3>
+      <button class="close-btn" onclick="document.getElementById('modal-nuevo').classList.remove('open')">✕</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="form-group" style="grid-column:1/-1"><label>Nombre del documento</label><input type="text" id="n-nombre" placeholder="Ej: Código de Ética y Conducta"></div>
+      <div class="form-group"><label>Código / ID</label><input type="text" id="n-codigo" placeholder="Ej: COD-001"></div>
+      <div class="form-group"><label>Tipo</label>
+        <select id="n-tipo">
+          <option>Código</option><option>Política</option><option>Procedimiento</option><option>Manual</option><option>Reglamento</option><option>Formulario</option><option>Declaración jurada</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Versión</label><input type="text" id="n-version" value="v1.0" placeholder="v1.0"></div>
+      <div class="form-group"><label>Fecha de vigencia</label><input type="date" id="n-vigencia"></div>
+      <div class="form-group"><label>Fecha de vencimiento</label><input type="date" id="n-vencimiento"></div>
+      <div class="form-group"><label>Responsable</label><input type="text" id="n-resp" placeholder="Área o persona responsable"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>URL / referencia</label><input type="text" id="n-url" placeholder="https://… o ruta de red"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Descripción</label><textarea id="n-desc" placeholder="Breve descripción del documento…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn gris btn-sm" onclick="document.getElementById('modal-nuevo').classList.remove('open')">Cancelar</button>
+      <button class="btn verde btn-sm" onclick="crearDocumento()">Crear documento →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal detalle documento -->
+<div class="modal-overlay" id="modal-detalle" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="detalle-titulo">Documento</h3>
+      <button class="close-btn" onclick="document.getElementById('modal-detalle').classList.remove('open')">✕</button>
+    </div>
+    <div id="detalle-body"></div>
+    <div class="modal-footer">
+      <button class="btn rojo btn-sm" onclick="eliminarDoc()">Eliminar</button>
+      <button class="btn naranja btn-sm" onclick="abrirModalNuevaVersion()">+ Nueva versión</button>
+      <button class="btn btn-sm" onclick="abrirModalRegistrarLectura()">✅ Registrar lectura</button>
+      <button class="btn gris btn-sm" onclick="document.getElementById('modal-detalle').classList.remove('open')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal nueva versión -->
+<div class="modal-overlay" id="modal-version" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Nueva versión del documento</h3>
+      <button class="close-btn" onclick="document.getElementById('modal-version').classList.remove('open')">✕</button>
+    </div>
+    <div class="form-group"><label>Número de versión</label><input type="text" id="v-numero" placeholder="Ej: v2.0"></div>
+    <div class="form-group"><label>Fecha</label><input type="date" id="v-fecha"></div>
+    <div class="form-group"><label>Nueva fecha de vencimiento</label><input type="date" id="v-vencimiento"></div>
+    <div class="form-group"><label>Nota de cambios</label><textarea id="v-nota" placeholder="¿Qué cambió en esta versión?"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn gris btn-sm" onclick="document.getElementById('modal-version').classList.remove('open')">Cancelar</button>
+      <button class="btn verde btn-sm" onclick="crearVersion()">Registrar versión →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal registrar lectura -->
+<div class="modal-overlay" id="modal-lectura" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Registrar lectura / conformidad</h3>
+      <button class="close-btn" onclick="document.getElementById('modal-lectura').classList.remove('open')">✕</button>
+    </div>
+    <p style="font-size:.83rem;color:var(--muted);margin-bottom:.8rem">Registrá quién leyó y aprobó este documento. Sirve como trazabilidad ante auditorías.</p>
+    <div class="form-group"><label>Nombre del empleado / responsable</label><input type="text" id="l-nombre" placeholder="Nombre completo"></div>
+    <div class="form-group"><label>Área</label><input type="text" id="l-area" placeholder="Área o rol"></div>
+    <div class="form-group"><label>Fecha de lectura</label><input type="date" id="l-fecha"></div>
+    <div style="background:#e8f5e9;border-radius:7px;padding:.65rem;font-size:.82rem;margin-bottom:.6rem">
+      ✅ Al registrar, se certifica que la persona leyó la versión vigente del documento.
+    </div>
+    <div class="modal-footer">
+      <button class="btn gris btn-sm" onclick="document.getElementById('modal-lectura').classList.remove('open')">Cancelar</button>
+      <button class="btn verde btn-sm" onclick="registrarLectura()">Registrar →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Datos ─────────────────────────────────────────────────────────────────
+let docs = JSON.parse(localStorage.getItem('docs_data') || 'null');
+let filtroActivo = 'todos';
+let idActivo = null;
+let docCounter;
+
+if(!docs){
+  docs = [
+    {id:'D-001',nombre:'Código de Ética y Conducta',codigo:'COD-001',tipo:'Código',version:'v2.0',vigencia:'2024-03-15',vencimiento:'2026-03-15',responsable:'Compliance',url:'',descripcion:'Establece los principios éticos y de conducta de todos los integrantes de la organización.',
+     versiones:[
+       {numero:'v1.0',fecha:'2022-01-10',nota:'Versión inicial'},
+       {numero:'v2.0',fecha:'2024-03-15',nota:'Actualización por Ley 27.401 y nuevos estándares OCDE'},
+     ],
+     lecturas:[
+       {nombre:'Dra. María González',area:'Compliance',fecha:'2024-03-20'},
+       {nombre:'Lic. Roberto Sánchez',area:'Dirección',fecha:'2024-03-22'},
+       {nombre:'Cont. Laura Méndez',area:'Finanzas',fecha:'2024-04-01'},
+     ]},
+    {id:'D-002',nombre:'Política de Regalos e Invitaciones',codigo:'GR-002',tipo:'Política',version:'v1.1',vigencia:'2024-04-01',vencimiento:'2025-04-01',responsable:'Compliance',url:'',descripcion:'Regula la entrega y recepción de regalos, invitaciones y cualquier beneficio por parte de empleados.',
+     versiones:[
+       {numero:'v1.0',fecha:'2023-06-01',nota:'Versión inicial'},
+       {numero:'v1.1',fecha:'2024-04-01',nota:'Ajuste de umbral de valor permitido ($30.000)'},
+     ],
+     lecturas:[
+       {nombre:'Dra. María González',area:'Compliance',fecha:'2024-04-05'},
+     ]},
+    {id:'D-003',nombre:'Procedimiento de Contrataciones Públicas',codigo:'LP-001',tipo:'Procedimiento',version:'v3.0',vigencia:'2025-01-01',vencimiento:'2027-01-01',responsable:'Legal / Comercial',url:'',descripcion:'Procedimiento obligatorio para toda participación de la empresa en licitaciones y contrataciones con el Estado.',
+     versiones:[
+       {numero:'v1.0',fecha:'2020-03-01',nota:'Versión inicial'},
+       {numero:'v2.0',fecha:'2022-07-15',nota:'Incorporación Art. 24 Ley 27.401'},
+       {numero:'v3.0',fecha:'2025-01-01',nota:'Revisión completa — nuevos requisitos RITE'},
+     ],
+     lecturas:[]},
+    {id:'D-004',nombre:'Manual de Due Diligence de Terceros',codigo:'DD-003',tipo:'Manual',version:'v1.0',vigencia:'2025-03-01',vencimiento:'2026-03-01',responsable:'Compras',url:'',descripcion:'Manual para la evaluación y verificación de proveedores, clientes y socios comerciales.',
+     versiones:[
+       {numero:'v1.0',fecha:'2025-03-01',nota:'Primera versión — en implementación'},
+     ],
+     lecturas:[]},
+  ];
+  guardar();
+}
+docCounter = docs.length + 1;
+
+function guardar(){ localStorage.setItem('docs_data', JSON.stringify(docs)); }
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function estadoDoc(d){
+  if(!d.vencimiento) return 'vigente';
+  const hoy = new Date();
+  const venc = new Date(d.vencimiento);
+  const dias = Math.round((venc - hoy)/86400000);
+  if(dias < 0) return 'vencido';
+  if(dias < 60) return 'prox';
+  return 'vigente';
+}
+
+function renderKPIs(){
+  const total = docs.length;
+  const vencidos = docs.filter(d=>estadoDoc(d)==='vencido').length;
+  const prox = docs.filter(d=>estadoDoc(d)==='prox').length;
+  const totalLect = docs.reduce((a,d)=>a+(d.lecturas||[]).length,0);
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi azul"><div class="kpi-num">${total}</div><div class="kpi-label">Documentos activos</div></div>
+    <div class="kpi rojo"><div class="kpi-num">${vencidos}</div><div class="kpi-label">Vencidos</div></div>
+    <div class="kpi naranja"><div class="kpi-num">${prox}</div><div class="kpi-label">Vencen en 60 días</div></div>
+    <div class="kpi verde"><div class="kpi-num">${totalLect}</div><div class="kpi-label">Lecturas registradas</div></div>
+  `;
+}
+
+// ── Lista ─────────────────────────────────────────────────────────────────
+const TIPOS_ICO = {Código:'📜',Política:'📋',Procedimiento:'📝',Manual:'📖',Reglamento:'⚖️',Formulario:'📄','Declaración jurada':'✍️',Otro:'📁'};
+
+function setFiltro(f, btn){
+  filtroActivo = f;
+  document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLista();
+}
+
+function renderLista(){
+  const q = (document.getElementById('search').value||'').toLowerCase();
+  let lista = docs.filter(d=>{
+    const est = estadoDoc(d);
+    if(filtroActivo==='vencido' && est!=='vencido') return false;
+    if(filtroActivo==='prox' && est!=='prox') return false;
+    if(filtroActivo==='vigente' && est!=='vigente') return false;
+    if(q && !d.nombre.toLowerCase().includes(q) && !(d.codigo||'').toLowerCase().includes(q) && !d.tipo.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const cont = document.getElementById('doc-list');
+  if(!lista.length){ cont.innerHTML='<div class="empty">📭 Sin documentos que coincidan.</div>'; return; }
+
+  const hoy = new Date();
+  cont.innerHTML = lista.map(d=>{
+    const est = estadoDoc(d);
+    const ico = TIPOS_ICO[d.tipo]||'📁';
+    let vencLabel='';
+    if(d.vencimiento){
+      const dias = Math.round((new Date(d.vencimiento)-hoy)/86400000);
+      if(dias<0) vencLabel=`<span class="badge badge-vencido">⚠️ Venció hace ${Math.abs(dias)}d</span>`;
+      else if(dias<60) vencLabel=`<span class="badge badge-prox">⏰ Vence en ${dias}d</span>`;
+      else vencLabel=`<span class="badge badge-vigente">✅ Vigente hasta ${d.vencimiento}</span>`;
+    }
+    return `<div class="doc-card ${est}" onclick="verDetalle('${d.id}')">
+      <div class="doc-head">
+        <div class="doc-ico">${ico}</div>
+        <div class="doc-info">
+          <div class="doc-nombre">${d.nombre}</div>
+          <div class="doc-codigo">${d.codigo||d.id}</div>
+        </div>
+        <span class="badge badge-tipo">${d.tipo}</span>
+        <span class="badge badge-version">${d.version}</span>
+      </div>
+      <div class="doc-meta">
+        ${vencLabel}
+        ${d.responsable?`<span style="font-size:.73rem;color:var(--muted)">👤 ${d.responsable}</span>`:''}
+        <span style="font-size:.73rem;color:var(--muted)">📂 ${d.versiones.length} versión(es) · ✍️ ${(d.lecturas||[]).length} lectura(s)</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Modal detalle ─────────────────────────────────────────────────────────
+function verDetalle(id){
+  idActivo = id;
+  const d = docs.find(x=>x.id===id);
+  if(!d) return;
+  document.getElementById('detalle-titulo').textContent = d.nombre;
+  const hoy = new Date();
+  const est = estadoDoc(d);
+  let vencInfo='';
+  if(d.vencimiento){
+    const dias = Math.round((new Date(d.vencimiento)-hoy)/86400000);
+    if(dias<0) vencInfo=`<span class="badge badge-vencido">⚠️ Venció hace ${Math.abs(dias)} días — renovar</span>`;
+    else if(dias<60) vencInfo=`<span class="badge badge-prox">⏰ Vence en ${dias} días</span>`;
+    else vencInfo=`<span class="badge badge-vigente">✅ Vigente hasta ${d.vencimiento}</span>`;
+  }
+  document.getElementById('detalle-body').innerHTML = `
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge badge-tipo">${d.tipo}</span>
+      <span class="badge badge-version">${d.version}</span>
+      ${vencInfo}
+    </div>
+    <dl style="font-size:.83rem;margin-bottom:.8rem">
+      ${filaD('Código',d.codigo)}
+      ${filaD('Vigencia desde',d.vigencia)}
+      ${filaD('Vencimiento',d.vencimiento)}
+      ${filaD('Responsable',d.responsable)}
+      ${d.url?filaD('URL',`<a href="${d.url}" target="_blank">${d.url}</a>`):''}
+    </dl>
+    ${d.descripcion?`<p style="font-size:.83rem;color:#444;line-height:1.55;margin-bottom:.8rem">${d.descripcion}</p>`:''}
+
+    <div class="seccion-titulo">📂 Historial de versiones</div>
+    <div class="ver-list">
+      ${[...d.versiones].reverse().map((v,i)=>`
+        <div class="ver-item ${i===0?'ver-actual':''}">
+          <span class="ver-num">${v.numero}</span>
+          <span class="ver-fecha">${v.fecha}</span>
+          <span class="ver-nota">${v.nota}${i===0?' <strong>(actual)</strong>':''}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="seccion-titulo">✅ Trazabilidad de lecturas (${(d.lecturas||[]).length})</div>
+    ${(d.lecturas||[]).length
+      ? `<div>${d.lecturas.map(l=>`
+          <div class="lect-row">
+            <span style="font-size:.9rem">✅</span>
+            <strong style="flex:1">${l.nombre}</strong>
+            <span style="color:var(--muted)">${l.area||''}</span>
+            <span style="color:var(--muted);min-width:80px;text-align:right">${l.fecha}</span>
+          </div>
+        `).join('')}</div>`
+      : `<div style="font-size:.82rem;color:var(--muted);padding:.4rem">Sin lecturas registradas aún.</div>`
+    }
+    <div style="margin-top:.7rem;padding:.6rem;background:#f0f4f8;border-radius:7px;font-size:.77rem;color:var(--muted)">
+      📋 Este registro de lecturas es válido como evidencia ante la Oficina Anticorrupción y auditores externos.
+    </div>
+  `;
+  document.getElementById('modal-detalle').classList.add('open');
+}
+
+function filaD(k,v){ return v?`<div style="display:flex;gap:.5rem;padding:.18rem 0"><dt style="font-weight:600;min-width:130px;color:var(--pri)">${k}</dt><dd>${v}</dd></div>`:''; }
+
+// ── Crear documento ───────────────────────────────────────────────────────
+function abrirModalNuevo(){ document.getElementById('modal-nuevo').classList.add('open'); }
+
+function crearDocumento(){
+  const nombre = document.getElementById('n-nombre').value.trim();
+  if(!nombre){ toast('⚠️ Ingresá el nombre del documento'); return; }
+  const nuevo = {
+    id:'D-'+String(docCounter).padStart(3,'0'),
+    nombre,
+    codigo: document.getElementById('n-codigo').value.trim()||'D-'+String(docCounter).padStart(3,'0'),
+    tipo: document.getElementById('n-tipo').value,
+    version: document.getElementById('n-version').value.trim()||'v1.0',
+    vigencia: document.getElementById('n-vigencia').value || new Date().toISOString().slice(0,10),
+    vencimiento: document.getElementById('n-vencimiento').value,
+    responsable: document.getElementById('n-resp').value.trim(),
+    url: document.getElementById('n-url').value.trim(),
+    descripcion: document.getElementById('n-desc').value.trim(),
+    versiones:[{numero: document.getElementById('n-version').value.trim()||'v1.0', fecha: new Date().toISOString().slice(0,10), nota:'Versión inicial'}],
+    lecturas:[],
+  };
+  docCounter++;
+  docs.unshift(nuevo);
+  guardar(); renderKPIs(); renderLista();
+  document.getElementById('modal-nuevo').classList.remove('open');
+  ['n-nombre','n-codigo','n-version','n-vigencia','n-vencimiento','n-resp','n-url','n-desc'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('n-version').value='v1.0';
+  toast(`✅ Documento creado`);
+}
+
+// ── Nueva versión ─────────────────────────────────────────────────────────
+function abrirModalNuevaVersion(){ document.getElementById('modal-version').classList.add('open'); }
+
+function crearVersion(){
+  const numero = document.getElementById('v-numero').value.trim();
+  const nota = document.getElementById('v-nota').value.trim();
+  if(!numero||!nota){ toast('⚠️ Completá número de versión y nota de cambios'); return; }
+  const d = docs.find(x=>x.id===idActivo);
+  if(!d) return;
+  d.versiones.push({
+    numero,
+    fecha: document.getElementById('v-fecha').value || new Date().toISOString().slice(0,10),
+    nota,
+  });
+  d.version = numero;
+  if(document.getElementById('v-vencimiento').value) d.vencimiento = document.getElementById('v-vencimiento').value;
+  guardar(); renderKPIs(); renderLista();
+  document.getElementById('modal-version').classList.remove('open');
+  verDetalle(idActivo);
+  toast(`✅ Versión ${numero} registrada`);
+}
+
+// ── Registrar lectura ─────────────────────────────────────────────────────
+function abrirModalRegistrarLectura(){
+  document.getElementById('l-fecha').value = new Date().toISOString().slice(0,10);
+  document.getElementById('modal-lectura').classList.add('open');
+}
+
+function registrarLectura(){
+  const nombre = document.getElementById('l-nombre').value.trim();
+  if(!nombre){ toast('⚠️ Ingresá el nombre'); return; }
+  const d = docs.find(x=>x.id===idActivo);
+  if(!d) return;
+  if(!d.lecturas) d.lecturas=[];
+  d.lecturas.push({
+    nombre,
+    area: document.getElementById('l-area').value.trim()||'',
+    fecha: document.getElementById('l-fecha').value || new Date().toISOString().slice(0,10),
+  });
+  guardar(); renderKPIs(); renderLista();
+  document.getElementById('modal-lectura').classList.remove('open');
+  verDetalle(idActivo);
+  ['l-nombre','l-area'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  toast(`✅ Lectura registrada para ${nombre}`);
+}
+
+// ── Eliminar ──────────────────────────────────────────────────────────────
+function eliminarDoc(){
+  if(!confirm('¿Eliminar este documento y todo su historial?')) return;
+  docs = docs.filter(x=>x.id!==idActivo);
+  guardar(); renderKPIs(); renderLista();
+  document.getElementById('modal-detalle').classList.remove('open');
+  toast('Documento eliminado');
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+renderKPIs();
+renderLista();
+</script>
+</body>
+</html>
