@@ -1,0 +1,29 @@
+{
+  "consultores": [
+    {
+      "id": "u001",
+      "nombre": "Vicente Monteverde",
+      "email": "viny01958@gmail.com",
+      "password_hash": "09a700be4ed5f277368efe6bb3127fb3b3e8d047d445f5eaae4252bd231e85f7",
+      "clientes": ["c001", "c002"]
+    }
+  ],
+  "clientes": [
+    {
+      "id": "c001",
+      "nombre": "Empresa Demo S.A.",
+      "cuit": "30-71234567-0",
+      "pais": "AR",
+      "sector": "Tecnología",
+      "activo": true
+    },
+    {
+      "id": "c002",
+      "nombre": "Exportadora Brasil Ltda.",
+      "cuit": "12.345.678/0001-90",
+      "pais": "BR",
+      "sector": "Comercio exterior",
+      "activo": true
+    }
+  ]
+}

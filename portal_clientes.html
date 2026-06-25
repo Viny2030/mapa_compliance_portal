@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Compliance — Clientes</title>
+<style>
+  :root {
+    --pri: #1a3a5c; --sec: #2196f3; --fondo: #f0f4f8;
+    --borde: #dde3ea; --texto: #1e293b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: var(--fondo); color: var(--texto); }
+
+  /* Header */
+  .header {
+    background: var(--pri); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .8rem 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .header h1 { font-size: 1.1rem; font-weight: 700; }
+  .header-right { display: flex; align-items: center; gap: 1rem; font-size: .85rem; }
+  .btn-logout {
+    background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+    color: #fff; padding: .4rem .9rem; border-radius: 6px; cursor: pointer;
+    font-size: .82rem; transition: background .2s;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,.25); }
+
+  /* Main */
+  .wrap { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+  .section-title {
+    font-size: 1.2rem; font-weight: 700; color: var(--pri);
+    margin-bottom: 1.2rem; display: flex; align-items: center; gap: .5rem;
+  }
+
+  /* Grid de clientes */
+  .clientes-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
+  }
+  .cliente-card {
+    background: #fff; border-radius: 12px; padding: 1.3rem 1.2rem;
+    border: 1.5px solid var(--borde); cursor: pointer;
+    transition: border-color .2s, box-shadow .2s; position: relative;
+  }
+  .cliente-card:hover { border-color: var(--sec); box-shadow: 0 4px 16px rgba(33,150,243,.15); }
+  .cliente-card .pais {
+    font-size: 1.4rem; margin-bottom: .5rem;
+  }
+  .cliente-card h3 { font-size: 1rem; font-weight: 700; color: var(--pri); margin-bottom: .3rem; }
+  .cliente-card .cuit { font-size: .78rem; color: #64748b; margin-bottom: .6rem; }
+  .cliente-card .sector {
+    display: inline-block; background: #eff6ff; color: #1d4ed8;
+    font-size: .72rem; font-weight: 600; padding: .2rem .6rem;
+    border-radius: 20px;
+  }
+  .cliente-card .btn-abrir {
+    display: block; width: 100%; margin-top: 1rem;
+    background: var(--sec); color: #fff; border: none;
+    border-radius: 7px; padding: .55rem; font-size: .85rem;
+    font-weight: 700; cursor: pointer; text-align: center; transition: background .2s;
+  }
+  .cliente-card .btn-abrir:hover { background: #1976d2; }
+
+  /* Botón nuevo cliente */
+  .btn-nuevo {
+    background: #fff; border: 2px dashed var(--sec); color: var(--sec);
+    border-radius: 12px; padding: 1.3rem 1.2rem; cursor: pointer;
+    text-align: center; font-size: .9rem; font-weight: 600;
+    transition: background .2s;
+  }
+  .btn-nuevo:hover { background: #eff6ff; }
+
+  /* Modal nuevo cliente */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.4); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: #fff; border-radius: 14px; padding: 2rem;
+    width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  }
+  .modal h2 { color: var(--pri); font-size: 1.1rem; margin-bottom: 1.2rem; }
+  .field { margin-bottom: 1rem; }
+  .field label { font-size: .8rem; color: #475569; font-weight: 600; display: block; margin-bottom: .3rem; }
+  .field input, .field select {
+    width: 100%; padding: .6rem .8rem; border: 1.5px solid var(--borde);
+    border-radius: 7px; font-size: .88rem; outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--sec); }
+  .modal-btns { display: flex; gap: .7rem; margin-top: 1.3rem; }
+  .modal-btns button {
+    flex: 1; padding: .65rem; border-radius: 7px; font-size: .88rem;
+    font-weight: 700; cursor: pointer; border: none;
+  }
+  .btn-guardar { background: var(--sec); color: #fff; }
+  .btn-cancelar { background: var(--fondo); color: var(--texto); }
+
+  .loading { text-align: center; color: #64748b; padding: 2rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚖️ Portal Compliance</h1>
+  <div class="header-right">
+    <span id="nombre-consultor">Cargando...</span>
+    <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="section-title">🏢 Mis clientes</div>
+  <div class="clientes-grid" id="clientes-grid">
+    <div class="loading">Cargando clientes...</div>
+  </div>
+</div>
+
+<!-- Modal nuevo cliente -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>➕ Nuevo cliente</h2>
+    <div class="field">
+      <label>Razón social</label>
+      <input type="text" id="nc-nombre" placeholder="Empresa S.A.">
+    </div>
+    <div class="field">
+      <label>CUIT / CNPJ / NIF</label>
+      <input type="text" id="nc-cuit" placeholder="30-12345678-9">
+    </div>
+    <div class="field">
+      <label>País</label>
+      <select id="nc-pais">
+        <option value="AR">🇦🇷 Argentina</option>
+        <option value="BR">🇧🇷 Brasil</option>
+        <option value="ES">🇪🇸 España</option>
+        <option value="UY">🇺🇾 Uruguay</option>
+        <option value="CL">🇨🇱 Chile</option>
+        <option value="MX">🇲🇽 México</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Sector</label>
+      <input type="text" id="nc-sector" placeholder="Tecnología, Construcción, etc.">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar" onclick="guardarCliente()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PAIS_EMOJI = { AR:'🇦🇷', BR:'🇧🇷', ES:'🇪🇸', UY:'🇺🇾', CL:'🇨🇱', MX:'🇲🇽' };
+
+async function init() {
+  // Verificar sesión
+  const me = await fetch('/api/me').then(r => r.json());
+  if (!me.autenticado) { window.location.href = '/'; return; }
+  document.getElementById('nombre-consultor').textContent = '👤 ' + me.nombre;
+
+  // Cargar clientes
+  const clientes = await fetch('/api/clientes').then(r => r.json());
+  renderClientes(clientes);
+}
+
+function renderClientes(clientes) {
+  const grid = document.getElementById('clientes-grid');
+  if (!clientes.length) {
+    grid.innerHTML = '<div class="loading">No tenés clientes aún. Creá el primero →</div>';
+  } else {
+    grid.innerHTML = clientes.map(c => `
+      <div class="cliente-card">
+        <div class="pais">${PAIS_EMOJI[c.pais] || '🌎'}</div>
+        <h3>${c.nombre}</h3>
+        <div class="cuit">${c.cuit || '—'}</div>
+        <span class="sector">${c.sector || 'Sin sector'}</span>
+        <button class="btn-abrir" onclick="abrirCliente('${c.id}')">
+          Abrir dashboard →
+        </button>
+      </div>
+    `).join('');
+  }
+  // Botón agregar siempre al final
+  grid.innerHTML += `
+    <div class="btn-nuevo" onclick="abrirModal()">
+      ➕ Agregar cliente
+    </div>`;
+}
+
+function abrirCliente(id) {
+  window.location.href = `/dashboard/${id}`;
+}
+
+function abrirModal() {
+  document.getElementById('overlay').classList.add('show');
+}
+function cerrarModal() {
+  document.getElementById('overlay').classList.remove('show');
+}
+
+async function guardarCliente() {
+  const body = {
+    nombre: document.getElementById('nc-nombre').value.trim(),
+    cuit:   document.getElementById('nc-cuit').value.trim(),
+    pais:   document.getElementById('nc-pais').value,
+    sector: document.getElementById('nc-sector').value.trim(),
+  };
+  if (!body.nombre) { alert('Ingresá la razón social'); return; }
+  const resp = await fetch('/api/cliente', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (resp.ok) {
+    cerrarModal();
+    init(); // recargar lista
+  } else {
+    alert('Error al guardar cliente');
+  }
+}
+
+async function logout() {
+  await fetch('/api/logout', { method: 'POST' });
+  window.location.href = '/';
+}
+
+init();
+</script>
+</body>
+</html>
