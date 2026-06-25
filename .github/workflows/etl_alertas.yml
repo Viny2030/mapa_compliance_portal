@@ -1,0 +1,33 @@
+name: ETL Alertas Reguladoras
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: Ejecutar ETL alertas y normativa
+        run: python scripts/etl_alertas.py
+
+      - name: Commit y push si hay cambios
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: actualización automática alertas y normativa [skip ci]"
+          file_pattern: "data/*.json"
+          commit_author: "Viny2030 <59251479+Viny2030@users.noreply.github.com>"

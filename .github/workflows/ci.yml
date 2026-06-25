@@ -1,0 +1,41 @@
+name: CI — Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+# Permisos mínimos para CI.
+# Para que etl_alertas.yml pueda hacer push de data/*.json necesitás
+# activar "Read and write permissions" en:
+#   Settings → Actions → General → Workflow permissions
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx
+
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+
+      - name: Check imports
+        run: |
+          python -c "from scripts.motor_score import calcular_score; print('motor_score OK')"
+          python -c "from scripts.etl_alertas import cargar_alertas; print('etl_alertas OK')"
+          python -c "from scripts.etl_normativa import cargar_normativa; print('etl_normativa OK')"
+          python -c "from scripts.api_compliance import router; print('api_compliance OK')"
