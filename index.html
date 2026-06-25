@@ -8,18 +8,19 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;--naranja:#e65100;--amarillo:#f9a825;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;--muted:#6b7280;--borde:#dde3ea}
-body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:108px;line-height:1.6}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);padding-top:148px;line-height:1.6}
 nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .nav-top{display:flex;align-items:center;justify-content:space-between;padding:.55rem 1rem;border-bottom:1px solid rgba(255,255,255,.1)}
-.nav-brand{color:#fff;font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.4rem}
-.nav-brand span{font-size:.72rem;opacity:.6;font-weight:400}
+.nav-brand{color:#fff;font-size:.95rem;font-weight:700;display:flex;flex-direction:column;gap:.1rem}
+.nav-brand .brand-title{font-size:.92rem;font-weight:700;line-height:1.2}
+.nav-brand .brand-sub{font-size:.67rem;opacity:.55;font-weight:400;line-height:1.2}
 .nav-empresa{color:#a8c7e8;font-size:.8rem;font-weight:600}
 .lang-sel{display:flex;gap:.25rem}
 .lang-btn{background:rgba(255,255,255,.12);border:none;color:#cde;font-size:.72rem;font-weight:700;padding:.25rem .5rem;border-radius:4px;cursor:pointer}
 .lang-btn.active{background:#2196f3;color:#fff}
-.nav-tabs{display:flex;overflow-x:auto;padding:.3rem .8rem;gap:.15rem;scrollbar-width:none}
-.nav-tabs::-webkit-scrollbar{display:none}
-.tab-btn{color:#a8c7e8;font-size:.74rem;font-weight:600;padding:.38rem .7rem;border-radius:5px;border:none;background:transparent;cursor:pointer;white-space:nowrap;transition:background .15s}
+.nav-tabs{display:flex;flex-wrap:wrap;padding:.28rem .8rem .22rem;gap:.18rem .12rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.nav-tabs .tab-row-sep{width:100%;height:0;flex-basis:100%}
+.tab-btn{color:#a8c7e8;font-size:.72rem;font-weight:600;padding:.3rem .62rem;border-radius:5px;border:none;background:transparent;cursor:pointer;white-space:nowrap;transition:background .15s}
 .tab-btn:hover{background:rgba(255,255,255,.1);color:#fff}
 .tab-btn.active{background:#2196f3;color:#fff}
 header{background:linear-gradient(135deg,var(--pri) 0%,#0d2137 100%);color:#fff;padding:1.8rem 1rem 1.3rem;text-align:center}
@@ -242,7 +243,21 @@ header p{opacity:.75;font-size:.88rem}
 .chart-wrap{position:relative;margin:.5rem 0}
 footer{text-align:center;padding:1.8rem;color:var(--muted);font-size:.76rem}
 a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
-@media print{nav,header{display:none}body{padding-top:0}.panel{display:block!important}}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  nav,header,footer,.board-printbtn,.btn,.se-hint,#demo-banner,[onclick="window.print()"],[data-i18n="imprimir_btn"],.pdf-export-bar{display:none!important}
+  body{padding-top:0!important;background:#fff!important;font-size:10pt;color:#1a1a2e}
+  .panel{display:none!important}
+  .panel.print-target{display:block!important}
+  .card{box-shadow:none!important;border:1px solid #dde3ea;page-break-inside:avoid;margin-bottom:.6rem}
+  .wrap{max-width:100%!important;padding:.5rem!important}
+  .check-item{page-break-inside:avoid}
+  .grid2,.grid4{display:grid!important}
+  a{color:#1a3a5c!important;text-decoration:none!important}
+  .pdf-cover{display:block!important}
+  h1,h2,h3{page-break-after:avoid}
+  .rep-sec{page-break-inside:avoid}
+}
 </style>
 </head>
 <body>
@@ -252,7 +267,7 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     🧪 MODO DEMO — Datos ficticios. <a href="?demo=false" style="color:#1a1a00;text-decoration:underline" onclick="window.location.href=window.location.pathname">Salir del modo demo</a>
   </div>
   <div class="nav-top">
-    <div class="nav-brand"><span data-i18n="brand">⚖️ Monitor de Compliance</span> <span id="nav-v">v1.0</span></div>
+    <div class="nav-brand"><span class="brand-title">⚖️ Monitor de Compliance Empresarial</span><span class="brand-sub">Programa de Integridad · Ley 27.401 · Estándares Internacionales</span></div>
     <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
       <span class="nav-empresa" id="nav-nombre">—</span>
       <div class="lang-sel">
@@ -267,10 +282,22 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     <button class="tab-btn" data-panel="board">🏛️ Board View</button>
     <button class="tab-btn" data-panel="ley27401">⚖️ Ley 27.401</button>
     <button class="tab-btn" data-panel="brasil">🇧🇷 Lei 12.846</button>
-    <button class="tab-btn" data-panel="fcpa">
+    <button class="tab-btn" data-panel="fcpa">🇺🇸🇬🇧 FCPA & Bribery</button>
     <button class="tab-btn" data-panel="lgpd">🇧🇷 LGPD</button>
-    <button class="tab-btn" data-panel="esg">🌱 ESG</button>🇺🇸🇬🇧 FCPA & Bribery</button>
+    <button class="tab-btn" data-panel="iso37001">🚫 ISO 37001</button>
+    <button class="tab-btn" data-panel="iso14001">🌿 ISO 14001</button>
+    <button class="tab-btn" data-panel="gdpr">🇪🇺 GDPR</button>
+    <button class="tab-btn" data-panel="esg">🌱 ESG</button>
     <button class="tab-btn" data-panel="riesgo">🗺️ Riesgo</button>
+    <button class="tab-btn" data-panel="iso27001">🔐 ISO 27001</button>
+    <button class="tab-btn" data-panel="soc2">☁️ SOC 2</button>
+    <button class="tab-btn" data-panel="ccpa">🌴 CCPA</button>
+    <button class="tab-btn" data-panel="nis2">🛡️ NIS2 <span style="background:#c62828;color:#fff;font-size:.6rem;padding:.05rem .3rem;border-radius:3px;margin-left:.2rem">AGO</span></button>
+    <button class="tab-btn" data-panel="euaiact">🤖 EU AI Act <span style="background:#c62828;color:#fff;font-size:.6rem;padding:.05rem .3rem;border-radius:3px;margin-left:.2rem">AGO</span></button>
+    <button class="tab-btn" data-panel="crossmap">🗺️ Cross-Framework</button>
+    <button class="tab-btn" data-panel="dora">⚡ DORA</button>
+    <button class="tab-btn" data-panel="planaccion">📋 Plan de Acción</button>
+    <div class="tab-row-sep"></div>
     <button class="tab-btn" data-panel="capacitacion">📚 Capacitación</button>
     <button class="tab-btn" data-panel="duediligence">🔍 Due Diligence</button>
     <button class="tab-btn" data-panel="internacional">🌍 Internacional</button>
@@ -281,7 +308,6 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     <button class="tab-btn" data-panel="reporte">📄 Reporte</button>
     <button class="tab-btn" data-panel="denuncias">🔒 Canal de Denuncias</button>
     <button class="tab-btn" onclick="window.location='benchmark.html'">📊 Benchmark</button>
-    <button class="tab-btn" onclick="window.location='upload_clientes.html'">📂 Documentos</button>
     <button class="tab-btn" onclick="window.location='conflicto_interes.html'">⚖️ Conflictos</button>
     <button class="tab-btn" onclick="window.location='predictor.html'">🤖 Predictor</button>
     <button class="tab-btn" onclick="window.location='incidentes.html'">🚨 Incidentes</button>
@@ -320,6 +346,15 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     </div><br>
     <div class="card"><h2 data-i18n="riesgo_por_area">Riesgo por área</h2><div class="chart-wrap" style="height:200px"><canvas id="ch-riesgo-dash"></canvas></div></div>
     <div class="card"><h2 id="t-alertas" data-i18n="alertas_activas">Alertas activas</h2><div id="alertas-cont"></div></div>
+    <div class="card">
+      <h2>🌐 Cobertura por Framework</h2>
+      <p style="color:var(--muted);font-size:.82rem;margin-bottom:.8rem">Score de implementación de cada marco normativo — calculado sobre los controles del Cross-Framework Mapping.</p>
+      <div id="dash-frameworks-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.6rem;margin-bottom:.8rem"></div>
+      <div class="prog-bar-wrap" style="margin-top:.5rem">
+        <div class="prog-label"><span>📊 Score global multi-framework</span><span id="dash-global-fw-pct">—</span></div>
+        <div class="prog-track"><div class="prog-fill verde" id="dash-global-fw-bar" style="width:0%"></div></div>
+      </div>
+    </div>
     <div class="card"><h2 id="t-venc" data-i18n="proximos_vencimientos">Próximos vencimientos</h2><div id="venc-cont"></div></div>
   </div>
 </div>
@@ -368,6 +403,11 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     <div class="card" style="margin-bottom:1rem">
       <h2 style="margin-bottom:.7rem">📋 Próximas acciones prioritarias</h2>
       <div id="board-acciones"></div>
+    </div>
+    <!-- Cobertura multi-framework -->
+    <div class="card" style="margin-bottom:1rem">
+      <h2 style="margin-bottom:.7rem">🌐 Cobertura Multi-Framework</h2>
+      <div id="board-frameworks"></div>
     </div>
     <!-- Firma -->
     <div class="board-firma" id="board-firma"></div>
@@ -616,7 +656,526 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
   </div>
 </div>
 
-<!-- ESG BÁSICO -->
+<!-- ISO 37001 — ANTISOBORNO -->
+<div class="panel" id="panel-iso37001">
+  <div class="wrap">
+    <div class="card">
+      <h2>🚫 ISO 37001 — Sistema de Gestión Antisoborno</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Norma internacional para prevenir, detectar y responder al soborno. Complementa Ley 27.401 (Argentina), Lei 12.846 (Brasil) y FCPA. Certificable por tercero independiente.
+      </p>
+      <div class="grid2" style="margin-bottom:1rem">
+        <div style="background:#fdecea;border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:1.2rem">🚫</div>
+          <div id="iso37001-score" style="font-size:2rem;font-weight:800;color:var(--rojo)">—</div>
+          <div style="font-size:.75rem;color:var(--muted)">Score ISO 37001</div>
+        </div>
+        <div style="background:#f0f4f8;border-radius:10px;padding:1rem;font-size:.82rem">
+          <div style="font-weight:700;color:var(--pri);margin-bottom:.4rem">🔗 Relación con otros marcos</div>
+          <div>✅ <strong>Ley 27.401</strong> — Programa de Integridad requerido</div>
+          <div>✅ <strong>FCPA</strong> — Due diligence de terceros</div>
+          <div>✅ <strong>UK Bribery Act</strong> — Procedimientos adecuados</div>
+          <div>✅ <strong>Lei 12.846</strong> — Programa de Compliance</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 Cláusulas clave ISO 37001:2016</h3>
+      <div id="iso37001-checklist"></div>
+    </div>
+
+    <div class="card">
+      <h3>🎯 Diferencial vs. Ley 27.401</h3>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem">
+          <thead>
+            <tr style="background:#1a3a5c;color:#fff">
+              <th style="padding:.5rem .7rem;text-align:left">Aspecto</th>
+              <th style="padding:.5rem .7rem;text-align:center">Ley 27.401</th>
+              <th style="padding:.5rem .7rem;text-align:center">ISO 37001</th>
+            </tr>
+          </thead>
+          <tbody id="iso37001-tabla"></tbody>
+        </table>
+      </div>
+      <div class="alerta naranja" style="margin-top:.8rem">
+        <span class="alerta-ico">⚠️</span>
+        <span>La certificación ISO 37001 puede ser presentada ante la CNV/UIF como evidencia de programa de integridad robusto — potencial atenuante en sanciones.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ISO 14001 — AMBIENTAL -->
+<div class="panel" id="panel-iso14001">
+  <div class="wrap">
+    <div class="card">
+      <h2>🌿 ISO 14001 — Sistema de Gestión Ambiental</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Estándar internacional para sistemas de gestión ambiental (SGA). Profundiza el eje Ambiental del ESG. Certifica que la organización identifica y controla su impacto ambiental, mejorando continuamente.
+      </p>
+      <div class="grid4">
+        <div class="eje verde">
+          <div class="eje-num" id="iso14001-e">—</div>
+          <div class="eje-name">Contexto<br>Org.</div>
+        </div>
+        <div class="eje naranja">
+          <div class="eje-num" id="iso14001-p">—</div>
+          <div class="eje-name">Planifi-<br>cación</div>
+        </div>
+        <div class="eje naranja">
+          <div class="eje-num" id="iso14001-o">—</div>
+          <div class="eje-name">Oper-<br>ación</div>
+        </div>
+        <div class="eje rojo">
+          <div class="eje-num" id="iso14001-m">—</div>
+          <div class="eje-name">Mejora<br>Contínua</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 Requisitos ISO 14001:2015 — Cláusulas 4 a 10</h3>
+      <div id="iso14001-checklist"></div>
+    </div>
+
+    <div class="card">
+      <h3>🌍 Integración con ESG</h3>
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:.9rem;font-size:.83rem;margin-bottom:.7rem">
+        <div style="font-weight:700;color:#166534;margin-bottom:.5rem">ISO 14001 alimenta directamente los KPIs del eje E (Environmental) del ESG:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">
+          <div>🌡️ Emisiones GEI (Alcance 1, 2, 3)</div>
+          <div>💧 Gestión de efluentes</div>
+          <div>♻️ Economía circular</div>
+          <div>🌲 Biodiversidad</div>
+          <div>⚡ Eficiencia energética</div>
+          <div>📦 Ciclo de vida de productos</div>
+        </div>
+      </div>
+      <div class="alerta verde">
+        <span class="alerta-ico">✅</span>
+        <span>Certificación ISO 14001 requerida en licitaciones públicas (Ley 25.675 Argentina) y cadenas de suministro globales (automotriz, retail, exportaciones).</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GDPR -->
+<div class="panel" id="panel-gdpr">
+  <div class="wrap">
+    <div class="card">
+      <h2>🇪🇺 GDPR — Reglamento General de Protección de Datos</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Reglamento (UE) 2016/679. Aplica a toda organización que trate datos de personas en la UE, independientemente de dónde esté establecida. Régimen sancionatorio más severo que LGPD.
+      </p>
+      <div class="grid2" style="margin-bottom:1rem">
+        <div style="background:#e8eaf6;border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:1.2rem">🇪🇺</div>
+          <div id="gdpr-score" style="font-size:2rem;font-weight:800;color:#3949ab">—</div>
+          <div style="font-size:.75rem;color:var(--muted)">Score GDPR</div>
+        </div>
+        <div style="background:#fdecea;border-radius:10px;padding:1rem;font-size:.82rem">
+          <div style="font-weight:700;color:var(--rojo);margin-bottom:.4rem">⚠️ Sanciones GDPR</div>
+          <div>• Nivel 1: hasta <strong>€10M</strong> o 2% facturación global</div>
+          <div style="margin-top:.25rem">• Nivel 2: hasta <strong>€20M</strong> o 4% facturación global</div>
+          <div style="margin-top:.4rem;font-size:.76rem;color:var(--muted)">Se aplica la cifra mayor. Meta: €1.2B (2023)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 Checklist GDPR — 7 Principios + Derechos</h3>
+      <div id="gdpr-checklist"></div>
+    </div>
+
+    <div class="card">
+      <h3>⚖️ GDPR vs. LGPD — Diferencias clave</h3>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:.82rem">
+          <thead>
+            <tr style="background:#1a3a5c;color:#fff">
+              <th style="padding:.5rem .7rem;text-align:left">Dimensión</th>
+              <th style="padding:.5rem .7rem;text-align:center">🇪🇺 GDPR</th>
+              <th style="padding:.5rem .7rem;text-align:center">🇧🇷 LGPD</th>
+            </tr>
+          </thead>
+          <tbody id="gdpr-lgpd-tabla"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ISO 27001 — SEGURIDAD DE LA INFORMACIÓN -->
+<div class="panel" id="panel-iso27001">
+  <div class="wrap">
+    <div class="card">
+      <h2>🔐 ISO 27001 — Seguridad de la Información</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Estándar internacional para Sistemas de Gestión de Seguridad de la Información (SGSI). Anexo A: 93 controles en 4 dominios (ISO 27001:2022). Certificable. Clave para contratos con el sector público y empresas multinacionales.
+      </p>
+      <div class="grid4">
+        <div class="eje rojo"><div class="eje-num" id="iso27001-org">—</div><div class="eje-name">Org.<br>Controles</div></div>
+        <div class="eje rojo"><div class="eje-num" id="iso27001-per">—</div><div class="eje-name">Personas<br>Controles</div></div>
+        <div class="eje rojo"><div class="eje-num" id="iso27001-fis">—</div><div class="eje-name">Físico<br>Controles</div></div>
+        <div class="eje rojo"><div class="eje-num" id="iso27001-tec">—</div><div class="eje-name">Tecnológico<br>Controles</div></div>
+      </div>
+      <div style="margin-top:.5rem;background:#e8f5e9;border-radius:8px;padding:.7rem 1rem;font-size:.82rem;display:flex;gap:1.5rem;flex-wrap:wrap">
+        <span>📊 Score global: <strong id="iso27001-score-txt">—</strong></span>
+        <span>✅ Controles OK: <strong id="iso27001-ok-count">0</strong></span>
+        <span>⏳ En proceso: <strong id="iso27001-prog-count">0</strong></span>
+        <span>❌ Pendientes: <strong id="iso27001-pend-count">0</strong></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🏢 Dominio A.5 — Controles Organizacionales (37 controles)</h3>
+      <div id="iso27001-org-list"></div>
+    </div>
+    <div class="card">
+      <h3>👤 Dominio A.6 — Controles de Personas (8 controles)</h3>
+      <div id="iso27001-per-list"></div>
+    </div>
+    <div class="card">
+      <h3>🏗️ Dominio A.7 — Controles Físicos (14 controles)</h3>
+      <div id="iso27001-fis-list"></div>
+    </div>
+    <div class="card">
+      <h3>💻 Dominio A.8 — Controles Tecnológicos (34 controles)</h3>
+      <div id="iso27001-tec-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SOC 2 -->
+<div class="panel" id="panel-soc2">
+  <div class="wrap">
+    <div class="card">
+      <h2>☁️ SOC 2 — Service Organization Control 2</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Marco del AICPA para proveedores de servicios en la nube y SaaS. Evalúa 5 Trust Service Criteria (TSC). Requerido por clientes enterprise de EE.UU. y mercados anglosajones. Tipo I: diseño. Tipo II: efectividad operativa (12 meses).
+      </p>
+      <div class="grid2" style="margin-bottom:1rem">
+        <div style="background:#e8eaf6;border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:1.2rem">☁️</div>
+          <div id="soc2-score" style="font-size:2rem;font-weight:800;color:#3949ab">—</div>
+          <div style="font-size:.75rem;color:var(--muted)">Score SOC 2</div>
+        </div>
+        <div style="background:#f0f4f8;border-radius:10px;padding:.9rem;font-size:.82rem">
+          <div style="font-weight:700;color:var(--pri);margin-bottom:.4rem">📋 Tipo de reporte</div>
+          <div>• <strong>SOC 2 Tipo I</strong> — Diseño de controles (punto en el tiempo)</div>
+          <div style="margin-top:.3rem">• <strong>SOC 2 Tipo II</strong> — Efectividad operativa (período ≥6 meses)</div>
+          <div style="margin-top:.4rem;font-size:.76rem;color:var(--muted)">Security (CC) es obligatorio. Los otros 4 TSC son opcionales según el servicio.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🔒 CC — Security (Common Criteria) — Obligatorio</h3>
+      <div id="soc2-cc-list"></div>
+    </div>
+    <div class="card">
+      <h3>⚡ Los 4 TSC Opcionales</h3>
+      <div id="soc2-optional-list"></div>
+    </div>
+    <div class="card">
+      <h3>⚖️ SOC 2 vs ISO 27001</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.82rem">
+        <thead><tr style="background:#1a3a5c;color:#fff">
+          <th style="padding:.5rem .7rem;text-align:left">Dimensión</th>
+          <th style="padding:.5rem .7rem;text-align:center">☁️ SOC 2</th>
+          <th style="padding:.5rem .7rem;text-align:center">🔐 ISO 27001</th>
+        </tr></thead>
+        <tbody id="soc2-tabla"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- CCPA -->
+<div class="panel" id="panel-ccpa">
+  <div class="wrap">
+    <div class="card">
+      <h2>🌴 CCPA / CPRA — California Consumer Privacy Act</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Ley de privacidad del estado de California (2020, ampliada por CPRA 2023). Aplica a empresas que recolectan datos de residentes de California con ingresos &gt;$25M, datos de &gt;100k personas, o que venden datos. Referente de privacidad en EE.UU.
+      </p>
+      <div class="grid2" style="margin-bottom:1rem">
+        <div style="background:#fff3e0;border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:1.2rem">🌴</div>
+          <div id="ccpa-score" style="font-size:2rem;font-weight:800;color:var(--naranja)">—</div>
+          <div style="font-size:.75rem;color:var(--muted)">Score CCPA/CPRA</div>
+        </div>
+        <div style="background:#fdecea;border-radius:10px;padding:.9rem;font-size:.82rem">
+          <div style="font-weight:700;color:var(--rojo);margin-bottom:.4rem">⚠️ Sanciones CCPA</div>
+          <div>• Violación intencional: <strong>$7,500</strong> por consumidor</div>
+          <div style="margin-top:.25rem">• Violación no intencional: <strong>$2,500</strong> por consumidor</div>
+          <div style="margin-top:.25rem">• Acción privada (brecha de datos): <strong>$100–$750</strong> por consumidor</div>
+          <div style="margin-top:.4rem;font-size:.76rem;color:var(--muted)">Enforcement: California Privacy Protection Agency (CPPA)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📋 Checklist CCPA/CPRA — Derechos y Obligaciones</h3>
+      <div id="ccpa-checklist"></div>
+    </div>
+    <div class="card">
+      <h3>⚖️ CCPA vs GDPR vs LGPD</h3>
+      <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.81rem">
+        <thead><tr style="background:#1a3a5c;color:#fff">
+          <th style="padding:.5rem .7rem;text-align:left">Dimensión</th>
+          <th style="padding:.5rem .7rem;text-align:center">🌴 CCPA/CPRA</th>
+          <th style="padding:.5rem .7rem;text-align:center">🇪🇺 GDPR</th>
+          <th style="padding:.5rem .7rem;text-align:center">🇧🇷 LGPD</th>
+        </tr></thead>
+        <tbody id="ccpa-tabla"></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- NIS2 -->
+<div class="panel" id="panel-nis2">
+  <div class="wrap">
+    <div class="card" style="border-top-color:#c62828">
+      <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem;flex-wrap:wrap">
+        <h2 style="margin:0">🛡️ NIS2 — Directiva de Ciberseguridad UE</h2>
+        <span style="background:#c62828;color:#fff;font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:5px">⏰ DEADLINE: 17 oct 2024 → transposición nacional en curso</span>
+      </div>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Directiva (UE) 2022/2555. Reemplaza NIS1. Amplía sectores obligados (18 sectores críticos), endurece sanciones y exige gestión de riesgos, notificación de incidentes en 24/72h y responsabilidad directiva. Aplica a entidades <strong>esenciales</strong> e <strong>importantes</strong>.
+      </p>
+      <div class="grid2" style="margin-bottom:.8rem">
+        <div style="background:#fdecea;border-radius:10px;padding:1rem">
+          <div style="font-weight:700;color:var(--rojo);margin-bottom:.5rem;font-size:.85rem">⚠️ Sanciones NIS2</div>
+          <div style="font-size:.82rem">• Entidades <strong>Esenciales</strong>: hasta <strong>€10M</strong> o 2% facturación global</div>
+          <div style="font-size:.82rem;margin-top:.3rem">• Entidades <strong>Importantes</strong>: hasta <strong>€7M</strong> o 1.4% facturación global</div>
+          <div style="font-size:.82rem;margin-top:.3rem">• <strong>Responsabilidad personal</strong> de directivos — inhabilitación</div>
+        </div>
+        <div style="background:#e8f5e9;border-radius:10px;padding:1rem;font-size:.82rem">
+          <div style="font-weight:700;color:#1b5e20;margin-bottom:.4rem">⏱️ Plazos de notificación</div>
+          <div>• <strong>24h</strong> — alerta temprana a CSIRT/autoridad</div>
+          <div style="margin-top:.25rem">• <strong>72h</strong> — notificación con evaluación inicial</div>
+          <div style="margin-top:.25rem">• <strong>1 mes</strong> — informe final con análisis completo</div>
+          <div style="margin-top:.4rem;font-size:.76rem;color:var(--muted)">Art. 23 NIS2 — incidentes con impacto significativo</div>
+        </div>
+      </div>
+      <div style="background:#fff3e0;border-radius:8px;padding:.7rem 1rem;font-size:.82rem;margin-bottom:.5rem">
+        <div style="font-weight:700;color:var(--naranja);margin-bottom:.4rem">🏭 18 Sectores — ¿Tu organización aplica?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.25rem">
+          <div><strong>Esenciales:</strong> Energía · Transporte · Banca · Infraestructura mercados financieros · Salud · Agua potable · Aguas residuales · Infraestructura digital · Gestión servicios TIC · Espacio</div>
+          <div><strong>Importantes:</strong> Servicios postales · Gestión residuos · Química · Alimentación · Fabricación · Proveedores digitales · Investigación</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 Artículo 21 — Medidas de Gestión de Riesgos (obligatorias)</h3>
+      <div id="nis2-art21-list"></div>
+    </div>
+    <div class="card">
+      <h3>🏛️ Gobernanza y Responsabilidad Directiva (Art. 20)</h3>
+      <div id="nis2-gov-list"></div>
+    </div>
+    <div class="card">
+      <h3>🔗 Cadena de Suministro y Terceros (Art. 21.2.d)</h3>
+      <div id="nis2-supply-list"></div>
+    </div>
+    <div class="card">
+      <h3>⚖️ NIS2 vs ISO 27001 — Mapeado de controles</h3>
+      <div id="nis2-mapping-tabla"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EU AI ACT -->
+<div class="panel" id="panel-euaiact">
+  <div class="wrap">
+    <div class="card" style="border-top-color:#7b1fa2">
+      <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem;flex-wrap:wrap">
+        <h2 style="margin:0">🤖 EU AI Act — Reglamento de IA de la UE</h2>
+        <span style="background:#c62828;color:#fff;font-size:.72rem;font-weight:700;padding:.2rem .55rem;border-radius:5px">⏰ DEADLINE: agosto 2026 (sistemas alto riesgo)</span>
+      </div>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Reglamento (UE) 2024/1689. En vigor agosto 2024. Primer marco regulatorio integral de IA a nivel mundial. Aplica a desarrolladores, importadores y usuarios de sistemas de IA que operen en la UE. Enfoque basado en <strong>niveles de riesgo</strong>.
+      </p>
+      <div class="grid4" style="margin-bottom:.8rem">
+        <div style="text-align:center;padding:.7rem .4rem;border-radius:8px;background:#fdecea;border-left:3px solid var(--rojo)">
+          <div style="font-size:1.1rem">🚫</div>
+          <div style="font-weight:700;color:var(--rojo);font-size:.78rem">Prohibido</div>
+          <div style="font-size:.7rem;color:var(--muted)">Desde feb 2025</div>
+        </div>
+        <div style="text-align:center;padding:.7rem .4rem;border-radius:8px;background:#fff3e0;border-left:3px solid var(--naranja)">
+          <div style="font-size:1.1rem">⚠️</div>
+          <div style="font-weight:700;color:var(--naranja);font-size:.78rem">Alto Riesgo</div>
+          <div style="font-size:.7rem;color:var(--muted)">Ago 2026</div>
+        </div>
+        <div style="text-align:center;padding:.7rem .4rem;border-radius:8px;background:#e8eaf6;border-left:3px solid #3949ab">
+          <div style="font-size:1.1rem">📋</div>
+          <div style="font-weight:700;color:#3949ab;font-size:.78rem">Transp. Oblig.</div>
+          <div style="font-size:.7rem;color:var(--muted)">Ago 2025</div>
+        </div>
+        <div style="text-align:center;padding:.7rem .4rem;border-radius:8px;background:#f0fdf4;border-left:3px solid var(--verde)">
+          <div style="font-size:1.1rem">✅</div>
+          <div style="font-weight:700;color:var(--verde);font-size:.78rem">Riesgo Mínimo</div>
+          <div style="font-size:.7rem;color:var(--muted)">Sin oblig.</div>
+        </div>
+      </div>
+      <div style="background:#f3e5f5;border-radius:8px;padding:.7rem 1rem;font-size:.82rem">
+        <div style="font-weight:700;color:#7b1fa2;margin-bottom:.3rem">⚠️ Sanciones EU AI Act</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem">
+          <div>• IA prohibida: <strong>€35M</strong> o 7% global</div>
+          <div>• Alto riesgo: <strong>€15M</strong> o 3% global</div>
+          <div>• Información falsa: <strong>€7.5M</strong> o 1.5% global</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🚫 Prácticas de IA Prohibidas (Art. 5) — Vigente desde feb 2025</h3>
+      <div id="aiact-prohibidas-list"></div>
+    </div>
+    <div class="card">
+      <h3>⚠️ Sistemas de Alto Riesgo (Anexo III) — Deadline agosto 2026</h3>
+      <div id="aiact-altoriesgo-list"></div>
+    </div>
+    <div class="card">
+      <h3>📋 Obligaciones para Sistemas de Alto Riesgo (Arts. 9-15)</h3>
+      <div id="aiact-obligaciones-list"></div>
+    </div>
+    <div class="card">
+      <h3>📢 Obligaciones de Transparencia (Art. 50) — Vigente agosto 2025</h3>
+      <div id="aiact-transparencia-list"></div>
+    </div>
+    <div class="card">
+      <h3>🗓️ Cronograma de implementación</h3>
+      <div id="aiact-timeline"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CROSS-FRAMEWORK MAPPING -->
+<div class="panel" id="panel-crossmap">
+  <div class="wrap">
+    <div class="card">
+      <h2>🗺️ Cross-Framework Mapping — Un control, múltiples normas</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Cada control implementado puede cubrir requisitos de varios marcos a la vez. Este mapa muestra qué dominios de control satisfacen simultáneamente las normas del programa, maximizando el ROI del compliance.
+      </p>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem" id="crossmap-filtros"></div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:.6rem 1rem;font-size:.82rem;display:flex;gap:1.5rem;flex-wrap:wrap">
+        <span>🎯 Controles mapeados: <strong id="crossmap-total">0</strong></span>
+        <span>⭐ Cobertura promedio: <strong id="crossmap-avg">0</strong> marcos/control</span>
+        <span>🏆 Máxima cobertura: <strong id="crossmap-max">0</strong> marcos</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔐 Seguridad de la Información</h3>
+      <div id="crossmap-sec"></div>
+    </div>
+    <div class="card">
+      <h3>🔒 Privacidad y Protección de Datos</h3>
+      <div id="crossmap-priv"></div>
+    </div>
+    <div class="card">
+      <h3>🤝 Terceros y Cadena de Suministro</h3>
+      <div id="crossmap-supply"></div>
+    </div>
+    <div class="card">
+      <h3>🏛️ Gobernanza y Cultura</h3>
+      <div id="crossmap-gov"></div>
+    </div>
+    <div class="card">
+      <h3>🚨 Gestión de Incidentes y Continuidad</h3>
+      <div id="crossmap-incident"></div>
+    </div>
+    <div class="card">
+      <h3>🤖 Inteligencia Artificial</h3>
+      <div id="crossmap-ai"></div>
+    </div>
+
+    <div class="card">
+      <h3>📊 Matriz de cobertura por marco</h3>
+      <div id="crossmap-matrix"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DORA -->
+<div class="panel" id="panel-dora">
+  <div class="wrap">
+    <div class="card" style="border-top-color:#1565c0">
+      <h2>⚡ DORA — Digital Operational Resilience Act</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:1rem">
+        Reglamento (UE) 2022/2554. Vigente desde <strong>17 enero 2025</strong>. Aplica a entidades financieras en la UE y sus proveedores críticos de TIC. Objetivo: garantizar resiliencia operativa digital del sector financiero frente a incidentes de TIC.
+      </p>
+      <div class="grid2" style="margin-bottom:.8rem">
+        <div style="background:#e3f2fd;border-radius:10px;padding:1rem">
+          <div style="font-weight:700;color:#1565c0;margin-bottom:.4rem;font-size:.85rem">🏦 Entidades financieras obligadas</div>
+          <div style="font-size:.81rem;display:grid;gap:.2rem">
+            <div>• Bancos y entidades de crédito</div>
+            <div>• Empresas de inversión</div>
+            <div>• Aseguradoras y reaseguradoras</div>
+            <div>• Fondos de inversión (UCITS, AIFM)</div>
+            <div>• Proveedores de servicios de criptoactivos</div>
+            <div>• Plataformas de negociacion</div>
+            <div>• Proveedores criticos de TIC (terceros)</div>
+          </div>
+        </div>
+        <div style="background:#fdecea;border-radius:10px;padding:1rem;font-size:.82rem">
+          <div style="font-weight:700;color:var(--rojo);margin-bottom:.4rem">Sanciones DORA</div>
+          <div>Entidades financieras: hasta <strong>1% facturacion diaria</strong> global (max. 6 meses)</div>
+          <div style="margin-top:.3rem">Proveedores TIC criticos: hasta <strong>EUR 5M</strong> o 1% facturacion global diaria</div>
+          <div style="margin-top:.3rem">Personas fisicas responsables: hasta <strong>EUR 1M</strong></div>
+          <div style="margin-top:.4rem;font-size:.76rem;color:var(--muted)">Autoridades: EBA, ESMA, EIOPA + autoridades nacionales</div>
+        </div>
+      </div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:.6rem 1rem;font-size:.82rem">
+        <div style="font-weight:700;color:#1b5e20;margin-bottom:.3rem">Score DORA: <span id="dora-score-txt" style="color:var(--rojo)">-</span></div>
+        <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
+          <span>OK: <strong id="dora-ok">0</strong></span>
+          <span>Proceso: <strong id="dora-prog">0</strong></span>
+          <span>Pendiente: <strong id="dora-pend">0</strong></span>
+        </div>
+      </div>
+    </div>
+    <div class="card"><h3>Pilar 1 - Gestion de Riesgos TIC (Arts. 5-16)</h3><div id="dora-p1"></div></div>
+    <div class="card"><h3>Pilar 2 - Gestion y Notificacion de Incidentes TIC (Arts. 17-23)</h3><div id="dora-p2"></div></div>
+    <div class="card"><h3>Pilar 3 - Pruebas de Resiliencia Operativa Digital (Arts. 24-27)</h3><div id="dora-p3"></div></div>
+    <div class="card"><h3>Pilar 4 - Riesgo de Terceros Proveedores TIC (Arts. 28-44)</h3><div id="dora-p4"></div></div>
+    <div class="card"><h3>Pilar 5 - Intercambio de Informacion (Art. 45)</h3><div id="dora-p5"></div></div>
+    <div class="card"><h3>DORA vs NIS2 vs ISO 27001 - Mapeado</h3><div id="dora-mapping"></div></div>
+  </div>
+</div>
+
+<!-- PLAN DE ACCION -->
+<div class="panel" id="panel-planaccion">
+  <div class="wrap">
+    <div class="card">
+      <h2>Plan de Accion - Controles Pendientes</h2>
+      <p style="color:var(--muted);font-size:.87rem;margin-bottom:.8rem">
+        Controles pendientes del Cross-Framework Mapping organizados por prioridad, con responsable sugerido y plazo estimado. Exportable a CSV.
+      </p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem">
+        <button onclick="filtrarPlan('todo')" id="plan-f-todo" style="font-size:.76rem;font-weight:700;padding:.3rem .7rem;border-radius:5px;border:none;cursor:pointer;background:#1a3a5c;color:#fff">Todos</button>
+        <button onclick="filtrarPlan('alta')" id="plan-f-alta" style="font-size:.76rem;font-weight:700;padding:.3rem .7rem;border-radius:5px;border:none;cursor:pointer;background:#c62828;color:#fff">Alta prioridad</button>
+        <button onclick="filtrarPlan('media')" id="plan-f-media" style="font-size:.76rem;font-weight:700;padding:.3rem .7rem;border-radius:5px;border:none;cursor:pointer;background:#e65100;color:#fff">Media prioridad</button>
+        <button onclick="filtrarPlan('baja')" id="plan-f-baja" style="font-size:.76rem;font-weight:700;padding:.3rem .7rem;border-radius:5px;border:none;cursor:pointer;background:#2e7d32;color:#fff">Baja prioridad</button>
+        <button onclick="exportarPlanCSV()" style="font-size:.76rem;font-weight:700;padding:.3rem .7rem;border-radius:5px;border:none;cursor:pointer;background:#37474f;color:#fff;margin-left:auto">Exportar CSV</button>
+      </div>
+      <div style="background:#e8f5e9;border-radius:8px;padding:.5rem 1rem;font-size:.82rem;display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.8rem">
+        <span>Total pendientes: <strong id="plan-total">0</strong></span>
+        <span>Alta: <strong id="plan-alta-cnt">0</strong></span>
+        <span>Media: <strong id="plan-media-cnt">0</strong></span>
+        <span>Baja: <strong id="plan-baja-cnt">0</strong></span>
+      </div>
+    </div>
+    <div id="plan-accion-lista"></div>
+  </div>
+</div>
+
+<!-- ESG BASICO -->
 <div class="panel" id="panel-esg">
   <div class="wrap">
     <div class="card">
@@ -907,22 +1466,99 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
 <!-- REPORTE -->
 <div class="panel" id="panel-reporte">
   <div class="wrap">
-    <div class="card">
-      <h2 data-i18n="reporte_titulo">📄 Reporte Ejecutivo de Compliance</h2>
-      <p style="font-size:.83rem;color:var(--muted);margin-bottom:.9rem" data-i18n="reporte_desc">Generado automáticamente. Apto para presentar ante la Oficina Anticorrupción, directorio o auditores externos.</p>
-      <div class="rep-sec"><h3 style="color:var(--pri);margin-bottom:.6rem" data-i18n="rep_sec1">1. Datos de la organización</h3><dl id="rep-empresa"></dl></div>
-      <div class="rep-sec"><h3 style="color:var(--pri);margin-bottom:.6rem" data-i18n="rep_sec2">2. Estado del Programa de Integridad</h3><dl id="rep-programa"></dl></div>
-      <div class="rep-sec"><h3 style="color:var(--pri);margin-bottom:.6rem" data-i18n="rep_sec3">3. Score de compliance</h3><dl id="rep-score"></dl></div>
-      <div class="rep-sec"><h3 style="color:var(--pri);margin-bottom:.6rem" data-i18n="rep_sec4">4. Elementos pendientes</h3><div id="rep-pend"></div></div>
-      <div class="rep-sec"><h3 style="color:var(--pri);margin-bottom:.6rem" data-i18n="rep_sec5">5. Capacitación</h3><dl id="rep-cap"></dl></div>
-      <div class="rep-sec"><h3 style="color:var(--pri);margin-bottom:.6rem" data-i18n="rep_sec6">6. Registro RITE</h3><dl id="rep-rite"></dl></div>
-      <div class="rep-sec"><h3 style="color:var(--pri);margin-bottom:.6rem" data-i18n="rep_sec7">7. Plan de mejora</h3><div id="rep-plan"></div></div>
-      <div style="background:#f0f4f8;border-radius:8px;padding:.8rem;font-size:.76rem;color:var(--muted);margin-top:.7rem" data-i18n="reporte_disclaimer">
-        Reporte generado por el Monitor de Compliance Empresarial. No reemplaza la evaluación profesional de un abogado o compliance officer.
-        Ph.D. Vicente H. Monteverde · <a href="https://mapatransparencia-production.up.railway.app" target="_blank">Ecosistema Transparencia</a>
-      </div>
-      <button class="btn verde" onclick="window.print()" style="margin-top:.8rem" data-i18n="imprimir_btn">🖨️ Imprimir / Guardar PDF</button>
+
+    <!-- PDF Export Bar -->
+    <div class="pdf-export-bar" style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:1rem;background:#1a3a5c;border-radius:10px;padding:.8rem 1rem">
+      <span style="color:#fff;font-size:.85rem;font-weight:700">📄 Reporte Ejecutivo de Compliance</span>
+      <span style="color:#a8c7e8;font-size:.78rem;flex:1">Generado automáticamente — apto para Oficina Anticorrupción, directorio y auditores</span>
+      <button onclick="exportarPDF()" style="background:#2196f3;color:#fff;border:none;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer">🖨️ Exportar PDF</button>
+      <button onclick="exportarPDFFrameworks()" style="background:#2e7d32;color:#fff;border:none;border-radius:6px;padding:.45rem 1rem;font-size:.82rem;font-weight:700;cursor:pointer">🌐 PDF Frameworks</button>
     </div>
+
+    <!-- Portada -->
+    <div class="card" id="rep-portada" style="border-top:4px solid var(--pri);text-align:center;padding:2rem 1.5rem">
+      <div style="font-size:2rem;margin-bottom:.5rem">⚖️</div>
+      <h1 style="color:var(--pri);font-size:1.4rem;margin-bottom:.3rem">Reporte Ejecutivo de Compliance</h1>
+      <div style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">Programa de Integridad · Ley 27.401 · Estándares Internacionales</div>
+      <div id="rep-portada-empresa" style="font-size:1.05rem;font-weight:700;color:var(--pri);margin-bottom:.4rem"></div>
+      <div id="rep-portada-fecha" style="font-size:.82rem;color:var(--muted)"></div>
+      <div style="margin-top:1rem;padding:.6rem 1rem;background:#e3f2fd;border-radius:8px;display:inline-block">
+        <span style="font-size:.8rem;color:#1565c0">Responsable: </span><span id="rep-portada-resp" style="font-size:.8rem;font-weight:700;color:#1565c0"></span>
+      </div>
+    </div>
+
+    <!-- Score global -->
+    <div class="card" id="rep-score-card">
+      <h2 style="color:var(--pri);margin-bottom:.8rem">📊 Score Global de Compliance</h2>
+      <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+        <div style="text-align:center;min-width:100px">
+          <div id="rep-score-num" style="font-size:3rem;font-weight:900;color:var(--rojo)">—</div>
+          <div style="font-size:.75rem;color:var(--muted)">/100 — Ley 27.401</div>
+        </div>
+        <div style="flex:1;min-width:200px" id="rep-score-ejes"></div>
+      </div>
+    </div>
+
+    <!-- Sección 1 — Organización -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">1. Datos de la organización</h3>
+      <dl id="rep-empresa"></dl>
+    </div>
+
+    <!-- Sección 2 — Programa -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">2. Estado del Programa de Integridad (Ley 27.401)</h3>
+      <dl id="rep-programa"></dl>
+    </div>
+
+    <!-- Sección 3 — Score detalle -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">3. Score de compliance por eje</h3>
+      <dl id="rep-score"></dl>
+    </div>
+
+    <!-- Sección 4 — Pendientes -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">4. Elementos pendientes</h3>
+      <div id="rep-pend"></div>
+    </div>
+
+    <!-- Sección 5 — Capacitación -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">5. Capacitación</h3>
+      <dl id="rep-cap"></dl>
+    </div>
+
+    <!-- Sección 6 — RITE -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">6. Registro RITE</h3>
+      <dl id="rep-rite"></dl>
+    </div>
+
+    <!-- Sección 7 — Plan de mejora -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">7. Plan de mejora</h3>
+      <div id="rep-plan"></div>
+    </div>
+
+    <!-- Sección 8 — Frameworks -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">8. Cobertura por Framework Internacional</h3>
+      <div id="rep-frameworks"></div>
+    </div>
+
+    <!-- Sección 9 — Plan de Acción Multi-Framework -->
+    <div class="card rep-sec">
+      <h3 style="color:var(--pri);margin-bottom:.6rem">9. Plan de Acción — Controles Prioritarios</h3>
+      <div id="rep-plan-accion"></div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div style="background:#f0f4f8;border-radius:8px;padding:.8rem;font-size:.76rem;color:var(--muted);margin-top:.7rem">
+      Reporte generado por el <strong>Monitor de Compliance Empresarial</strong>. No reemplaza la evaluación profesional de un abogado o compliance officer.
+      Ph.D. Vicente H. Monteverde · <a href="https://mapatransparencia-production.up.railway.app" target="_blank">Ecosistema Transparencia</a>
+    </div>
+
   </div>
 </div>
 
@@ -1359,6 +1995,9 @@ function renderDashboard(){
   // ── Alertas regulatorias con resumen IA ───────────────────────────────
   cargarAlertasRegulatoriasIA();
 
+  // ── Frameworks coverage ───────────────────────────────────────────────
+  renderFrameworksDashboard();
+
   const hoy=new Date();
   const prox=CONFIG.capacitaciones.filter(c=>c.fecha_limite).map(c=>({...c,dias:Math.round((new Date(c.fecha_limite)-hoy)/86400000)})).filter(c=>c.dias>0&&c.dias<120).sort((a,b)=>a.dias-b.dias);
   document.getElementById('venc-cont').innerHTML=prox.length?prox.map(c=>`<div class="alerta ${c.dias<30?'roja':c.dias<60?'naranja':'verde'}"><span class="alerta-ico">${c.dias<30?'🔴':c.dias<60?'⚠️':'📅'}</span><span><strong>${tx(c.modulo)}</strong> — ${t('venc_vence')} ${c.fecha_limite} (${c.dias} ${t('dias_label')}) · ${tx(c.destinatarios)}</span></div>`).join(''):`<div class="alerta verde"><span class="alerta-ico">✅</span><span>${t('venc_sin')}</span></div>`;
@@ -1786,16 +2425,70 @@ function filtrarLeg(){renderLegislacion(document.getElementById('leg-search').va
 function renderReporte(){
   const sc=calcScore(),e=CONFIG.empresa,pi=CONFIG.programa_integridad;
   const localeMap={es:'es-AR',en:'en-US',pt:'pt-BR'};
-  const rows=(id,data)=>{document.getElementById(id).innerHTML=data.map(r=>`<div class="rep-row"><dt>${r[0]}</dt><dd>${r[1]}</dd></div>`).join('');};
-  rows('rep-empresa',[[t('rep_razon_social'),e.nombre],[t('rep_cuit'),e.cuit],[t('rep_sector'),tx(e.sector)],[t('rep_tamanio'),tx(e.tamanio)],[t('rep_provincias'),e.provincias.join(', ')],[t('rep_internacional'),e.internacional?t('si'):t('no')],[t('rep_resp_compliance'),e.responsable_compliance],[t('rep_contacto'),e.contacto],[t('rep_fecha'),new Date().toLocaleDateString(localeMap[lang]||'es-AR')]]);
+  const fecha=new Date().toLocaleDateString(localeMap[lang]||'es-AR',{year:'numeric',month:'long',day:'numeric'});
+  const rows=(id,data)=>{const el=document.getElementById(id);if(el)el.innerHTML=data.map(r=>`<div class="rep-row"><dt>${r[0]}</dt><dd>${r[1]}</dd></div>`).join('');};
+
+  // Portada
+  const pEmp=document.getElementById('rep-portada-empresa'); if(pEmp)pEmp.textContent=e.nombre||'—';
+  const pFec=document.getElementById('rep-portada-fecha'); if(pFec)pFec.textContent=fecha;
+  const pRes=document.getElementById('rep-portada-resp'); if(pRes)pRes.textContent=e.responsable_compliance||'—';
+
+  // Score global hero
+  const sNum=document.getElementById('rep-score-num');
+  if(sNum){sNum.textContent=sc.total;sNum.style.color=sc.total>=75?'var(--verde)':sc.total>=45?'var(--naranja)':'var(--rojo)';}
+  const sEjes=document.getElementById('rep-score-ejes');
+  if(sEjes){
+    const ejes=[
+      {l:'Programa de Integridad',v:sc.programa,max:40},
+      {l:'Capacitación',v:sc.capacitacion,max:25},
+      {l:'Due Diligence',v:sc.due_diligence,max:20},
+      {l:'Mapa de Riesgos',v:sc.riesgo,max:15},
+    ];
+    sEjes.innerHTML=ejes.map(ej=>{
+      const pct=Math.round(ej.v/ej.max*100);
+      const c=pct>=75?'var(--verde)':pct>=45?'var(--naranja)':'var(--rojo)';
+      return`<div class="prog-bar-wrap"><div class="prog-label"><span>${ej.l}</span><span style="font-weight:700;color:${c}">${ej.v}/${ej.max} (${pct}%)</span></div><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${c}"></div></div></div>`;
+    }).join('');
+  }
+
+  // Secciones estándar
+  rows('rep-empresa',[[t('rep_razon_social'),e.nombre],[t('rep_cuit'),e.cuit],[t('rep_sector'),tx(e.sector)],[t('rep_tamanio'),tx(e.tamanio)],[t('rep_provincias'),e.provincias.join(', ')],[t('rep_internacional'),e.internacional?t('si'):t('no')],[t('rep_resp_compliance'),e.responsable_compliance],[t('rep_contacto'),e.contacto],['Fecha del reporte',fecha]]);
   rows('rep-programa',[[t('rep_nivel_madurez'),t(pi.nivel_madurez)],[t('rep_inicio_programa'),pi.fecha_inicio],[t('rep_ultima_revision'),pi.ultima_revision],[t('rep_registrado_rite'),pi.registrado_rite?t('si'):t('no')],[t('rep_obligatorios_completos'),`${pi.elementos_obligatorios.filter(e=>e.estado==='completo').length} / ${pi.elementos_obligatorios.length}`],[t('rep_opcionales_completos'),`${pi.elementos_opcionales.filter(e=>e.estado==='completo').length} / ${pi.elementos_opcionales.length}`]]);
   rows('rep-score',[[t('rep_score_total'),`${sc.total} / 100`],[t('rep_eje_programa'),`${sc.programa} / 40`],[t('rep_eje_capacitacion'),`${sc.capacitacion} / 25`],[t('rep_eje_dd'),`${sc.due_diligence} / 20`],[t('rep_eje_riesgo'),`${sc.riesgo} / 15`]]);
   const pend=[...pi.elementos_obligatorios,...pi.elementos_opcionales].filter(e=>e.estado!=='completo');
-  document.getElementById('rep-pend').innerHTML=pend.length?pend.map(e=>`<div class="alerta ${e.estado==='en_progreso'?'naranja':'roja'}"><span class="alerta-ico">${e.estado==='en_progreso'?'⚙️':'❌'}</span><span>${tx(e.label)}</span></div>`).join(''):`<div class="alerta verde"><span class="alerta-ico">✅</span><span>${t('todos_completados')}</span></div>`;
+  const repPend=document.getElementById('rep-pend');
+  if(repPend)repPend.innerHTML=pend.length?pend.map(e=>`<div class="alerta ${e.estado==='en_progreso'?'naranja':'roja'}"><span class="alerta-ico">${e.estado==='en_progreso'?'⚙️':'❌'}</span><span>${tx(e.label)}</span></div>`).join(''):`<div class="alerta verde"><span class="alerta-ico">✅</span><span>${t('todos_completados')}</span></div>`;
   const avg=Math.round(CONFIG.capacitaciones.reduce((a,c)=>a+c.completado,0)/CONFIG.capacitaciones.length);
   rows('rep-cap',[[t('rep_promedio_completitud'),`${avg}%`],[t('rep_modulos_obligatorios'),CONFIG.capacitaciones.filter(c=>c.obligatorio).length],[t('rep_con_menos_50'),CONFIG.capacitaciones.filter(c=>c.completado<50).length]]);
   rows('rep-rite',[[t('rep_registrado'),pi.registrado_rite?t('si'):t('no')],[t('rep_nivel'),t(pi.nivel_madurez)],[t('rep_url'),pi.url_rite||'—']]);
-  document.getElementById('rep-plan').innerHTML=CONFIG.plan_mejora.map(p=>{const et=p.estado==='completo'?t('plan_completo'):p.estado==='en_progreso'?t('plan_en_progreso'):t('plan_pendiente');return`<div class="alerta ${p.prioridad==='alta'?'roja':p.prioridad==='media'?'naranja':'verde'}"><span class="alerta-ico">${p.prioridad==='alta'?'🔴':p.prioridad==='media'?'⚠️':'🟢'}</span><span><strong>${tx(p.accion)}</strong> — ${tx(p.responsable)} · ${p.vence} · <em>${et}</em></span></div>`;}).join('');
+  const repPlan=document.getElementById('rep-plan');
+  if(repPlan)repPlan.innerHTML=CONFIG.plan_mejora.map(p=>{const et=p.estado==='completo'?t('plan_completo'):p.estado==='en_progreso'?t('plan_en_progreso'):t('plan_pendiente');return`<div class="alerta ${p.prioridad==='alta'?'roja':p.prioridad==='media'?'naranja':'verde'}"><span class="alerta-ico">${p.prioridad==='alta'?'🔴':p.prioridad==='media'?'⚠️':'🟢'}</span><span><strong>${tx(p.accion)}</strong> — ${tx(p.responsable)} · ${p.vence} · <em>${et}</em></span></div>`;}).join('');
+
+  // Sección 8 — Frameworks
+  renderFrameworksReporte();
+
+  // Sección 9 — Plan de acción prioritario (top 8 de alta)
+  const repPA=document.getElementById('rep-plan-accion');
+  if(repPA){
+    const top=PLAN_ITEMS.filter(i=>i.prioridad==='alta').slice(0,8);
+    repPA.innerHTML=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.8rem">
+      <thead><tr style="background:#1a3a5c;color:#fff">
+        <th style="padding:.4rem .6rem;text-align:left">Control</th>
+        <th style="padding:.4rem .6rem;text-align:left">Marcos</th>
+        <th style="padding:.4rem .6rem;text-align:center">Prioridad</th>
+        <th style="padding:.4rem .6rem;text-align:left">Responsable</th>
+        <th style="padding:.4rem .6rem;text-align:center">Plazo</th>
+      </tr></thead>
+      <tbody>${top.map((it,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}">
+        <td style="padding:.38rem .6rem;font-weight:600">${it.ctrl}</td>
+        <td style="padding:.38rem .6rem;font-size:.73rem">${it.marcos.join(' · ')}</td>
+        <td style="padding:.38rem .6rem;text-align:center"><span style="background:#c62828;color:#fff;font-size:.68rem;font-weight:700;padding:.1rem .35rem;border-radius:4px">ALTA</span></td>
+        <td style="padding:.38rem .6rem">${it.responsable}</td>
+        <td style="padding:.38rem .6rem;text-align:center;font-weight:600">${it.plazo}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+    <div class="alerta naranja" style="margin-top:.6rem"><span class="alerta-ico">📋</span><span>Ver pestaña "Plan de Acción" para el listado completo con todos los controles pendientes.</span></div>`;
+  }
 }
 
 function renderPanel(p){
@@ -1808,6 +2501,17 @@ function renderPanel(p){
   else if(p==='internacional')renderInternacional();
   else if(p==='brasil')renderBrasil();
   else if(p==='fcpa')renderFCPA();
+  else if(p==='iso37001')renderISO37001();
+  else if(p==='iso14001')renderISO14001();
+  else if(p==='gdpr')renderGDPR();
+  else if(p==='iso27001')renderISO27001();
+  else if(p==='soc2')renderSOC2();
+  else if(p==='ccpa')renderCCPA();
+  else if(p==='nis2')renderNIS2();
+  else if(p==='euaiact')renderEUAIAct();
+  else if(p==='crossmap')renderCrossMap();
+  else if(p==='dora')renderDORA();
+  else if(p==='planaccion')renderPlanAccion();
   else if(p==='rite')renderRite();
   else if(p==='mejoras')renderMejoras();
   else if(p==='calendario')renderCalendario();
@@ -2116,6 +2820,9 @@ function renderBoard() {
     `${lang === 'en' ? 'Report generated by' : 'Reporte generado por'} <strong>Monitor de Compliance Empresarial</strong> · Ph.D. Vicente H. Monteverde ·
     <a href="https://mapatransparencia-production.up.railway.app" target="_blank">Ecosistema Transparencia</a> ·
     ${lang === 'en' ? 'For board use only' : 'Uso exclusivo del Directorio'}`;
+
+  // ── Multi-framework coverage ──
+  renderFrameworksBoard();
 }
 
 const _renderDashBase = renderDashboard.bind({});
@@ -2250,6 +2957,1631 @@ function esgRecalc() {
 
 document.addEventListener('DOMContentLoaded',()=>{renderLGPD();});
 document.querySelector('[data-panel="lgpd"]')?.addEventListener('click',()=>setTimeout(renderLGPD,50));
+
+// ════════════════════════════════════════
+// ISO 27001:2022 — SEGURIDAD DE LA INFORMACIÓN
+// ════════════════════════════════════════
+function renderISO27001(){
+  const dominios={
+    org:{id:'iso27001-org-list',kpi:'iso27001-org',controles:[
+      {id:'A.5.1', label:'Políticas de seguridad de la información',est:'prog'},
+      {id:'A.5.2', label:'Roles y responsabilidades de seguridad',est:'prog'},
+      {id:'A.5.3', label:'Segregación de funciones',est:'pend'},
+      {id:'A.5.4', label:'Responsabilidades de gestión',est:'prog'},
+      {id:'A.5.5', label:'Contacto con autoridades',est:'pend'},
+      {id:'A.5.6', label:'Contacto con grupos de interés especial',est:'pend'},
+      {id:'A.5.7', label:'Inteligencia de amenazas',est:'pend'},
+      {id:'A.5.8', label:'Seguridad en gestión de proyectos',est:'pend'},
+      {id:'A.5.9', label:'Inventario de activos de información',est:'prog'},
+      {id:'A.5.10',label:'Uso aceptable de activos',est:'prog'},
+      {id:'A.5.11',label:'Devolución de activos',est:'pend'},
+      {id:'A.5.12',label:'Clasificación de la información',est:'pend'},
+      {id:'A.5.13',label:'Etiquetado de la información',est:'pend'},
+      {id:'A.5.14',label:'Transferencia de información',est:'pend'},
+      {id:'A.5.15',label:'Control de acceso',est:'prog'},
+      {id:'A.5.16',label:'Gestión de identidades',est:'prog'},
+      {id:'A.5.17',label:'Información de autenticación',est:'prog'},
+      {id:'A.5.18',label:'Derechos de acceso',est:'prog'},
+      {id:'A.5.19',label:'Seguridad de la información en relaciones con proveedores',est:'pend'},
+      {id:'A.5.20',label:'Seguridad en acuerdos con proveedores',est:'pend'},
+      {id:'A.5.21',label:'Gestión de la seguridad en la cadena de suministro TIC',est:'pend'},
+      {id:'A.5.22',label:'Monitoreo y revisión de servicios de proveedores',est:'pend'},
+      {id:'A.5.23',label:'Seguridad de la información para uso de servicios en la nube',est:'pend'},
+      {id:'A.5.24',label:'Planificación de gestión de incidentes de SI',est:'pend'},
+      {id:'A.5.25',label:'Evaluación y decisión sobre eventos de SI',est:'pend'},
+      {id:'A.5.26',label:'Respuesta a incidentes de SI',est:'pend'},
+      {id:'A.5.27',label:'Aprendizaje de incidentes de SI',est:'pend'},
+      {id:'A.5.28',label:'Recolección de evidencia',est:'pend'},
+      {id:'A.5.29',label:'SI durante interrupción',est:'pend'},
+      {id:'A.5.30',label:'Preparación TIC para continuidad del negocio',est:'pend'},
+      {id:'A.5.31',label:'Requisitos legales, estatutarios, reglamentarios y contractuales',est:'prog'},
+      {id:'A.5.32',label:'Derechos de propiedad intelectual',est:'prog'},
+      {id:'A.5.33',label:'Protección de registros',est:'prog'},
+      {id:'A.5.34',label:'Privacidad y protección de datos personales',est:'prog'},
+      {id:'A.5.35',label:'Revisión independiente de SI',est:'pend'},
+      {id:'A.5.36',label:'Cumplimiento con políticas y normas de SI',est:'prog'},
+      {id:'A.5.37',label:'Procedimientos operativos documentados',est:'prog'},
+    ]},
+    per:{id:'iso27001-per-list',kpi:'iso27001-per',controles:[
+      {id:'A.6.1', label:'Selección de personal',est:'prog'},
+      {id:'A.6.2', label:'Términos y condiciones de empleo',est:'prog'},
+      {id:'A.6.3', label:'Concienciación, educación y formación en SI',est:'prog'},
+      {id:'A.6.4', label:'Proceso disciplinario',est:'pend'},
+      {id:'A.6.5', label:'Responsabilidades tras el cese o cambio de empleo',est:'pend'},
+      {id:'A.6.6', label:'Acuerdos de confidencialidad o no divulgación',est:'ok'},
+      {id:'A.6.7', label:'Trabajo remoto',est:'prog'},
+      {id:'A.6.8', label:'Reporte de eventos de SI',est:'pend'},
+    ]},
+    fis:{id:'iso27001-fis-list',kpi:'iso27001-fis',controles:[
+      {id:'A.7.1', label:'Perímetros de seguridad física',est:'prog'},
+      {id:'A.7.2', label:'Entrada física',est:'prog'},
+      {id:'A.7.3', label:'Seguridad de oficinas, despachos e instalaciones',est:'prog'},
+      {id:'A.7.4', label:'Monitoreo de seguridad física',est:'pend'},
+      {id:'A.7.5', label:'Protección contra amenazas físicas y ambientales',est:'prog'},
+      {id:'A.7.6', label:'Trabajo en áreas seguras',est:'pend'},
+      {id:'A.7.7', label:'Política de escritorio y pantalla despejados',est:'pend'},
+      {id:'A.7.8', label:'Ubicación y protección de equipos',est:'prog'},
+      {id:'A.7.9', label:'Seguridad de activos fuera de las instalaciones',est:'pend'},
+      {id:'A.7.10',label:'Medios de almacenamiento',est:'pend'},
+      {id:'A.7.11',label:'Suministros de apoyo',est:'prog'},
+      {id:'A.7.12',label:'Seguridad del cableado',est:'pend'},
+      {id:'A.7.13',label:'Mantenimiento de equipos',est:'pend'},
+      {id:'A.7.14',label:'Eliminación segura o reutilización de equipos',est:'pend'},
+    ]},
+    tec:{id:'iso27001-tec-list',kpi:'iso27001-tec',controles:[
+      {id:'A.8.1', label:'Dispositivos de usuario final',est:'prog'},
+      {id:'A.8.2', label:'Derechos de acceso privilegiado',est:'pend'},
+      {id:'A.8.3', label:'Restricción de acceso a la información',est:'prog'},
+      {id:'A.8.4', label:'Acceso al código fuente',est:'pend'},
+      {id:'A.8.5', label:'Autenticación segura',est:'prog'},
+      {id:'A.8.6', label:'Gestión de la capacidad',est:'pend'},
+      {id:'A.8.7', label:'Protección contra malware',est:'ok'},
+      {id:'A.8.8', label:'Gestión de vulnerabilidades técnicas',est:'pend'},
+      {id:'A.8.9', label:'Gestión de la configuración',est:'pend'},
+      {id:'A.8.10',label:'Eliminación de información',est:'pend'},
+      {id:'A.8.11',label:'Enmascaramiento de datos',est:'pend'},
+      {id:'A.8.12',label:'Prevención de fuga de datos (DLP)',est:'pend'},
+      {id:'A.8.13',label:'Copia de seguridad de la información',est:'prog'},
+      {id:'A.8.14',label:'Redundancia de instalaciones de procesamiento',est:'pend'},
+      {id:'A.8.15',label:'Registro de actividades (logging)',est:'prog'},
+      {id:'A.8.16',label:'Actividades de monitoreo',est:'pend'},
+      {id:'A.8.17',label:'Sincronización de relojes',est:'prog'},
+      {id:'A.8.18',label:'Uso de programas de utilidad privilegiados',est:'pend'},
+      {id:'A.8.19',label:'Instalación de software en sistemas operativos',est:'pend'},
+      {id:'A.8.20',label:'Seguridad en redes',est:'prog'},
+      {id:'A.8.21',label:'Seguridad de los servicios de red',est:'pend'},
+      {id:'A.8.22',label:'Segregación de redes',est:'pend'},
+      {id:'A.8.23',label:'Filtrado web',est:'pend'},
+      {id:'A.8.24',label:'Uso de criptografía',est:'prog'},
+      {id:'A.8.25',label:'Ciclo de vida de desarrollo seguro',est:'pend'},
+      {id:'A.8.26',label:'Requisitos de seguridad en aplicaciones',est:'pend'},
+      {id:'A.8.27',label:'Principios de arquitectura segura',est:'pend'},
+      {id:'A.8.28',label:'Codificación segura',est:'pend'},
+      {id:'A.8.29',label:'Pruebas de seguridad en desarrollo y aceptación',est:'pend'},
+      {id:'A.8.30',label:'Desarrollo externalizado',est:'pend'},
+      {id:'A.8.31',label:'Separación de entornos de desarrollo, prueba y producción',est:'prog'},
+      {id:'A.8.32',label:'Gestión de cambios',est:'prog'},
+      {id:'A.8.33',label:'Información de prueba',est:'pend'},
+      {id:'A.8.34',label:'Protección de SI durante pruebas de auditoría',est:'pend'},
+    ]}
+  };
+
+  const stMap={ok:{badge:'badge-ok',ico:'✅',lbl:'OK'},prog:{badge:'badge-prog',ico:'⏳',lbl:'Proceso'},pend:{badge:'badge-pend',ico:'❌',lbl:'Pendiente'}};
+  let totalOk=0,totalProg=0,totalPend=0,totalScore=0,totalMax=0;
+
+  Object.entries(dominios).forEach(([key,dom])=>{
+    let html='',dok=0,dprog=0,dpend=0;
+    dom.controles.forEach(c=>{
+      const s=stMap[c.est];
+      if(c.est==='ok')dok++;
+      else if(c.est==='prog')dprog++;
+      else dpend++;
+      html+=`<div class="check-item"><div class="check-badge ${s.badge}" style="font-size:.7rem;width:22px;height:22px">${s.ico}</div><div style="flex:1"><div class="check-label" style="font-size:.81rem">${c.id} — ${c.label}<span class="pill ${c.est==='ok'?'pill-ok':c.est==='prog'?'pill-prog':'pill-pend'}">${s.lbl}</span></div></div></div>`;
+    });
+    document.getElementById(dom.id).innerHTML=html;
+    const tot=dom.controles.length;
+    const sc=Math.round((dok+dprog*0.5)/tot*100);
+    totalOk+=dok; totalProg+=dprog; totalPend+=dpend;
+    totalScore+=dok+dprog*0.5; totalMax+=tot;
+    const kpiEl=document.getElementById(dom.kpi);
+    if(kpiEl){kpiEl.textContent=sc+'%'; const par=kpiEl.closest('.eje'); if(par)par.className='eje '+(sc>=70?'verde':sc>=40?'naranja':'rojo');}
+  });
+
+  const pct=Math.round(totalScore/totalMax*100);
+  const el=document.getElementById('iso27001-score-txt'); if(el)el.textContent=pct+'%';
+  const eOk=document.getElementById('iso27001-ok-count'); if(eOk)eOk.textContent=totalOk;
+  const ePr=document.getElementById('iso27001-prog-count'); if(ePr)ePr.textContent=totalProg;
+  const ePe=document.getElementById('iso27001-pend-count'); if(ePe)ePe.textContent=totalPend;
+}
+
+// ════════════════════════════════════════
+// SOC 2 — TRUST SERVICE CRITERIA
+// ════════════════════════════════════════
+function renderSOC2(){
+  const cc=[
+    {id:'CC1',titulo:'CC1 — Control Environment',items:[
+      {label:'CC1.1 — Compromiso con integridad y valores éticos demostrado',est:'prog'},
+      {label:'CC1.2 — Supervisión de la dirección sobre el sistema de control interno',est:'prog'},
+      {label:'CC1.3 — Estructura organizacional y líneas de reporte definidas',est:'prog'},
+      {label:'CC1.4 — Competencia del personal — atracción, desarrollo y retención',est:'prog'},
+      {label:'CC1.5 — Responsabilidad por el control interno',est:'pend'},
+    ]},
+    {id:'CC2',titulo:'CC2 — Communication & Information',items:[
+      {label:'CC2.1 — Información de calidad para apoyar el funcionamiento de controles',est:'prog'},
+      {label:'CC2.2 — Comunicación interna de objetivos y responsabilidades',est:'prog'},
+      {label:'CC2.3 — Comunicación con partes externas',est:'pend'},
+    ]},
+    {id:'CC3',titulo:'CC3 — Risk Assessment',items:[
+      {label:'CC3.1 — Objetivos claros para identificación y evaluación de riesgos',est:'prog'},
+      {label:'CC3.2 — Identificación y análisis de riesgos relevantes',est:'pend'},
+      {label:'CC3.3 — Consideración del potencial de fraude',est:'pend'},
+      {label:'CC3.4 — Identificación y evaluación de cambios significativos',est:'pend'},
+    ]},
+    {id:'CC4',titulo:'CC4 — Monitoring Activities',items:[
+      {label:'CC4.1 — Evaluaciones continuas y/o separadas del control interno',est:'pend'},
+      {label:'CC4.2 — Evaluación y comunicación de deficiencias de control',est:'pend'},
+    ]},
+    {id:'CC5',titulo:'CC5 — Control Activities',items:[
+      {label:'CC5.1 — Controles seleccionados y desarrollados para mitigar riesgos',est:'prog'},
+      {label:'CC5.2 — Controles generales de tecnología seleccionados',est:'prog'},
+      {label:'CC5.3 — Controles desplegados a través de políticas y procedimientos',est:'prog'},
+    ]},
+    {id:'CC6',titulo:'CC6 — Logical & Physical Access Controls',items:[
+      {label:'CC6.1 — Implementación de controles de acceso lógico',est:'prog'},
+      {label:'CC6.2 — Credenciales de autenticación previas al acceso',est:'prog'},
+      {label:'CC6.3 — Autorización de acceso a activos del sistema',est:'pend'},
+      {label:'CC6.4 — Acceso físico restringido a activos del sistema',est:'prog'},
+      {label:'CC6.5 — Eliminación y retiro de accesos',est:'pend'},
+      {label:'CC6.6 — Amenazas lógicas desde fuentes externas',est:'pend'},
+      {label:'CC6.7 — Transmisión, movimiento y eliminación de información',est:'pend'},
+      {label:'CC6.8 — Prevención e identificación de software no autorizado',est:'pend'},
+    ]},
+    {id:'CC7',titulo:'CC7 — System Operations',items:[
+      {label:'CC7.1 — Detección y monitoreo de vulnerabilidades',est:'pend'},
+      {label:'CC7.2 — Monitoreo de componentes del sistema',est:'prog'},
+      {label:'CC7.3 — Evaluación de eventos de seguridad',est:'pend'},
+      {label:'CC7.4 — Respuesta a incidentes de seguridad',est:'pend'},
+      {label:'CC7.5 — Identificación y remediación de causas raíz',est:'pend'},
+    ]},
+    {id:'CC8',titulo:'CC8 — Change Management',items:[
+      {label:'CC8.1 — Gestión de cambios en infraestructura, datos, software',est:'prog'},
+    ]},
+    {id:'CC9',titulo:'CC9 — Risk Mitigation',items:[
+      {label:'CC9.1 — Identificación y mitigación de riesgos en actividades de negocio',est:'pend'},
+      {label:'CC9.2 — Evaluación de riesgos de proveedores y socios',est:'pend'},
+    ]},
+  ];
+
+  const opcionales=[
+    {tsc:'A — Availability',color:'#1565c0',items:[
+      {label:'A1.1 — Capacidad actual y proyectada para cumplir disponibilidad',est:'pend'},
+      {label:'A1.2 — Protección ambiental, software y datos para disponibilidad',est:'pend'},
+      {label:'A1.3 — Backup y recuperación para cumplir disponibilidad',est:'prog'},
+    ]},
+    {tsc:'C — Confidentiality',color:'#4a148c',items:[
+      {label:'C1.1 — Identificación y mantenimiento de información confidencial',est:'prog'},
+      {label:'C1.2 — Eliminación de información confidencial',est:'pend'},
+    ]},
+    {tsc:'PI — Processing Integrity',color:'#e65100',items:[
+      {label:'PI1.1 — Procesamiento completo, válido, exacto, oportuno y autorizado',est:'pend'},
+      {label:'PI1.2 — Procesamiento de entradas y salidas',est:'pend'},
+      {label:'PI1.3 — Errores de procesamiento identificados y corregidos',est:'pend'},
+    ]},
+    {tsc:'P — Privacy',color:'#2e7d32',items:[
+      {label:'P1.1 — Aviso y comunicación de prácticas de privacidad',est:'prog'},
+      {label:'P2.1 — Elección y consentimiento del titular de datos',est:'pend'},
+      {label:'P3.1 — Recolección de información personal',est:'pend'},
+      {label:'P4.1 — Uso, retención y eliminación de información personal',est:'pend'},
+      {label:'P5.1 — Acceso del titular a sus datos personales',est:'pend'},
+      {label:'P6.1 — Divulgación y notificación de información personal',est:'pend'},
+      {label:'P7.1 — Calidad y exactitud de la información personal',est:'pend'},
+      {label:'P8.1 — Monitoreo y aplicación de la política de privacidad',est:'pend'},
+    ]},
+  ];
+
+  const stMap={ok:{badge:'badge-ok',ico:'✅',pill:'pill-ok',txt:'OK'},prog:{badge:'badge-prog',ico:'⏳',pill:'pill-prog',txt:'Proceso'},pend:{badge:'badge-pend',ico:'❌',pill:'pill-pend',txt:'Pendiente'}};
+
+  // CC (obligatorio)
+  let ccHtml='', ccOk=0,ccTot=0;
+  cc.forEach(sec=>{
+    ccHtml+=`<div style="margin-bottom:.8rem"><div style="font-weight:700;color:#1a3a5c;font-size:.83rem;margin:.4rem 0 .25rem;background:#e8eaf6;padding:.3rem .6rem;border-radius:5px">${sec.titulo}</div>`;
+    sec.items.forEach(it=>{
+      const s=stMap[it.est]; ccTot++;
+      if(it.est==='ok')ccOk+=1; else if(it.est==='prog')ccOk+=0.5;
+      ccHtml+=`<div class="check-item"><div class="check-badge ${s.badge}" style="font-size:.7rem;width:22px;height:22px">${s.ico}</div><div style="flex:1"><div class="check-label" style="font-size:.81rem">${it.label}<span class="pill ${s.pill}">${s.txt}</span></div></div></div>`;
+    });
+    ccHtml+='</div>';
+  });
+  document.getElementById('soc2-cc-list').innerHTML=ccHtml;
+
+  // Opcionales
+  let optHtml='';
+  opcionales.forEach(tsc=>{
+    optHtml+=`<div style="margin-bottom:1rem"><div style="font-weight:700;font-size:.83rem;margin:.4rem 0 .25rem;padding:.3rem .6rem;border-radius:5px;color:#fff;background:${tsc.color}">${tsc.tsc}</div>`;
+    tsc.items.forEach(it=>{
+      const s=stMap[it.est];
+      optHtml+=`<div class="check-item"><div class="check-badge ${s.badge}" style="font-size:.7rem;width:22px;height:22px">${s.ico}</div><div style="flex:1"><div class="check-label" style="font-size:.81rem">${it.label}<span class="pill ${s.pill}">${s.txt}</span></div></div></div>`;
+    });
+    optHtml+='</div>';
+  });
+  document.getElementById('soc2-optional-list').innerHTML=optHtml;
+
+  const pct=Math.round(ccOk/ccTot*100);
+  const el=document.getElementById('soc2-score'); if(el){el.textContent=pct+'%';el.style.color=pct>=70?'var(--verde)':pct>=40?'var(--naranja)':'var(--rojo)';}
+
+  const tabla=[
+    ['Origen','AICPA (EE.UU.)','ISO/IEC (Internacional)'],
+    ['Reconocimiento','Mercado anglosajón / SaaS','Global'],
+    ['Certificación','Reporte de auditor','Certificado por organismo acreditado'],
+    ['Controles','~60 criterios (CC)','93 controles (Anexo A)'],
+    ['Periodicidad','Tipo I: punto en el tiempo. Tipo II: ≥6 meses','Ciclo 3 años + auditorías de seguimiento'],
+    ['Foco principal','Servicios en nube para clientes','Toda la organización'],
+    ['Privacidad','TSC P (opcional)','Requiere ISO 27701 adicional'],
+  ];
+  document.getElementById('soc2-tabla').innerHTML=tabla.map((f,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}"><td style="padding:.45rem .7rem;font-weight:600">${f[0]}</td><td style="padding:.45rem .7rem;text-align:center">${f[1]}</td><td style="padding:.45rem .7rem;text-align:center">${f[2]}</td></tr>`).join('');
+}
+
+// ════════════════════════════════════════
+// CCPA / CPRA
+// ════════════════════════════════════════
+function renderCCPA(){
+  const secciones=[
+    {area:'📋 Aviso y Transparencia',items:[
+      {label:'Política de privacidad actualizada al 1 Jan 2023 (CPRA)',est:'prog'},
+      {label:'Aviso "At or Before Collection" — qué se recolecta y para qué',est:'pend'},
+      {label:'Aviso de "Do Not Sell or Share My Personal Information"',est:'pend'},
+      {label:'Aviso de uso de Sensitive Personal Information (nuevo CPRA)',est:'pend'},
+    ]},
+    {area:'👤 Derechos del Consumidor',items:[
+      {label:'Derecho a saber — qué categorías de datos se recolectan',est:'prog'},
+      {label:'Derecho a acceso — datos específicos recolectados en últimos 12 meses',est:'pend'},
+      {label:'Derecho a eliminación (delete) con excepciones documentadas',est:'pend'},
+      {label:'Derecho a corregir información personal inexacta (nuevo CPRA)',est:'pend'},
+      {label:'Derecho a opt-out de venta o sharing de datos',est:'pend'},
+      {label:'Derecho a limitar uso de Sensitive Personal Information (nuevo CPRA)',est:'pend'},
+      {label:'Derecho a portabilidad — formato portable y usable',est:'pend'},
+      {label:'Derecho a no discriminación por ejercer derechos CCPA',est:'prog'},
+    ]},
+    {area:'⚙️ Mecanismos Operativos',items:[
+      {label:'Canal de solicitudes: formulario web + 1-800 o email',est:'prog'},
+      {label:'Proceso de verificación de identidad del solicitante',est:'pend'},
+      {label:'Respuesta en 45 días (+ 45 extensión con aviso)',est:'pend'},
+      {label:'Registro de solicitudes y respuestas (24 meses)',est:'pend'},
+      {label:'Opt-Out Signal (GPC — Global Privacy Control) honorado',est:'pend'},
+    ]},
+    {area:'🤝 Proveedores y Terceros',items:[
+      {label:'Contratos de "service provider" con cláusulas CCPA/CPRA',est:'prog'},
+      {label:'Contratos con "contractors" y "third parties" actualizados',est:'pend'},
+      {label:'Inventario de datos transferidos / "sold" o "shared"',est:'pend'},
+      {label:'Data Protection Assessments para actividades de alto riesgo (CPRA)',est:'pend'},
+    ]},
+    {area:'🔒 Seguridad y Gobernanza',items:[
+      {label:'Medidas de seguridad razonables implementadas',est:'prog'},
+      {label:'Programa de retención con plazos definidos por categoría',est:'pend'},
+      {label:'Minimización de datos — solo recolectar lo necesario (CPRA)',est:'pend'},
+      {label:'Reporte anual de métricas (si +10M ingresos o +10M consumidores)',est:'pend'},
+    ]},
+  ];
+
+  const stMap={ok:{badge:'badge-ok',ico:'✅',pill:'pill-ok',txt:'OK'},prog:{badge:'badge-prog',ico:'⏳',pill:'pill-prog',txt:'Proceso'},pend:{badge:'badge-pend',ico:'❌',pill:'pill-pend',txt:'Pendiente'}};
+  let html='', score=0, max=0;
+  secciones.forEach(sec=>{
+    html+=`<div style="margin-bottom:.9rem"><div style="font-weight:700;color:#e65100;font-size:.84rem;background:#fff3e0;padding:.3rem .6rem;border-radius:5px;margin-bottom:.3rem">${sec.area}</div>`;
+    sec.items.forEach(it=>{
+      const s=stMap[it.est]; max++;
+      if(it.est==='ok')score+=1; else if(it.est==='prog')score+=0.5;
+      html+=`<div class="check-item"><div class="check-badge ${s.badge}">${s.ico}</div><div style="flex:1"><div class="check-label" style="font-size:.83rem">${it.label}<span class="pill ${s.pill}">${s.txt}</span></div></div></div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('ccpa-checklist').innerHTML=html;
+
+  const pct=Math.round(score/max*100);
+  const el=document.getElementById('ccpa-score'); if(el){el.textContent=pct+'%';el.style.color=pct>=70?'var(--verde)':pct>=40?'var(--naranja)':'var(--rojo)';}
+
+  const tabla=[
+    ['Jurisdicción','California, EE.UU.','Unión Europea','Brasil'],
+    ['Base legal','Opt-out (para venta/sharing)','Opt-in requerido','Opt-in requerido'],
+    ['Datos sensibles','Categoría especial (CPRA)','Categoría especial Art.9','Datos sensibles Art.11'],
+    ['Sanción máx.','$7,500 por consumidor/infrac.','€20M / 4% global','R$50M / día'],
+    ['DPO/Encarregado','No requerido','Obligatorio (casos)','Siempre obligatorio'],
+    ['Brechas','Acción privada + AG','72h notif. autoridad','Sin plazo fijo'],
+    ['Niños (<16)','Opt-in explícito','Reglamentación específica','Protección especial'],
+    ['Enforcement','CPPA + AG California','DPAs nacionales','ANPD'],
+  ];
+  document.getElementById('ccpa-tabla').innerHTML=tabla.map((f,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}"><td style="padding:.42rem .7rem;font-weight:600">${f[0]}</td><td style="padding:.42rem .7rem;text-align:center">${f[1]}</td><td style="padding:.42rem .7rem;text-align:center">${f[2]}</td><td style="padding:.42rem .7rem;text-align:center">${f[3]}</td></tr>`).join('');
+}
+
+
+function renderISO37001(){
+  const items=[
+    {cl:'4.1',label:'Contexto de la organización — análisis de partes interesadas',peso:8,est:'prog'},
+    {cl:'4.5',label:'Evaluación de riesgo de soborno',peso:12,est:'pend'},
+    {cl:'5.1',label:'Compromiso y liderazgo de Alta Dirección',peso:10,est:'prog'},
+    {cl:'5.3',label:'Función de Compliance Antisoborno designada',peso:8,est:'prog'},
+    {cl:'6.1',label:'Objetivos de programa antisoborno con KPIs',peso:8,est:'pend'},
+    {cl:'7.2',label:'Capacitación y concienciación — personal expuesto',peso:10,est:'prog'},
+    {cl:'7.3',label:'Due diligence de socios comerciales (terceros)',peso:12,est:'pend'},
+    {cl:'8.2',label:'Controles financieros y no-financieros antisoborno',peso:10,est:'pend'},
+    {cl:'8.6',label:'Compromisos antisoborno con socios y proveedores',peso:8,est:'pend'},
+    {cl:'9.1',label:'Monitoreo, medición y auditoría interna',peso:8,est:'prog'},
+    {cl:'10.1',label:'No conformidades — acción correctiva y mejora',peso:6,est:'pend'},
+  ];
+  const stMap={ok:{badge:'badge-ok',ico:'✅',pill:'pill-ok',txt:'Implementado'},prog:{badge:'badge-prog',ico:'⏳',pill:'pill-prog',txt:'En proceso'},pend:{badge:'badge-pend',ico:'❌',pill:'pill-pend',txt:'Pendiente'}};
+  let score=0,maxScore=0;
+  let html='';
+  items.forEach(it=>{
+    const s=stMap[it.est];
+    const pts=it.est==='ok'?it.peso:it.est==='prog'?Math.round(it.peso*0.5):0;
+    score+=pts; maxScore+=it.peso;
+    html+=`<div class="check-item"><div class="check-badge ${s.badge}">${s.ico}</div><div style="flex:1"><div class="check-label">Cláusula ${it.cl} — ${it.label}<span class="pill ${s.pill}">${s.txt}</span></div><div class="check-evidencia">Peso: ${it.peso}% · Puntos: ${pts}/${it.peso}</div></div></div>`;
+  });
+  document.getElementById('iso37001-checklist').innerHTML=html;
+  const pct=Math.round(score/maxScore*100);
+  const el=document.getElementById('iso37001-score');
+  if(el){el.textContent=pct+'%';el.style.color=pct>=70?'var(--verde)':pct>=40?'var(--naranja)':'var(--rojo)';}
+
+  const filas=[
+    ['Naturaleza','Obligatoria (penal/admin)','Voluntaria (certificable)'],
+    ['Alcance','Soborno público (principalmente)','Soborno público Y privado'],
+    ['Due diligence terceros','Recomendado','Obligatorio (cláusula 7.3)'],
+    ['Certificación','No aplica','ISO por organismo acreditado'],
+    ['Auditoría externa','Opcional','Requerida para certificar'],
+    ['Revisión por dirección','No especificado','Obligatoria (cláusula 9.3)'],
+  ];
+  document.getElementById('iso37001-tabla').innerHTML=filas.map((f,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}"><td style="padding:.45rem .7rem;font-weight:600">${f[0]}</td><td style="padding:.45rem .7rem;text-align:center">${f[1]}</td><td style="padding:.45rem .7rem;text-align:center;color:#1a6b3c;font-weight:600">${f[2]}</td></tr>`).join('');
+}
+
+// ════════════════════════════════════════
+// ISO 14001 — AMBIENTAL
+// ════════════════════════════════════════
+function renderISO14001(){
+  const clausulas=[
+    {cl:'4',titulo:'Contexto de la organización',items:[
+      {label:'Identificación de partes interesadas ambientales (4.2)',est:'prog'},
+      {label:'Alcance del SGA definido y documentado (4.3)',est:'pend'},
+    ]},
+    {cl:'5',titulo:'Liderazgo',items:[
+      {label:'Política ambiental aprobada por Alta Dirección (5.2)',est:'ok'},
+      {label:'Roles y responsabilidades ambientales asignados (5.3)',est:'prog'},
+    ]},
+    {cl:'6',titulo:'Planificación',items:[
+      {label:'Aspectos ambientales significativos identificados (6.1.2)',est:'prog'},
+      {label:'Requisitos legales ambientales relevados (6.1.3)',est:'pend'},
+      {label:'Objetivos ambientales con metas y plazos (6.2)',est:'pend'},
+    ]},
+    {cl:'7',titulo:'Apoyo',items:[
+      {label:'Competencia ambiental del personal evaluada (7.2)',est:'prog'},
+      {label:'Comunicación ambiental interna y externa (7.4)',est:'pend'},
+      {label:'Información documentada del SGA (7.5)',est:'pend'},
+    ]},
+    {cl:'8',titulo:'Operación',items:[
+      {label:'Controles operacionales — emisiones, efluentes, residuos (8.1)',est:'pend'},
+      {label:'Preparación y respuesta ante emergencias ambientales (8.2)',est:'prog'},
+    ]},
+    {cl:'9',titulo:'Evaluación del desempeño',items:[
+      {label:'Monitoreo y medición de KPIs ambientales (9.1)',est:'pend'},
+      {label:'Auditoría interna del SGA (9.2)',est:'pend'},
+      {label:'Revisión del SGA por la dirección (9.3)',est:'pend'},
+    ]},
+    {cl:'10',titulo:'Mejora',items:[
+      {label:'No conformidades ambientales — acción correctiva (10.2)',est:'pend'},
+    ]},
+  ];
+  const stMap={ok:{badge:'badge-ok',ico:'✅',pill:'pill-ok',txt:'Implementado'},prog:{badge:'badge-prog',ico:'⏳',pill:'pill-prog',txt:'En proceso'},pend:{badge:'badge-pend',ico:'❌',pill:'pill-pend',txt:'Pendiente'}};
+  let total=0,done=0,html='';
+  const sectScores={4:[],5:[],6:[],7:[],8:[],9:[],10:[]};
+  clausulas.forEach(sec=>{
+    html+=`<div style="margin-bottom:1rem"><div style="font-weight:700;color:var(--pri);font-size:.88rem;margin:.5rem 0 .3rem">📌 Cláusula ${sec.cl} — ${sec.titulo}</div>`;
+    sec.items.forEach(it=>{
+      const s=stMap[it.est];
+      const pts=it.est==='ok'?1:it.est==='prog'?0.5:0;
+      total++; done+=pts;
+      sectScores[sec.cl]=sectScores[sec.cl]||[];
+      sectScores[sec.cl].push(pts);
+      html+=`<div class="check-item"><div class="check-badge ${s.badge}">${s.ico}</div><div style="flex:1"><div class="check-label">${it.label}<span class="pill ${s.pill}">${s.txt}</span></div></div></div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('iso14001-checklist').innerHTML=html;
+  const pct=n=>Math.round(n*100);
+  const calc=cl=>{const arr=sectScores[cl]||[];return arr.length?pct(arr.reduce((a,b)=>a+b,0)/arr.length):0;};
+  ['e','p','o','m'].forEach((id,i)=>{
+    const cl=[4,6,8,10][i];
+    const v=calc(cl);
+    const el=document.getElementById(`iso14001-${id}`);
+    if(el){el.textContent=v+'%'; const par=el.closest('.eje'); if(par){par.className='eje '+(v>=70?'verde':v>=40?'naranja':'rojo');}}
+  });
+}
+
+// ════════════════════════════════════════
+// GDPR
+// ════════════════════════════════════════
+function renderGDPR(){
+  const items=[
+    {area:'🎯 Principios (Art. 5)',label:'Licitud, lealtad y transparencia documentada',peso:10,est:'prog'},
+    {area:'🎯 Principios (Art. 5)',label:'Limitación de finalidad — datos usados solo para el fin declarado',peso:8,est:'pend'},
+    {area:'🎯 Principios (Art. 5)',label:'Minimización de datos — solo datos necesarios',peso:8,est:'pend'},
+    {area:'⚖️ Base legal (Art. 6)',label:'Base legal documentada para cada tratamiento',peso:10,est:'prog'},
+    {area:'⚖️ Base legal (Art. 6)',label:'Consentimiento válido: libre, específico, informado, inequívoco',peso:8,est:'pend'},
+    {area:'👤 Derechos (Arts. 15-22)',label:'Procedimiento de acceso, rectificación y supresión (derecho al olvido)',peso:10,est:'pend'},
+    {area:'👤 Derechos (Arts. 15-22)',label:'Portabilidad de datos implementada',peso:6,est:'pend'},
+    {area:'🏛️ Responsable (Arts. 24-32)',label:'DPO (Delegado de Protección de Datos) designado si aplica',peso:8,est:'pend'},
+    {area:'🏛️ Responsable (Arts. 24-32)',label:'Registro de actividades de tratamiento (RAT) actualizado',peso:8,est:'prog'},
+    {area:'🏛️ Responsable (Arts. 24-32)',label:'Medidas de seguridad técnicas y organizativas (Art. 32)',peso:10,est:'prog'},
+    {area:'🚨 Brechas (Arts. 33-34)',label:'Protocolo de notificación de brecha < 72h a autoridad',peso:8,est:'pend'},
+    {area:'🌍 Transferencias (Art. 46)',label:'Mecanismo de transferencia internacional validado (SCCs/BCRs)',peso:6,est:'pend'},
+  ];
+  const stMap={ok:{badge:'badge-ok',ico:'✅',pill:'pill-ok',txt:'Cumplido'},prog:{badge:'badge-prog',ico:'⏳',pill:'pill-prog',txt:'En proceso'},pend:{badge:'badge-pend',ico:'❌',pill:'pill-pend',txt:'Pendiente'}};
+  let score=0,max=0,html='',lastArea='';
+  items.forEach(it=>{
+    if(it.area!==lastArea){html+=`<div style="font-weight:700;color:#3949ab;font-size:.85rem;margin:.9rem 0 .3rem;padding:.3rem .6rem;background:#e8eaf6;border-radius:5px">${it.area}</div>`;lastArea=it.area;}
+    const s=stMap[it.est];
+    const pts=it.est==='ok'?it.peso:it.est==='prog'?Math.round(it.peso*0.5):0;
+    score+=pts; max+=it.peso;
+    html+=`<div class="check-item"><div class="check-badge ${s.badge}">${s.ico}</div><div style="flex:1"><div class="check-label">${it.label}<span class="pill ${s.pill}">${s.txt}</span></div><div class="check-evidencia">Peso: ${it.peso}pt · Obtenido: ${pts}pt</div></div></div>`;
+  });
+  document.getElementById('gdpr-checklist').innerHTML=html;
+  const pct=Math.round(score/max*100);
+  const el=document.getElementById('gdpr-score');
+  if(el){el.textContent=pct+'%';el.style.color=pct>=70?'var(--verde)':pct>=40?'var(--naranja)':'var(--rojo)';}
+
+  const tabla=[
+    ['Sanción máx.','€20M / 4% facturación global','R$50M / día por infracción'],
+    ['DPO obligatorio','Sí (en casos definidos)','Encarregado — Sí, siempre'],
+    ['Transferencias internacionales','SCCs / BCRs / Adecuación','Cláusulas estándar o autorización ANPD'],
+    ['Derecho al olvido','Art. 17 — expresamente','Art. 18 — parcialmente'],
+    ['Base legal consentimiento','Opt-in claro','Opt-in (con matices)'],
+    ['Notificación de brechas','< 72 horas a autoridad','Sin plazo fijo definido'],
+    ['Aplicación extraterritorial','Sí — cualquier empresa que trate datos UE','Sí — datos de personas en Brasil'],
+  ];
+  document.getElementById('gdpr-lgpd-tabla').innerHTML=tabla.map((f,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}"><td style="padding:.45rem .7rem;font-weight:600">${f[0]}</td><td style="padding:.45rem .7rem;text-align:center">${f[1]}</td><td style="padding:.45rem .7rem;text-align:center">${f[2]}</td></tr>`).join('');
+}// ════════════════════════════════════════
+// DORA
+// ════════════════════════════════════════
+function renderDORA(){
+  const stMap={ok:{badge:'badge-ok',ico:'OK',pill:'pill-ok',txt:'OK'},prog:{badge:'badge-prog',ico:'~',pill:'pill-prog',txt:'Proceso'},pend:{badge:'badge-pend',ico:'!',pill:'pill-pend',txt:'Pendiente'}};
+  const pilares=[
+    {id:'dora-p1',items:[
+      {label:'Marco de gestion de riesgos TIC documentado y aprobado por organo de direccion',est:'pend',nota:'Art.5 — responsabilidad directa del organo rector'},
+      {label:'Estrategia de resiliencia operativa digital (objetivos, KPIs, tolerancia)',est:'pend',nota:'Art.6.1'},
+      {label:'Identificacion y clasificacion de activos TIC (inventario completo)',est:'prog',nota:'Art.8 — incluye sistemas legacy y dependencias'},
+      {label:'Proteccion de activos TIC — controles de acceso, cifrado, parches',est:'prog',nota:'Art.9'},
+      {label:'Deteccion de anomalias y actividades inusuales (monitoreo continuo)',est:'pend',nota:'Art.10'},
+      {label:'Plan de respuesta y recuperacion ante incidentes TIC',est:'pend',nota:'Art.11 — RTO y RPO definidos'},
+      {label:'Politica de backup, restauracion y recuperacion probada periodicamente',est:'prog',nota:'Art.12'},
+      {label:'Seguridad de la comunicacion — cifrado en transito y en reposo',est:'prog',nota:'Art.9.2'},
+      {label:'Gestion del cambio TIC — procesos formales de aprobacion',est:'pend',nota:'Art.9.4 — change management'},
+      {label:'Auditoria interna de la funcion TIC — al menos anual',est:'pend',nota:'Art.13'},
+    ]},
+    {id:'dora-p2',items:[
+      {label:'Clasificacion de incidentes TIC segun criterios DORA (impacto, duracion, propagacion)',est:'pend',nota:'Art.18 — criterios definidos por ABE/ESMA/EIOPA'},
+      {label:'Notificacion inicial a autoridad competente en menos de 4 horas (incidentes graves)',est:'pend',nota:'Art.19.1.a — notificacion inicial'},
+      {label:'Informe intermedio en 72 horas con evaluacion del incidente',est:'pend',nota:'Art.19.1.b'},
+      {label:'Informe final en 1 mes con analisis causa raiz y medidas correctivas',est:'pend',nota:'Art.19.1.c'},
+      {label:'Registro interno de incidentes TIC — todos los eventos, no solo graves',est:'pend',nota:'Art.17 — log completo'},
+      {label:'Proceso de aprendizaje post-incidente — mejora continua documentada',est:'pend',nota:'Art.17.6'},
+      {label:'Reporte voluntario de amenazas ciberneticas significativas',est:'pend',nota:'Art.19.2 — voluntario pero recomendado'},
+    ]},
+    {id:'dora-p3',items:[
+      {label:'Programa de pruebas de resiliencia TIC — al menos anual para entidades basicas',est:'pend',nota:'Art.24 — pruebas basicas anuales'},
+      {label:'TLPT (Threat-Led Penetration Testing) cada 3 anos para entidades significativas',est:'pend',nota:'Art.26 — obligatorio para entidades grandes'},
+      {label:'Pruebas de continuidad del negocio y recuperacion ante desastres',est:'prog',nota:'Art.25 — BCP/DRP testing'},
+      {label:'Evaluadores externos independientes para TLPT',est:'pend',nota:'Art.27 — requisitos de los testers'},
+      {label:'Remediacion de vulnerabilidades identificadas en pruebas — con seguimiento',est:'pend',nota:'Art.24.7'},
+    ]},
+    {id:'dora-p4',items:[
+      {label:'Registro de todos los contratos con proveedores TIC (incluyendo contratos en la nube)',est:'pend',nota:'Art.28.3 — registro obligatorio'},
+      {label:'Evaluacion previa de riesgo de concentracion en proveedores TIC criticos',est:'pend',nota:'Art.29 — riesgo de concentracion'},
+      {label:'Clausulas contractuales obligatorias DORA en contratos con proveedores TIC',est:'pend',nota:'Art.30 — descripcion servicios, SLA, auditoria, exit plan'},
+      {label:'Estrategia de salida (exit strategy) para proveedores TIC criticos',est:'pend',nota:'Art.28.8 — plan de contingencia ante fallo de proveedor'},
+      {label:'Derechos de auditoria e inspeccion sobre proveedores TIC criticos',est:'pend',nota:'Art.30.2.d'},
+      {label:'Marco de supervision de proveedores TIC criticos designados por autoridades UE',est:'pend',nota:'Arts.31-44 — CTPP framework (si aplica)'},
+    ]},
+    {id:'dora-p5',items:[
+      {label:'Participacion en mecanismos de intercambio de informacion sobre ciberamenazas',est:'pend',nota:'Art.45 — ISACs sectoriales financieros'},
+      {label:'Acuerdos de intercambio de inteligencia de amenazas documentados',est:'pend',nota:'Art.45.2 — cumplimiento con GDPR al compartir'},
+    ]},
+  ];
+
+  let totalOk=0,totalProg=0,totalPend=0,totalItems=0;
+  pilares.forEach(p=>{
+    let h='';
+    p.items.forEach(it=>{
+      const s=stMap[it.est]; totalItems++;
+      if(it.est==='ok')totalOk++; else if(it.est==='prog')totalProg++; else totalPend++;
+      h+=`<div class="check-item"><div class="check-badge ${s.badge}" style="font-size:.7rem;width:22px;height:22px">${s.ico}</div><div style="flex:1"><div class="check-label" style="font-size:.82rem">${it.label}<span class="pill ${s.pill}">${s.txt}</span></div><div class="check-evidencia">${it.nota}</div></div></div>`;
+    });
+    const el=document.getElementById(p.id); if(el)el.innerHTML=h;
+  });
+
+  const pct=Math.round((totalOk+totalProg*0.5)/totalItems*100);
+  const sc=document.getElementById('dora-score-txt'); if(sc){sc.textContent=pct+'%';sc.style.color=pct>=70?'var(--verde)':pct>=40?'var(--naranja)':'var(--rojo)';}
+  ['ok','prog','pend'].forEach(k=>{const el=document.getElementById('dora-'+k);if(el)el.textContent={ok:totalOk,prog:totalProg,pend:totalPend}[k];});
+
+  const tabla=[
+    ['Gestion de riesgos TIC','Art.5-16','Art.21.2.a-j','A.5.1, A.6, A.8'],
+    ['Notificacion de incidentes','Art.17-23 (4h/72h/1mes)','Art.23 (24h/72h/1mes)','A.5.24-5.28'],
+    ['Pruebas de resiliencia','Art.24-27 TLPT','—','A.5.35, A.8.29'],
+    ['Riesgo de terceros TIC','Art.28-44 contractual','Art.21.2.d','A.5.19-5.22'],
+    ['Continuidad del negocio','Art.11-12','Art.21.2.c','A.5.29-5.30'],
+    ['Cifrado y acceso','Art.9','Art.21.2.h-i','A.8.5, A.8.24'],
+  ];
+  const mEl=document.getElementById('dora-mapping');
+  if(mEl)mEl.innerHTML=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.81rem"><thead><tr style="background:#1a3a5c;color:#fff"><th style="padding:.45rem .6rem;text-align:left">Requisito</th><th style="padding:.45rem .6rem;text-align:center">DORA</th><th style="padding:.45rem .6rem;text-align:center">NIS2</th><th style="padding:.45rem .6rem;text-align:center">ISO 27001</th></tr></thead><tbody>${tabla.map((r,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}"><td style="padding:.4rem .6rem;font-weight:600">${r[0]}</td><td style="padding:.4rem .6rem;text-align:center;font-size:.76rem">${r[1]}</td><td style="padding:.4rem .6rem;text-align:center;font-size:.76rem">${r[2]}</td><td style="padding:.4rem .6rem;text-align:center;font-size:.76rem">${r[3]}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+// ════════════════════════════════════════
+// PLAN DE ACCION
+// ════════════════════════════════════════
+window.__planFiltro='todo';
+
+const PLAN_ITEMS=[
+  // ALTA prioridad — deadline corto o riesgo legal inmediato
+  {ctrl:'Autenticacion multifactor (MFA)',marcos:['ISO 27001','SOC 2','NIS2'],prioridad:'alta',responsable:'TI / CISO',plazo:'2026-08-31',dominio:'Seguridad',est:'pend'},
+  {ctrl:'Protocolo de notificacion de brechas de datos (<72h)',marcos:['GDPR','LGPD','NIS2','ISO 27001'],prioridad:'alta',responsable:'Legal / DPO',plazo:'2026-08-31',dominio:'Privacidad',est:'pend'},
+  {ctrl:'Gestion de incidentes — deteccion, contencion, recuperacion',marcos:['ISO 27001','SOC 2','NIS2'],prioridad:'alta',responsable:'TI / CISO',plazo:'2026-09-30',dominio:'Incidentes',est:'pend'},
+  {ctrl:'Inventario de sistemas de IA por nivel de riesgo (EU AI Act)',marcos:['EU AI Act'],prioridad:'alta',responsable:'TI / Legal',plazo:'2026-08-01',dominio:'IA',est:'pend'},
+  {ctrl:'Obligaciones de transparencia IA — informar que es IA (chatbots)',marcos:['EU AI Act','GDPR','LGPD'],prioridad:'alta',responsable:'TI / Marketing',plazo:'2026-08-01',dominio:'IA',est:'pend'},
+  {ctrl:'Due diligence de terceros y proveedores',marcos:['ISO 27001','NIS2','ISO 37001','FCPA','Ley 27.401'],prioridad:'alta',responsable:'Compras / Compliance',plazo:'2026-09-30',dominio:'Terceros',est:'pend'},
+  {ctrl:'Gestion de vulnerabilidades y parches',marcos:['ISO 27001','SOC 2','NIS2'],prioridad:'alta',responsable:'TI',plazo:'2026-07-31',dominio:'Seguridad',est:'pend'},
+  {ctrl:'Derechos de titulares de datos (acceso, supresion, portabilidad)',marcos:['GDPR','LGPD','CCPA'],prioridad:'alta',responsable:'DPO / Legal',plazo:'2026-09-30',dominio:'Privacidad',est:'pend'},
+  // MEDIA prioridad
+  {ctrl:'Evaluacion de impacto de privacidad (DPIA/RIPD)',marcos:['GDPR','LGPD','CCPA'],prioridad:'media',responsable:'DPO',plazo:'2026-10-31',dominio:'Privacidad',est:'pend'},
+  {ctrl:'Ciclo de vida de desarrollo seguro (SDLC)',marcos:['ISO 27001','SOC 2','NIS2'],prioridad:'media',responsable:'Desarrollo / TI',plazo:'2026-11-30',dominio:'Seguridad',est:'pend'},
+  {ctrl:'Plan de continuidad del negocio (BCP/DRP)',marcos:['ISO 27001','SOC 2','NIS2'],prioridad:'media',responsable:'TI / Operaciones',plazo:'2026-11-30',dominio:'Incidentes',est:'pend'},
+  {ctrl:'Cláusulas contractuales de compliance con proveedores',marcos:['NIS2','GDPR','LGPD','ISO 37001'],prioridad:'media',responsable:'Legal / Compras',plazo:'2026-10-31',dominio:'Terceros',est:'pend'},
+  {ctrl:'Politica de retencion y minimizacion de datos',marcos:['GDPR','LGPD','CCPA'],prioridad:'media',responsable:'DPO / TI',plazo:'2026-10-31',dominio:'Privacidad',est:'pend'},
+  {ctrl:'Segregacion de redes e infraestructura critica',marcos:['ISO 27001','SOC 2','NIS2'],prioridad:'media',responsable:'TI / CISO',plazo:'2026-12-31',dominio:'Seguridad',est:'pend'},
+  {ctrl:'Auditoria interna de compliance (todos los marcos)',marcos:['Ley 27.401','ISO 37001','ISO 27001','SOC 2'],prioridad:'media',responsable:'Auditoria Interna',plazo:'2026-12-31',dominio:'Gobernanza',est:'pend'},
+  {ctrl:'Revision del SGA por la direccion (ISO 14001)',marcos:['ISO 14001'],prioridad:'media',responsable:'Sustentabilidad / Operaciones',plazo:'2026-11-30',dominio:'Ambiental',est:'pend'},
+  // BAJA prioridad
+  {ctrl:'Prevencion de fuga de datos (DLP)',marcos:['ISO 27001','SOC 2'],prioridad:'baja',responsable:'TI / CISO',plazo:'2027-03-31',dominio:'Seguridad',est:'pend'},
+  {ctrl:'Programa de pruebas de resiliencia TIC (DORA)',marcos:['DORA'],prioridad:'baja',responsable:'TI / CISO',plazo:'2027-01-17',dominio:'Resiliencia',est:'pend'},
+  {ctrl:'Certificacion ISO 37001 — evaluacion de factibilidad',marcos:['ISO 37001'],prioridad:'baja',responsable:'Compliance',plazo:'2027-06-30',dominio:'Antisoborno',est:'pend'},
+  {ctrl:'Simulacros y pruebas de incidentes de ciberseguridad',marcos:['ISO 27001','SOC 2','NIS2'],prioridad:'baja',responsable:'TI / CISO',plazo:'2027-03-31',dominio:'Incidentes',est:'pend'},
+];
+
+function filtrarPlan(filtro){
+  window.__planFiltro=filtro;
+  ['todo','alta','media','baja'].forEach(f=>{
+    const btn=document.getElementById('plan-f-'+f);
+    if(btn)btn.style.opacity=filtro===f?'1':'.45';
+  });
+  renderPlanLista();
+}
+
+function renderPlanLista(){
+  const filtro=window.__planFiltro;
+  const items=filtro==='todo'?PLAN_ITEMS:PLAN_ITEMS.filter(i=>i.prioridad===filtro);
+  const priColor={alta:'#c62828',media:'#e65100',baja:'#2e7d32'};
+  const priIco={alta:'🔴',media:'🟡',baja:'🟢'};
+  const domColor={'Seguridad':'#1565c0','Privacidad':'#1a237e','Incidentes':'#e65100','IA':'#7b1fa2','Terceros':'#37474f','Gobernanza':'#0d47a1','Ambiental':'#1b5e20','Resiliencia':'#00838f','Antisoborno':'#bf360c'};
+
+  // Group by dominio
+  const byDom={};
+  items.forEach(it=>{if(!byDom[it.dominio])byDom[it.dominio]=[];byDom[it.dominio].push(it);});
+
+  let h='';
+  Object.entries(byDom).forEach(([dom,list])=>{
+    const dc=domColor[dom]||'#455a64';
+    h+=`<div class="card"><div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem"><div style="width:10px;height:10px;border-radius:50%;background:${dc}"></div><h3 style="margin:0;font-size:.95rem;color:${dc}">${dom}</h3><span style="font-size:.72rem;color:var(--muted)">(${list.length} controles)</span></div>`;
+    list.forEach((it,idx)=>{
+      const pc=priColor[it.prioridad]; const pi2=priIco[it.prioridad];
+      const diasHasta=Math.round((new Date(it.plazo)-new Date())/86400000);
+      const diasCls=diasHasta<60?'color:var(--rojo)':diasHasta<120?'color:var(--naranja)':'color:var(--muted)';
+      h+=`<div style="background:#f8fafc;border-radius:8px;padding:.7rem .9rem;margin-bottom:.5rem;border-left:3px solid ${pc}">
+        <div style="display:flex;align-items:flex-start;gap:.6rem;flex-wrap:wrap">
+          <span style="font-size:1rem">${pi2}</span>
+          <div style="flex:1;min-width:200px">
+            <div style="font-size:.85rem;font-weight:700;color:var(--pri);margin-bottom:.25rem">${it.ctrl}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:.2rem;margin-bottom:.3rem">${it.marcos.map(m=>`<span style="font-size:.64rem;font-weight:700;padding:.06rem .32rem;border-radius:3px;background:#e0e7ef;color:#1a3a5c">${m}</span>`).join('')}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;font-size:.78rem">
+            <div style="font-weight:700;color:${pc}">${it.prioridad.toUpperCase()}</div>
+            <div style="color:var(--muted)">👤 ${it.responsable}</div>
+            <div style="${diasCls}">📅 ${it.plazo} (${diasHasta}d)</div>
+          </div>
+        </div>
+      </div>`;
+    });
+    h+='</div>';
+  });
+
+  const el=document.getElementById('plan-accion-lista');if(el)el.innerHTML=h||'<div class="card" style="color:var(--muted);text-align:center;padding:2rem">Sin controles para el filtro seleccionado.</div>';
+
+  // Stats
+  document.getElementById('plan-total').textContent=PLAN_ITEMS.length;
+  ['alta','media','baja'].forEach(p=>{document.getElementById('plan-'+p+'-cnt').textContent=PLAN_ITEMS.filter(i=>i.prioridad===p).length;});
+}
+
+function exportarPlanCSV(){
+  const header='Control,Marcos,Prioridad,Responsable,Plazo,Dominio,Estado\n';
+  const rows=PLAN_ITEMS.map(it=>[`"${it.ctrl}"`,`"${it.marcos.join('; ')}"`,it.prioridad,`"${it.responsable}"`,it.plazo,it.dominio,it.est].join(',')).join('\n');
+  const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='plan_accion_compliance.csv';a.click();URL.revokeObjectURL(url);
+}
+
+function renderPlanAccion(){
+  filtrarPlan(window.__planFiltro||'todo');
+}
+
+
+function calcFrameworkScores(){
+  // Controles del cross-framework mapeados con estado fijo
+  // ok=1, prog=0.5, pend=0
+  const controles=[
+    // Seguridad
+    {marcos:['27001','SOC2','NIS2','GDPR','LGPD','CCPA'],est:'prog'},
+    {marcos:['27001','SOC2','NIS2'],est:'pend'},
+    {marcos:['27001','SOC2','NIS2','GDPR','LGPD','CCPA'],est:'prog'},
+    {marcos:['27001','SOC2','NIS2'],est:'pend'},
+    {marcos:['27001','SOC2','NIS2'],est:'ok'},
+    {marcos:['27001','SOC2','NIS2'],est:'prog'},
+    {marcos:['27001','SOC2','NIS2'],est:'pend'},
+    {marcos:['27001','SOC2','NIS2'],est:'pend'},
+    // Privacidad
+    {marcos:['GDPR','LGPD','CCPA'],est:'prog'},
+    {marcos:['GDPR','LGPD'],est:'prog'},
+    {marcos:['GDPR','LGPD','CCPA'],est:'prog'},
+    {marcos:['GDPR','LGPD','CCPA'],est:'pend'},
+    {marcos:['GDPR','LGPD','CCPA'],est:'pend'},
+    {marcos:['GDPR','LGPD','CCPA'],est:'pend'},
+    {marcos:['GDPR','LGPD','NIS2','27001','SOC2'],est:'pend'},
+    {marcos:['GDPR','LGPD','CCPA'],est:'prog'},
+    // Terceros
+    {marcos:['27001','SOC2','NIS2','37001','FCPA','27401'],est:'pend'},
+    {marcos:['27001','NIS2','GDPR','LGPD','37001','FCPA','27401'],est:'pend'},
+    {marcos:['27001','NIS2','SOC2'],est:'pend'},
+    {marcos:['27001','NIS2','SOC2','37001'],est:'pend'},
+    {marcos:['37001','FCPA','27401'],est:'pend'},
+    // Gobernanza
+    {marcos:['27401','37001','FCPA','GDPR','NIS2','27001'],est:'prog'},
+    {marcos:['27401','37001','FCPA','NIS2'],est:'ok'},
+    {marcos:['27401','37001','FCPA','NIS2','27001','SOC2'],est:'prog'},
+    {marcos:['27401','37001','FCPA','NIS2','27001','SOC2'],est:'prog'},
+    {marcos:['27401','37001','FCPA'],est:'ok'},
+    {marcos:['27401','37001','27001','SOC2','14001'],est:'pend'},
+    {marcos:['27001','37001','14001'],est:'pend'},
+    // Incidentes
+    {marcos:['27001','SOC2','NIS2','GDPR','LGPD'],est:'pend'},
+    {marcos:['27001','SOC2','NIS2'],est:'pend'},
+    {marcos:['27001','SOC2','NIS2'],est:'prog'},
+    {marcos:['NIS2','GDPR','LGPD','27001'],est:'pend'},
+    {marcos:['27001','SOC2','NIS2'],est:'pend'},
+    // IA
+    {marcos:['EUAIACT'],est:'pend'},
+    {marcos:['EUAIACT','27001'],est:'pend'},
+    {marcos:['EUAIACT','GDPR','LGPD'],est:'pend'},
+    {marcos:['EUAIACT','GDPR','LGPD'],est:'pend'},
+    {marcos:['EUAIACT','GDPR','LGPD','CCPA'],est:'pend'},
+    {marcos:['EUAIACT','27001','SOC2'],est:'pend'},
+  ];
+
+  const MARCOS_DEF=[
+    {id:'27401',label:'Ley 27.401',color:'#37474f',emoji:'⚖️'},
+    {id:'27001',label:'ISO 27001',color:'#1565c0',emoji:'🔐'},
+    {id:'SOC2',label:'SOC 2',color:'#3949ab',emoji:'☁️'},
+    {id:'NIS2',label:'NIS2',color:'#c62828',emoji:'🛡️'},
+    {id:'GDPR',label:'GDPR',color:'#1a237e',emoji:'🇪🇺'},
+    {id:'LGPD',label:'LGPD',color:'#2e7d32',emoji:'🇧🇷'},
+    {id:'37001',label:'ISO 37001',color:'#e65100',emoji:'🚫'},
+    {id:'14001',label:'ISO 14001',color:'#1b5e20',emoji:'🌿'},
+    {id:'CCPA',label:'CCPA',color:'#e65100',emoji:'🌴'},
+    {id:'FCPA',label:'FCPA',color:'#4a148c',emoji:'🇺🇸'},
+    {id:'EUAIACT',label:'EU AI Act',color:'#7b1fa2',emoji:'🤖'},
+  ];
+
+  const scores={};
+  MARCOS_DEF.forEach(m=>{
+    const relevant=controles.filter(c=>c.marcos.includes(m.id));
+    const total=relevant.length;
+    if(!total){scores[m.id]={...m,pct:0,total:0,ok:0,prog:0,pend:0};return;}
+    const ok=relevant.filter(c=>c.est==='ok').length;
+    const prog=relevant.filter(c=>c.est==='prog').length;
+    const pend=relevant.filter(c=>c.est==='pend').length;
+    const pct=Math.round((ok+prog*0.5)/total*100);
+    scores[m.id]={...m,pct,total,ok,prog,pend};
+  });
+
+  // Score global = promedio ponderado de todos los marcos
+  const vals=Object.values(scores).filter(s=>s.total>0);
+  const globalPct=vals.length?Math.round(vals.reduce((a,s)=>a+s.pct,0)/vals.length):0;
+  return{scores,global:globalPct,list:MARCOS_DEF};
+}
+
+function renderFrameworksDashboard(){
+  const {scores,global,list}=calcFrameworkScores();
+  const grid=document.getElementById('dash-frameworks-grid');
+  if(grid){
+    grid.innerHTML=list.map(m=>{
+      const s=scores[m.id];
+      if(!s||!s.total)return'';
+      const c=s.pct>=70?'#2e7d32':s.pct>=40?'#e65100':'#c62828';
+      return`<div style="background:#f8fafc;border-radius:10px;padding:.7rem .8rem;border-left:3px solid ${m.color}">
+        <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem">
+          <span style="font-size:.95rem">${m.emoji}</span>
+          <span style="font-size:.75rem;font-weight:700;color:var(--pri)">${m.label}</span>
+        </div>
+        <div style="font-size:1.4rem;font-weight:800;color:${c};line-height:1">${s.pct}%</div>
+        <div style="font-size:.68rem;color:var(--muted);margin-top:.15rem">${s.ok}✅ ${s.prog}⏳ ${s.pend}❌ de ${s.total}</div>
+        <div style="background:#e0e7ef;border-radius:3px;height:4px;margin-top:.35rem;overflow:hidden">
+          <div style="width:${s.pct}%;height:100%;background:${c};border-radius:3px"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  const pctEl=document.getElementById('dash-global-fw-pct');
+  const barEl=document.getElementById('dash-global-fw-bar');
+  if(pctEl)pctEl.textContent=global+'%';
+  if(barEl){
+    barEl.style.width=global+'%';
+    barEl.className='prog-fill '+(global>=70?'verde':global>=40?'naranja':'rojo');
+  }
+}
+
+function renderFrameworksBoard(){
+  const {scores,global,list}=calcFrameworkScores();
+  const el=document.getElementById('board-frameworks');
+  if(!el)return;
+  let h=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-bottom:.8rem">`;
+  list.forEach(m=>{
+    const s=scores[m.id];
+    if(!s||!s.total)return;
+    const c=s.pct>=70?'var(--verde)':s.pct>=40?'var(--naranja)':'var(--rojo)';
+    const ico=s.pct>=70?'🟢':s.pct>=40?'🟡':'🔴';
+    h+=`<div style="display:flex;align-items:center;gap:.5rem;background:#f8fafc;border-radius:8px;padding:.5rem .7rem;border-left:3px solid ${m.color}">
+      <span>${ico}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:.75rem;font-weight:700;color:var(--pri)">${m.emoji} ${m.label}</div>
+        <div style="font-size:.68rem;color:var(--muted)">${s.total} controles mapeados</div>
+      </div>
+      <span style="font-size:1rem;font-weight:800;color:${c}">${s.pct}%</span>
+    </div>`;
+  });
+  h+=`</div>`;
+  h+=`<div style="background:#e8f5e9;border-radius:8px;padding:.6rem 1rem;font-size:.83rem;display:flex;align-items:center;gap:.8rem">
+    <span style="font-size:1.4rem;font-weight:800;color:${global>=70?'var(--verde)':global>=40?'var(--naranja)':'var(--rojo)'}">${global}%</span>
+    <div><div style="font-weight:700">Score global multi-framework</div><div style="font-size:.76rem;color:var(--muted)">Promedio ponderado de ${list.filter(m=>scores[m.id]&&scores[m.id].total>0).length} marcos normativos</div></div>
+  </div>`;
+  el.innerHTML=h;
+}
+
+function renderFrameworksReporte(){
+  const {scores,global,list}=calcFrameworkScores();
+  const el=document.getElementById('rep-frameworks');
+  if(!el)return;
+  let h='<dl>';
+  list.forEach(m=>{
+    const s=scores[m.id];
+    if(!s||!s.total)return;
+    const nivel=s.pct>=70?'Avanzado':s.pct>=40?'En proceso':'Inicial';
+    h+=`<div class="rep-row"><dt>${m.emoji} ${m.label}</dt><dd><strong style="color:${s.pct>=70?'var(--verde)':s.pct>=40?'var(--naranja)':'var(--rojo)'}">${s.pct}%</strong> — ${nivel} · ${s.ok} OK, ${s.prog} en proceso, ${s.pend} pendientes de ${s.total} controles</dd></div>`;
+  });
+  h+=`<div class="rep-row" style="margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--borde)"><dt>📊 Score global multi-framework</dt><dd><strong style="color:${global>=70?'var(--verde)':global>=40?'var(--naranja)':'var(--rojo)'};font-size:1.05rem">${global}%</strong></dd></div>`;
+  h+='</dl>';
+  el.innerHTML=h;
+}
+
+// ════════════════════════════════════════
+// CROSS-FRAMEWORK MAPPING
+// ════════════════════════════════════════
+function renderCrossMap(){
+  const MARCOS=['27001','SOC2','NIS2','GDPR','LGPD','37001','14001','CCPA','FCPA','27401'];
+  const MARCO_COLOR={'27001':'#1565c0','SOC2':'#3949ab','NIS2':'#c62828','GDPR':'#1a237e','LGPD':'#2e7d32','37001':'#e65100','14001':'#1b5e20','CCPA':'#e65100','FCPA':'#4a148c','27401':'#37474f'};
+  const MARCO_LABEL={'27001':'ISO 27001','SOC2':'SOC 2','NIS2':'NIS2','GDPR':'GDPR','LGPD':'LGPD','37001':'ISO 37001','14001':'ISO 14001','CCPA':'CCPA','FCPA':'FCPA','27401':'Ley 27.401'};
+
+  // Control domain → [marcos que lo requieren] → est
+  const dominios = {
+    sec:[
+      {ctrl:'Control de acceso y gestión de identidades (IAM)',marcos:['27001','SOC2','NIS2','GDPR','LGPD','CCPA'],est:'prog',ref:'ISO A.5.15-18 · CC6.1-6.3 · NIS2 Art.21.2.i · GDPR Art.32 · LGPD Art.46'},
+      {ctrl:'Autenticación multifactor (MFA)',marcos:['27001','SOC2','NIS2'],est:'pend',ref:'ISO A.8.5 · CC6.1 · NIS2 Art.21.2.j'},
+      {ctrl:'Cifrado de datos en reposo y en tránsito',marcos:['27001','SOC2','NIS2','GDPR','LGPD','CCPA'],est:'prog',ref:'ISO A.8.24 · CC6.7 · NIS2 Art.21.2.h · GDPR Art.32 · LGPD Art.46'},
+      {ctrl:'Gestión de vulnerabilidades y parches',marcos:['27001','SOC2','NIS2'],est:'pend',ref:'ISO A.8.8 · CC7.1 · NIS2 Art.21.2.e'},
+      {ctrl:'Protección contra malware y amenazas',marcos:['27001','SOC2','NIS2'],est:'ok',ref:'ISO A.8.7 · CC6.8 · NIS2 Art.21.2.g'},
+      {ctrl:'Logging, monitoreo y SIEM',marcos:['27001','SOC2','NIS2'],est:'prog',ref:'ISO A.8.15/8.16 · CC7.2 · NIS2 Art.21.2.b'},
+      {ctrl:'Seguridad en desarrollo de software (SDLC)',marcos:['27001','SOC2','NIS2'],est:'pend',ref:'ISO A.8.25-8.29 · CC8.1 · NIS2 Art.21.2.e'},
+      {ctrl:'Gestión de configuración y hardening',marcos:['27001','SOC2','NIS2'],est:'pend',ref:'ISO A.8.9 · CC5.2 · NIS2 Art.21.2.e'},
+    ],
+    priv:[
+      {ctrl:'Registro de actividades de tratamiento de datos (RAT/RoPA)',marcos:['GDPR','LGPD','CCPA'],est:'prog',ref:'GDPR Art.30 · LGPD Art.37 · CCPA §1798.100'},
+      {ctrl:'Base legal documentada para cada tratamiento',marcos:['GDPR','LGPD'],est:'prog',ref:'GDPR Art.6 · LGPD Art.7'},
+      {ctrl:'Política de privacidad y aviso de recolección',marcos:['GDPR','LGPD','CCPA'],est:'prog',ref:'GDPR Art.13/14 · LGPD Art.8 · CCPA §1798.100'},
+      {ctrl:'Gestión de derechos de titulares (acceso, supresión, portabilidad)',marcos:['GDPR','LGPD','CCPA'],est:'pend',ref:'GDPR Arts.15-22 · LGPD Arts.17-22 · CCPA §1798.100-140'},
+      {ctrl:'Evaluación de impacto de privacidad (DPIA/RIPD)',marcos:['GDPR','LGPD','CCPA'],est:'pend',ref:'GDPR Art.35 · LGPD Art.38 · CCPA CPRA DPA'},
+      {ctrl:'Minimización y limitación de finalidad',marcos:['GDPR','LGPD','CCPA'],est:'pend',ref:'GDPR Art.5.1.b/c · LGPD Art.6 · CCPA CPRA §1798.100'},
+      {ctrl:'Protocolo de notificación de brechas de datos',marcos:['GDPR','LGPD','NIS2','27001','SOC2'],est:'pend',ref:'GDPR Art.33/34 · LGPD Art.48 · NIS2 Art.23 · ISO A.5.24-28 · CC7.4'},
+      {ctrl:'Contratos con encargados/procesadores de datos',marcos:['GDPR','LGPD','CCPA'],est:'prog',ref:'GDPR Art.28 · LGPD Art.39 · CCPA Service Provider Agreements'},
+    ],
+    supply:[
+      {ctrl:'Due diligence de terceros y proveedores',marcos:['27001','SOC2','NIS2','37001','FCPA','27401'],est:'pend',ref:'ISO A.5.19-5.22 · CC9.2 · NIS2 Art.21.2.d · ISO 37001 cl.7.3 · FCPA · Ley 27.401 Art.23'},
+      {ctrl:'Cláusulas contractuales de compliance con proveedores',marcos:['27001','NIS2','GDPR','LGPD','37001','FCPA','27401'],est:'pend',ref:'ISO A.5.20 · NIS2 Art.21.2.d · GDPR Art.28 · ISO 37001 cl.8.6'},
+      {ctrl:'Inventario y clasificación de proveedores críticos',marcos:['27001','NIS2','SOC2'],est:'pend',ref:'ISO A.5.21 · NIS2 Art.21.2.d · CC9.2'},
+      {ctrl:'Monitoreo continuo de proveedores',marcos:['27001','NIS2','SOC2','37001'],est:'pend',ref:'ISO A.5.22 · NIS2 Art.21.2.d · CC9.2 · ISO 37001 cl.9.1'},
+      {ctrl:'Declaraciones juradas / certificaciones antisoborno',marcos:['37001','FCPA','27401'],est:'pend',ref:'ISO 37001 cl.8.6 · FCPA due diligence · Ley 27.401 Art.23'},
+    ],
+    gov:[
+      {ctrl:'Política de compliance / código de conducta',marcos:['27401','37001','FCPA','GDPR','NIS2','27001'],est:'prog',ref:'Ley 27.401 Art.23 · ISO 37001 cl.5.1 · FCPA · NIS2 Art.20 · ISO A.5.1'},
+      {ctrl:'Canal de denuncias (whistleblowing)',marcos:['27401','37001','FCPA','NIS2'],est:'ok',ref:'Ley 27.401 Art.23.g · ISO 37001 cl.8.9 · FCPA · NIS2 Considerando 102'},
+      {ctrl:'Formación y capacitación en compliance',marcos:['27401','37001','FCPA','NIS2','27001','SOC2'],est:'prog',ref:'Ley 27.401 Art.23 · ISO 37001 cl.7.2 · NIS2 Art.20.2 · ISO A.6.3 · CC1.4'},
+      {ctrl:'Tone at the top — compromiso de Alta Dirección',marcos:['27401','37001','FCPA','NIS2','27001','SOC2'],est:'prog',ref:'Ley 27.401 · ISO 37001 cl.5.1 · NIS2 Art.20 · ISO A.5.4 · CC1.2'},
+      {ctrl:'Programa de conflicto de intereses',marcos:['27401','37001','FCPA'],est:'ok',ref:'Ley 27.401 Art.23 · ISO 37001 cl.8.7 · FCPA'},
+      {ctrl:'Auditoría interna de compliance',marcos:['27401','37001','27001','SOC2','14001'],est:'pend',ref:'Ley 27.401 · ISO 37001 cl.9.2 · ISO A.5.35 · CC4.1 · ISO 14001 cl.9.2'},
+      {ctrl:'Revisión por la dirección (Management Review)',marcos:['27001','37001','14001'],est:'pend',ref:'ISO A.9.3 · ISO 37001 cl.9.3 · ISO 14001 cl.9.3'},
+    ],
+    incident:[
+      {ctrl:'Plan de respuesta a incidentes (IRP)',marcos:['27001','SOC2','NIS2','GDPR','LGPD'],est:'pend',ref:'ISO A.5.24-5.28 · CC7.3-7.5 · NIS2 Art.21.2.b · GDPR Art.33 · LGPD Art.48'},
+      {ctrl:'Plan de continuidad del negocio (BCP/DRP)',marcos:['27001','SOC2','NIS2'],est:'pend',ref:'ISO A.5.29/5.30 · A1.2/1.3 · NIS2 Art.21.2.c'},
+      {ctrl:'Backup y recuperación probados periódicamente',marcos:['27001','SOC2','NIS2'],est:'prog',ref:'ISO A.8.13 · A1.3 · NIS2 Art.21.2.c'},
+      {ctrl:'Gestión de crisis y comunicación externa',marcos:['NIS2','GDPR','LGPD','27001'],est:'pend',ref:'NIS2 Art.23 · GDPR Art.33/34 · ISO A.5.26'},
+      {ctrl:'Simulacros y pruebas de incidentes',marcos:['27001','SOC2','NIS2'],est:'pend',ref:'ISO A.5.26 · CC7.4 · NIS2 Art.21.2.b'},
+    ],
+    ai:[
+      {ctrl:'Inventario de sistemas de IA por nivel de riesgo',marcos:['EUAIACT'],est:'pend',ref:'EU AI Act Art.6 + Anexo III — clasificación obligatoria'},
+      {ctrl:'Gestión de riesgos específica para IA',marcos:['EUAIACT','27001'],est:'pend',ref:'EU AI Act Art.9 · ISO A.5.7 threat intelligence'},
+      {ctrl:'Gobernanza de datos de entrenamiento de IA',marcos:['EUAIACT','GDPR','LGPD'],est:'pend',ref:'EU AI Act Art.10 · GDPR Art.5 · LGPD Art.6'},
+      {ctrl:'Supervisión humana de decisiones automatizadas',marcos:['EUAIACT','GDPR','LGPD'],est:'pend',ref:'EU AI Act Art.14 · GDPR Art.22 · LGPD Art.20'},
+      {ctrl:'Transparencia en uso de IA con usuarios',marcos:['EUAIACT','GDPR','LGPD','CCPA'],est:'pend',ref:'EU AI Act Art.50 · GDPR Art.13 · LGPD Art.9'},
+      {ctrl:'Logs y trazabilidad de sistemas de IA',marcos:['EUAIACT','27001','SOC2'],est:'pend',ref:'EU AI Act Art.12 · ISO A.8.15 · CC7.2'},
+    ]
+  };
+
+  // Active filter state
+  let activeFilter = null;
+
+  function countMarcos(ctrl){ return ctrl.marcos.length; }
+
+  function renderDominio(items, containerId){
+    const filtered = activeFilter ? items.filter(c => c.marcos.includes(activeFilter)) : items;
+    if(!filtered.length){
+      const el=document.getElementById(containerId); if(el)el.innerHTML='<div style="color:var(--muted);font-size:.83rem;padding:.5rem">Sin controles para el filtro seleccionado.</div>';
+      return;
+    }
+    let h='';
+    filtered.forEach(c=>{
+      const cover=c.marcos.length;
+      const stars='⭐'.repeat(Math.min(cover,5));
+      const badgeColor=cover>=7?'var(--verde)':cover>=4?'var(--naranja)':'var(--muted)';
+      const pillCls=c.est==='ok'?'pill-ok':c.est==='prog'?'pill-prog':'pill-pend';
+      const pillTxt=c.est==='ok'?'OK':c.est==='prog'?'Proceso':'Pendiente';
+      const marcoBadges=c.marcos.map(m=>`<span style="display:inline-block;font-size:.63rem;font-weight:700;padding:.08rem .35rem;border-radius:4px;margin:.1rem .12rem .1rem 0;background:${MARCO_COLOR[m]||'#555'};color:#fff">${MARCO_LABEL[m]}</span>`).join('');
+      h+=`<div class="check-item" style="flex-direction:column;align-items:flex-start;gap:.3rem">
+        <div style="display:flex;align-items:center;gap:.5rem;width:100%;flex-wrap:wrap">
+          <div style="font-size:.84rem;font-weight:600;flex:1">${c.ctrl}</div>
+          <span style="font-size:.72rem;font-weight:700;color:${badgeColor};white-space:nowrap">${cover} marcos ${stars}</span>
+          <span class="pill ${pillCls}">${pillTxt}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:.05rem">${marcoBadges}</div>
+        <div style="font-size:.72rem;color:var(--muted)">${c.ref}</div>
+      </div>`;
+    });
+    const el=document.getElementById(containerId); if(el)el.innerHTML=h;
+  }
+
+  function renderAll(){
+    renderDominio(dominios.sec,'crossmap-sec');
+    renderDominio(dominios.priv,'crossmap-priv');
+    renderDominio(dominios.supply,'crossmap-supply');
+    renderDominio(dominios.gov,'crossmap-gov');
+    renderDominio(dominios.incident,'crossmap-incident');
+    renderDominio(dominios.ai,'crossmap-ai');
+
+    // Stats
+    const allCtrls=[...dominios.sec,...dominios.priv,...dominios.supply,...dominios.gov,...dominios.incident,...dominios.ai];
+    const filtered=activeFilter?allCtrls.filter(c=>c.marcos.includes(activeFilter)):allCtrls;
+    const tot=filtered.length;
+    const avg=tot?Math.round(filtered.reduce((s,c)=>s+c.marcos.length,0)/tot*10)/10:0;
+    const mx=tot?Math.max(...filtered.map(c=>c.marcos.length)):0;
+    const tEl=document.getElementById('crossmap-total'); if(tEl)tEl.textContent=tot;
+    const aEl=document.getElementById('crossmap-avg'); if(aEl)aEl.textContent=avg;
+    const mEl=document.getElementById('crossmap-max'); if(mEl)mEl.textContent=mx;
+  }
+
+  // Filtro buttons
+  const fEl=document.getElementById('crossmap-filtros');
+  if(fEl){
+    const allCtrls=[...dominios.sec,...dominios.priv,...dominios.supply,...dominios.gov,...dominios.incident,...dominios.ai];
+    let fbHtml=`<button onclick="window.__cmFilter(null)" id="cmf-all" style="font-size:.73rem;font-weight:700;padding:.25rem .6rem;border-radius:5px;border:none;cursor:pointer;background:#1a3a5c;color:#fff">Todos</button>`;
+    MARCOS.forEach(m=>{
+      const cnt=allCtrls.filter(c=>c.marcos.includes(m)).length;
+      fbHtml+=`<button onclick="window.__cmFilter('${m}')" id="cmf-${m}" style="font-size:.73rem;font-weight:700;padding:.25rem .6rem;border-radius:5px;border:none;cursor:pointer;background:${MARCO_COLOR[m]};color:#fff">${MARCO_LABEL[m]} <span style="opacity:.75">(${cnt})</span></button>`;
+    });
+    fEl.innerHTML=fbHtml;
+  }
+
+  window.__cmFilter=function(marco){
+    activeFilter=marco;
+    // Update button styles
+    MARCOS.forEach(m=>{const b=document.getElementById('cmf-'+m);if(b)b.style.opacity=(!marco||marco===m)?'1':'.35';});
+    const bAll=document.getElementById('cmf-all');if(bAll)bAll.style.opacity=marco?'.35':'1';
+    renderAll();
+  };
+
+  // Matrix
+  const allCtrls=[...dominios.sec,...dominios.priv,...dominios.supply,...dominios.gov,...dominios.incident,...dominios.ai];
+  const matrixData=MARCOS.map(m=>{
+    const ctrls=allCtrls.filter(c=>c.marcos.includes(m));
+    const ok=ctrls.filter(c=>c.est==='ok').length;
+    const prog=ctrls.filter(c=>c.est==='prog').length;
+    const pend=ctrls.filter(c=>c.est==='pend').length;
+    const score=Math.round((ok+prog*0.5)/ctrls.length*100)||0;
+    return{m,label:MARCO_LABEL[m],color:MARCO_COLOR[m],total:ctrls.length,ok,prog,pend,score};
+  });
+
+  const mEl=document.getElementById('crossmap-matrix');
+  if(mEl){
+    let mh='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.82rem"><thead><tr style="background:#1a3a5c;color:#fff"><th style="padding:.5rem .7rem;text-align:left">Marco</th><th style="padding:.5rem .7rem;text-align:center">Controles mapeados</th><th style="padding:.5rem .7rem;text-align:center">✅ OK</th><th style="padding:.5rem .7rem;text-align:center">⏳ Proceso</th><th style="padding:.5rem .7rem;text-align:center">❌ Pendiente</th><th style="padding:.5rem .7rem;text-align:center">Score</th></tr></thead><tbody>';
+    matrixData.sort((a,b)=>b.total-a.total).forEach((r,i)=>{
+      const barW=r.score;
+      mh+=`<tr style="background:${i%2?'#f8fafc':'#fff'}">
+        <td style="padding:.45rem .7rem"><span style="display:inline-block;font-size:.7rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;background:${r.color};color:#fff;margin-right:.4rem">${r.label}</span></td>
+        <td style="padding:.45rem .7rem;text-align:center;font-weight:700">${r.total}</td>
+        <td style="padding:.45rem .7rem;text-align:center;color:var(--verde);font-weight:600">${r.ok}</td>
+        <td style="padding:.45rem .7rem;text-align:center;color:var(--naranja);font-weight:600">${r.prog}</td>
+        <td style="padding:.45rem .7rem;text-align:center;color:var(--rojo);font-weight:600">${r.pend}</td>
+        <td style="padding:.45rem .7rem;min-width:120px">
+          <div style="display:flex;align-items:center;gap:.4rem">
+            <div style="flex:1;background:#e0e7ef;border-radius:4px;height:7px;overflow:hidden"><div style="width:${barW}%;height:100%;background:${barW>=70?'var(--verde)':barW>=40?'var(--naranja)':'var(--rojo)'};border-radius:4px"></div></div>
+            <span style="font-size:.76rem;font-weight:700;min-width:30px">${barW}%</span>
+          </div>
+        </td>
+      </tr>`;
+    });
+    mh+='</tbody></table></div>';
+    mEl.innerHTML=mh;
+  }
+
+  renderAll();
+}
+
+
+
+function renderNIS2(){
+  const stMap={ok:{badge:'badge-ok',ico:'✅',pill:'pill-ok',txt:'OK'},prog:{badge:'badge-prog',ico:'⏳',pill:'pill-prog',txt:'Proceso'},pend:{badge:'badge-pend',ico:'❌',pill:'pill-pend',txt:'Pendiente'}};
+  function mkList(items,containerId){
+    let h='',s=0,m=0;
+    items.forEach(it=>{
+      const st=stMap[it.est]; m++;
+      if(it.est==='ok')s+=1; else if(it.est==='prog')s+=0.5;
+      h+=`<div class="check-item"><div class="check-badge ${st.badge}">${st.ico}</div><div style="flex:1"><div class="check-label" style="font-size:.83rem">${it.label}<span class="pill ${st.pill}">${st.txt}</span></div>${it.nota?`<div class="check-evidencia">${it.nota}</div>`:''}</div></div>`;
+    });
+    const el=document.getElementById(containerId); if(el)el.innerHTML=h;
+    return{s,m};
+  }
+
+  const art21=[
+    {label:'Políticas de seguridad de la información y sistemas de información',est:'prog',nota:'Art. 21.2.a'},
+    {label:'Gestión de incidentes — detección, análisis, contención y recuperación',est:'pend',nota:'Art. 21.2.b — notificación 24h/72h/1 mes'},
+    {label:'Continuidad del negocio — backups, recuperación ante desastres, gestión de crisis',est:'pend',nota:'Art. 21.2.c'},
+    {label:'Seguridad de la cadena de suministro — relaciones con proveedores y terceros',est:'pend',nota:'Art. 21.2.d'},
+    {label:'Seguridad en adquisición, desarrollo y mantenimiento de sistemas y redes',est:'pend',nota:'Art. 21.2.e'},
+    {label:'Políticas y procedimientos para evaluar eficacia de medidas de gestión de riesgos',est:'prog',nota:'Art. 21.2.f'},
+    {label:'Prácticas básicas de ciberhigiene y formación en ciberseguridad',est:'prog',nota:'Art. 21.2.g'},
+    {label:'Políticas y procedimientos de criptografía y cifrado',est:'prog',nota:'Art. 21.2.h'},
+    {label:'Seguridad de recursos humanos, políticas de control de acceso y gestión de activos',est:'prog',nota:'Art. 21.2.i'},
+    {label:'Uso de soluciones de autenticación multifactor (MFA) o autenticación continua',est:'pend',nota:'Art. 21.2.j — comunicaciones de voz, video y texto seguras'},
+  ];
+
+  const gov=[
+    {label:'Órgano de dirección aprueba medidas de gestión de riesgos de ciberseguridad',est:'pend',nota:'Art. 20.1 — responsabilidad no delegable'},
+    {label:'Miembros del órgano de dirección reciben formación en ciberseguridad',est:'pend',nota:'Art. 20.2 — formación obligatoria para directivos'},
+    {label:'Responsabilidad personal de directivos por incumplimientos graves',est:'pend',nota:'Art. 20 + Considerando 121 — inhabilitación posible'},
+    {label:'Designación de punto de contacto NIS2 ante autoridad competente',est:'pend',nota:'Según transposición nacional'},
+    {label:'Registro ante autoridad nacional competente (entidades importantes)',est:'pend',nota:'Art. 27 — plazo según transposición'},
+  ];
+
+  const supply=[
+    {label:'Inventario de proveedores críticos de TIC y servicios digitales',est:'pend',nota:'Art. 21.2.d'},
+    {label:'Evaluación de riesgos de ciberseguridad en la cadena de suministro',est:'pend',nota:'Directrices ENISA — cadena suministro'},
+    {label:'Cláusulas contractuales de seguridad con proveedores críticos',est:'pend',nota:'Requisitos mínimos de seguridad exigibles'},
+    {label:'Monitoreo continuo de proveedores — vulnerabilidades y parches',est:'pend',nota:'Especialmente software y hardware crítico'},
+    {label:'Plan de contingencia ante fallo o compromiso de proveedor crítico',est:'pend',nota:'Relacionado con Art. 21.2.c BCP'},
+  ];
+
+  mkList(art21,'nis2-art21-list');
+  mkList(gov,'nis2-gov-list');
+  mkList(supply,'nis2-supply-list');
+
+  const mapping=[
+    ['NIS2 Art. 21.2.a — Políticas SI','A.5.1 Políticas de SI','CC5.3 — Control Activities'],
+    ['NIS2 Art. 21.2.b — Gestión incidentes','A.5.24/25/26/27/28','CC7.3/7.4/7.5 — System Ops'],
+    ['NIS2 Art. 21.2.c — Continuidad negocio','A.5.29/5.30','A1.2/1.3 — Availability TSC'],
+    ['NIS2 Art. 21.2.d — Cadena suministro','A.5.19/5.20/5.21','CC9.2 — Risk Mitigation'],
+    ['NIS2 Art. 21.2.h — Criptografía','A.8.24','CC6.7 — Transmission'],
+    ['NIS2 Art. 21.2.i — Control de acceso','A.5.15/5.16/5.17/5.18','CC6.1/6.2/6.3'],
+    ['NIS2 Art. 21.2.j — MFA','A.8.5 Autenticación segura','CC6.1 Logical Access'],
+  ];
+  const tEl=document.getElementById('nis2-mapping-tabla');
+  if(tEl)tEl.innerHTML=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.8rem"><thead><tr style="background:#1a3a5c;color:#fff"><th style="padding:.45rem .6rem;text-align:left">Requisito NIS2</th><th style="padding:.45rem .6rem;text-align:center">ISO 27001</th><th style="padding:.45rem .6rem;text-align:center">SOC 2</th></tr></thead><tbody>${mapping.map((r,i)=>`<tr style="background:${i%2?'#f8fafc':'#fff'}"><td style="padding:.4rem .6rem;font-weight:600">${r[0]}</td><td style="padding:.4rem .6rem;text-align:center;font-size:.76rem">${r[1]}</td><td style="padding:.4rem .6rem;text-align:center;font-size:.76rem">${r[2]}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+// ════════════════════════════════════════
+// EU AI ACT
+// ════════════════════════════════════════
+function renderEUAIAct(){
+  const stMap={ok:{badge:'badge-ok',ico:'✅',pill:'pill-ok',txt:'OK'},prog:{badge:'badge-prog',ico:'⏳',pill:'pill-prog',txt:'Proceso'},pend:{badge:'badge-pend',ico:'❌',pill:'pill-pend',txt:'Pendiente'},na:{badge:'',ico:'➖',pill:'',txt:'No aplica'}};
+  function mkList(items,containerId){
+    let h='';
+    items.forEach(it=>{
+      const st=stMap[it.est]||stMap.pend;
+      h+=`<div class="check-item"><div class="check-badge ${st.badge}" style="${it.est==='na'?'background:#f0f4f8;color:var(--muted)':''}">${st.ico}</div><div style="flex:1"><div class="check-label" style="font-size:.83rem">${it.label}${st.pill?`<span class="pill ${st.pill}">${st.txt}</span>`:''}</div>${it.nota?`<div class="check-evidencia">${it.nota}</div>`:''}</div></div>`;
+    });
+    const el=document.getElementById(containerId); if(el)el.innerHTML=h;
+  }
+
+  mkList([
+    {label:'Sistemas de puntuación social por autoridades públicas — prohibido',est:'na',nota:'Art. 5.1.c — No aplica a empresas privadas'},
+    {label:'Manipulación subliminal o técnicas subliminales para distorsionar conducta',est:'na',nota:'Art. 5.1.a — Prohibido para cualquier actor'},
+    {label:'Explotación de vulnerabilidades (edad, discapacidad) para distorsionar conducta',est:'na',nota:'Art. 5.1.b'},
+    {label:'Identificación biométrica remota en tiempo real en espacios públicos',est:'na',nota:'Art. 5.1.d — excepciones muy limitadas para FFSS'},
+    {label:'Inferencia de emociones en lugar de trabajo y centros educativos',est:'na',nota:'Art. 5.1.f — Prohibido desde feb 2025'},
+    {label:'Categorización biométrica por datos sensibles (raza, política, religión)',est:'na',nota:'Art. 5.1.g'},
+  ],'aiact-prohibidas-list');
+
+  mkList([
+    {label:'IA en infraestructuras críticas (agua, energía, transporte)',est:'pend',nota:'Anexo III.2 — evaluar si aplica'},
+    {label:'IA para educación — admisión, evaluación, detección de trampas',est:'pend',nota:'Anexo III.3'},
+    {label:'IA en empleo — selección, evaluación, ascenso, terminación',est:'pend',nota:'Anexo III.4 — MUY RELEVANTE para RRHH'},
+    {label:'IA en acceso a servicios esenciales (crédito, seguros, scoring)',est:'pend',nota:'Anexo III.5 — aplica a fintech y banca'},
+    {label:'IA en aplicación de la ley — evaluación de riesgo criminal',est:'na',nota:'Anexo III.6 — solo autoridades públicas'},
+    {label:'IA en migración y control de fronteras',est:'na',nota:'Anexo III.7 — solo autoridades públicas'},
+    {label:'IA en administración de justicia',est:'na',nota:'Anexo III.8 — solo poderes judiciales'},
+    {label:'Identificar si algún sistema de IA propio cae en Anexo III',est:'pend',nota:'Paso 1 — inventario de sistemas IA por caso de uso'},
+  ],'aiact-altoriesgo-list');
+
+  mkList([
+    {label:'Sistema de gestión de riesgos de IA (documentado y continuo)',est:'pend',nota:'Art. 9 — ciclo de vida completo'},
+    {label:'Gobernanza de datos de entrenamiento — calidad, sesgos, representatividad',est:'pend',nota:'Art. 10 — datos de entrenamiento, validación y prueba'},
+    {label:'Documentación técnica completa del sistema antes de lanzamiento',est:'pend',nota:'Art. 11 + Anexo IV'},
+    {label:'Registro de logs automático — trazabilidad de operación',est:'pend',nota:'Art. 12 — conservación de registros'},
+    {label:'Transparencia e información al usuario/operador',est:'pend',nota:'Art. 13 — instrucciones de uso claras'},
+    {label:'Supervisión humana — medidas que permitan detectar y corregir riesgos',est:'pend',nota:'Art. 14 — human oversight obligatorio'},
+    {label:'Precisión, robustez y ciberseguridad del sistema de IA',est:'pend',nota:'Art. 15 — métricas de desempeño documentadas'},
+    {label:'Registro en base de datos EU de sistemas de alto riesgo',est:'pend',nota:'Art. 49 + Base de datos EU AI — antes del lanzamiento'},
+    {label:'Declaración de conformidad UE firmada',est:'pend',nota:'Art. 47 — responsabilidad del proveedor'},
+    {label:'Marcado CE si aplica',est:'pend',nota:'Art. 48 — para sistemas alto riesgo'},
+  ],'aiact-obligaciones-list');
+
+  mkList([
+    {label:'Sistemas de IA que interactúan con humanos — informar que es IA',est:'prog',nota:'Art. 50.1 — chatbots, asistentes'},
+    {label:'Deepfakes — etiquetar contenido generado por IA',est:'pend',nota:'Art. 50.4 — imágenes, audio, video sintéticos'},
+    {label:'Sistemas de reconocimiento de emociones — informar al usuario',est:'pend',nota:'Art. 50.3'},
+    {label:'Contenido manipulado biométricamente — transparencia',est:'pend',nota:'Art. 50.2'},
+  ],'aiact-transparencia-list');
+
+  const timeline=[
+    {fecha:'Feb 2025',hito:'Prácticas prohibidas (Art. 5) vigentes',est:'ok',color:'#c62828'},
+    {fecha:'Ago 2025',hito:'Obligaciones de transparencia (Art. 50) vigentes',est:'prog',color:'#e65100'},
+    {fecha:'Ago 2026',hito:'Sistemas de alto riesgo (Anexo III) — plena conformidad',est:'pend',color:'#e65100'},
+    {fecha:'Ago 2026',hito:'Código de conducta para IA de propósito general',est:'pend',color:'#3949ab'},
+    {fecha:'Ago 2027',hito:'Sistemas de alto riesgo (Anexo I — sectores regulados)',est:'pend',color:'#7b1fa2'},
+  ];
+  const tlEl=document.getElementById('aiact-timeline');
+  if(tlEl)tlEl.innerHTML=timeline.map(t=>`<div style="display:flex;align-items:flex-start;gap:.8rem;padding:.6rem;border-radius:8px;margin-bottom:.4rem;background:#f8fafc"><div style="min-width:80px;font-weight:700;font-size:.78rem;color:${t.color};padding-top:.05rem">${t.fecha}</div><div style="width:10px;height:10px;border-radius:50%;background:${t.color};flex-shrink:0;margin-top:.25rem"></div><div style="flex:1;font-size:.83rem">${t.hito}<span class="pill ${t.est==='ok'?'pill-ok':t.est==='prog'?'pill-prog':'pill-pend'}" style="margin-left:.4rem">${t.est==='ok'?'Vigente':t.est==='prog'?'Próximo':'Pendiente'}</span></div></div>`).join('');
+}
+
+
+// ════════════════════════════════════════
+// PDF EXPORT
+// ════════════════════════════════════════
+function _buildPDFWindow(title, bodyHTML){
+  const w = window.open('', '_blank', 'width=900,height=700');
+  if(!w){ alert('Habilite las ventanas emergentes para exportar el PDF.'); return null; }
+  w.document.write(`<!DOCTYPE html><html lang="es"><head>
+  <meta charset="UTF-8">
+  <title>${title}</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{font-family:system-ui,sans-serif;font-size:10pt;color:#1a1a2e;background:#fff;padding:1.5cm 1.8cm}
+    h1{font-size:16pt;color:#1a3a5c;margin-bottom:4pt}
+    h2{font-size:12pt;color:#1a3a5c;margin:12pt 0 5pt;border-bottom:1.5px solid #dde3ea;padding-bottom:3pt}
+    h3{font-size:10.5pt;color:#1a3a5c;margin:8pt 0 4pt}
+    .card{border:1px solid #dde3ea;border-radius:6pt;padding:10pt 12pt;margin-bottom:8pt;page-break-inside:avoid;border-top:3pt solid #1a3a5c}
+    .cover{text-align:center;padding:40pt 20pt;border:2pt solid #1a3a5c;border-radius:8pt;margin-bottom:16pt}
+    .cover-logo{font-size:28pt;margin-bottom:6pt}
+    .cover-title{font-size:18pt;font-weight:900;color:#1a3a5c;margin-bottom:4pt}
+    .cover-sub{font-size:9pt;color:#6b7280;margin-bottom:12pt}
+    .cover-empresa{font-size:13pt;font-weight:700;color:#1a3a5c;margin-bottom:3pt}
+    .cover-fecha{font-size:9pt;color:#6b7280}
+    .cover-badge{display:inline-block;background:#e3f2fd;color:#1565c0;font-size:9pt;font-weight:700;padding:4pt 10pt;border-radius:4pt;margin-top:8pt}
+    dl{display:grid;grid-template-columns:180pt 1fr;gap:3pt 8pt;font-size:9pt}
+    dt{font-weight:700;color:#1a3a5c}
+    dd{color:#444}
+    .alerta{display:flex;gap:6pt;padding:5pt 8pt;border-radius:4pt;margin-bottom:4pt;font-size:9pt}
+    .alerta.roja{background:#fdecea;border-left:3pt solid #c62828;color:#7f1d1d}
+    .alerta.naranja{background:#fff3e0;border-left:3pt solid #e65100;color:#7c3a00}
+    .alerta.verde{background:#e8f5e9;border-left:3pt solid #2e7d32;color:#1b5e20}
+    .prog-wrap{margin:3pt 0 6pt}
+    .prog-row{display:flex;justify-content:space-between;font-size:8.5pt;margin-bottom:2pt}
+    .prog-track{background:#e0e7ef;border-radius:3pt;height:6pt;overflow:hidden;margin-bottom:5pt}
+    .prog-fill{height:100%;border-radius:3pt}
+    table{width:100%;border-collapse:collapse;font-size:8.5pt;margin-top:4pt}
+    th{background:#1a3a5c;color:#fff;padding:4pt 6pt;text-align:left;font-size:8pt}
+    td{padding:3.5pt 6pt;border-bottom:1px solid #e0e7ef}
+    tr:nth-child(even) td{background:#f8fafc}
+    .fw-badge{display:inline-block;font-size:7.5pt;font-weight:700;padding:1.5pt 4pt;border-radius:3pt;color:#fff;margin-right:2pt}
+    .score-hero{text-align:center;padding:10pt;background:#f0f4f8;border-radius:6pt;margin-bottom:8pt}
+    .score-big{font-size:36pt;font-weight:900;line-height:1}
+    .disclaimer{font-size:7.5pt;color:#9ca3af;margin-top:12pt;text-align:center;border-top:1px solid #e0e7ef;padding-top:6pt}
+    @media print{body{padding:1cm 1.2cm} .no-print{display:none}}
+    .print-btn{position:fixed;bottom:16pt;right:16pt;background:#2196f3;color:#fff;border:none;border-radius:6pt;padding:8pt 16pt;font-size:10pt;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+  </style>
+  </head><body>
+  <button class="print-btn no-print" onclick="window.print()">🖨️ Guardar PDF</button>
+  ${bodyHTML}
+  </body></html>`);
+  w.document.close();
+  return w;
+}
+
+function exportarPDF(){
+  // Ensure reporte is rendered
+  renderReporte();
+
+  const sc = calcScore();
+  const e  = CONFIG.empresa;
+  const pi = CONFIG.programa_integridad;
+  const fecha = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+  const {scores, global, list} = calcFrameworkScores();
+
+  const scColor = sc.total>=75?'#2e7d32':sc.total>=45?'#e65100':'#c62828';
+
+  // Build frameworks table
+  const fwRows = list.map(m=>{
+    const s=scores[m.id]; if(!s||!s.total)return'';
+    const c=s.pct>=70?'#2e7d32':s.pct>=40?'#e65100':'#c62828';
+    const nivel=s.pct>=70?'Avanzado':s.pct>=40?'En proceso':'Inicial';
+    return`<tr><td><span class="fw-badge" style="background:${m.color}">${m.emoji} ${m.label}</span></td>
+    <td style="text-align:center;font-weight:700;color:${c}">${s.pct}%</td>
+    <td>${nivel}</td>
+    <td style="text-align:center">${s.ok}</td>
+    <td style="text-align:center">${s.prog}</td>
+    <td style="text-align:center">${s.pend}</td>
+    <td style="text-align:center">${s.total}</td></tr>`;
+  }).join('');
+
+  // Plan de acción alta prioridad
+  const planRows = PLAN_ITEMS.filter(i=>i.prioridad==='alta').map((it,i)=>
+    `<tr><td>${it.ctrl}</td><td style="font-size:7.5pt">${it.marcos.join(' · ')}</td><td>${it.responsable}</td><td style="text-align:center">${it.plazo}</td></tr>`
+  ).join('');
+
+  const ejes=[
+    {l:'Programa de Integridad',v:sc.programa,max:40},
+    {l:'Capacitación',v:sc.capacitacion,max:25},
+    {l:'Due Diligence',v:sc.due_diligence,max:20},
+    {l:'Mapa de Riesgos',v:sc.riesgo,max:15},
+  ];
+  const ejesHTML=ejes.map(ej=>{
+    const pct=Math.round(ej.v/ej.max*100);
+    const c=pct>=75?'#2e7d32':pct>=45?'#e65100':'#c62828';
+    return`<div class="prog-wrap"><div class="prog-row"><span>${ej.l}</span><span style="font-weight:700;color:${c}">${ej.v}/${ej.max} (${pct}%)</span></div><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${c}"></div></div></div>`;
+  }).join('');
+
+  const pend=[...pi.elementos_obligatorios,...pi.elementos_opcionales].filter(el=>el.estado!=='completo');
+  const pendHTML=pend.length?pend.map(el=>`<div class="alerta ${el.estado==='en_progreso'?'naranja':'roja'}"><span>${el.estado==='en_progreso'?'⚙️':'❌'}</span><span>${tx(el.label)}</span></div>`).join(''):`<div class="alerta verde"><span>✅</span><span>Todos los elementos completados</span></div>`;
+
+  const body = `
+  <div class="cover">
+    <div class="cover-logo">⚖️</div>
+    <div class="cover-title">Reporte Ejecutivo de Compliance</div>
+    <div class="cover-sub">Programa de Integridad · Ley 27.401 · Estándares Internacionales</div>
+    <div class="cover-empresa">${e.nombre||'—'}</div>
+    <div class="cover-fecha">${fecha}</div>
+    <div class="cover-badge">Responsable: ${e.responsable_compliance||'—'}</div>
+  </div>
+
+  <div class="score-hero">
+    <div class="score-big" style="color:${scColor}">${sc.total}</div>
+    <div style="font-size:9pt;color:#6b7280;margin-top:2pt">Score global / 100 — Ley 27.401</div>
+    <div style="margin-top:8pt">${ejesHTML}</div>
+  </div>
+
+  <div class="card">
+    <h2>1. Datos de la organización</h2>
+    <dl>
+      <dt>Razón social</dt><dd>${e.nombre}</dd>
+      <dt>CUIT</dt><dd>${e.cuit}</dd>
+      <dt>Sector</dt><dd>${tx(e.sector)}</dd>
+      <dt>Responsable Compliance</dt><dd>${e.responsable_compliance}</dd>
+      <dt>Contacto</dt><dd>${e.contacto}</dd>
+      <dt>Fecha del reporte</dt><dd>${fecha}</dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h2>2. Estado del Programa de Integridad</h2>
+    <dl>
+      <dt>Nivel de madurez</dt><dd><strong>${t(pi.nivel_madurez)}</strong></dd>
+      <dt>Inicio del programa</dt><dd>${pi.fecha_inicio}</dd>
+      <dt>Última revisión</dt><dd>${pi.ultima_revision}</dd>
+      <dt>Registrado en RITE</dt><dd>${pi.registrado_rite?'Sí':'No'}</dd>
+      <dt>Obligatorios completos</dt><dd>${pi.elementos_obligatorios.filter(e=>e.estado==='completo').length} / ${pi.elementos_obligatorios.length}</dd>
+      <dt>Opcionales completos</dt><dd>${pi.elementos_opcionales.filter(e=>e.estado==='completo').length} / ${pi.elementos_opcionales.length}</dd>
+    </dl>
+    <h3 style="margin-top:8pt">Elementos pendientes</h3>
+    ${pendHTML}
+  </div>
+
+  <div class="card">
+    <h2>3. Cobertura por Framework Internacional</h2>
+    <div style="background:#f0f4f8;border-radius:4pt;padding:6pt 10pt;margin-bottom:8pt;font-size:9pt">
+      Score global multi-framework: <strong style="font-size:12pt;color:${global>=70?'#2e7d32':global>=40?'#e65100':'#c62828'}">${global}%</strong>
+    </div>
+    <table>
+      <thead><tr><th>Framework</th><th>Score</th><th>Nivel</th><th>OK</th><th>Proceso</th><th>Pendiente</th><th>Total</th></tr></thead>
+      <tbody>${fwRows}</tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>4. Plan de Acción — Controles de Alta Prioridad</h2>
+    <table>
+      <thead><tr><th>Control</th><th>Marcos</th><th>Responsable</th><th>Plazo</th></tr></thead>
+      <tbody>${planRows}</tbody>
+    </table>
+    <div class="alerta naranja" style="margin-top:6pt"><span>⚠️</span><span>Listado parcial (alta prioridad). Ver informe completo en el sistema para todos los controles.</span></div>
+  </div>
+
+  <div class="disclaimer">
+    Reporte generado por el Monitor de Compliance Empresarial · Ph.D. Vicente H. Monteverde · Ecosistema Transparencia<br>
+    No reemplaza la evaluación profesional de un abogado o compliance officer. ${fecha}
+  </div>`;
+
+  _buildPDFWindow('Reporte Compliance — '+e.nombre, body);
+}
+
+function exportarPDFFrameworks(){
+  renderReporte();
+  const {scores, global, list} = calcFrameworkScores();
+  const e = CONFIG.empresa;
+  const fecha = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
+
+  const sections = list.map(m=>{
+    const s=scores[m.id]; if(!s||!s.total)return'';
+    const c=s.pct>=70?'#2e7d32':s.pct>=40?'#e65100':'#c62828';
+    const nivel=s.pct>=70?'Avanzado':s.pct>=40?'En proceso':'Inicial';
+    return`<div class="card" style="border-top-color:${m.color}">
+      <h2>${m.emoji} ${m.label} — <span style="color:${c}">${s.pct}% (${nivel})</span></h2>
+      <div style="font-size:9pt;color:#6b7280;margin-bottom:6pt">${s.ok} implementados · ${s.prog} en proceso · ${s.pend} pendientes · ${s.total} total</div>
+      <div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${s.pct}%;background:${c}"></div></div></div>
+    </div>`;
+  }).join('');
+
+  const body=`
+  <div class="cover">
+    <div class="cover-logo">🌐</div>
+    <div class="cover-title">Cobertura Multi-Framework</div>
+    <div class="cover-sub">Estado de implementación por marco normativo</div>
+    <div class="cover-empresa">${e.nombre||'—'}</div>
+    <div class="cover-fecha">${fecha}</div>
+    <div class="cover-badge">Score global: ${global}%</div>
+  </div>
+  ${sections}
+  <div class="disclaimer">Monitor de Compliance Empresarial · ${fecha}</div>`;
+
+  _buildPDFWindow('Frameworks — '+e.nombre, body);
+}
+
+
+const SE = (function(){
+  const LS_KEY = 'compliance_states_v1';
+  const CYCLE = ['pend','prog','ok'];
+  const LABELS = {ok:'Implementado', prog:'En proceso', pend:'Pendiente'};
+  const ICONS  = {ok:'✅', prog:'⏳', pend:'❌'};
+  const BADGE  = {ok:'badge-ok', prog:'badge-prog', pend:'badge-pend'};
+  const PILL   = {ok:'pill-ok',  prog:'pill-prog',  pend:'pill-pend'};
+
+  // Load/save
+  function load(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'{}'); }catch(e){return {};} }
+  function save(data){ try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); }catch(e){} }
+
+  // Get effective state for a control
+  function get(ns, id, defaultEst){
+    const data = load();
+    return (data[ns] && data[ns][id] !== undefined) ? data[ns][id] : defaultEst;
+  }
+
+  // Set state for a control and trigger re-render of parent panel
+  function set(ns, id, est){
+    const data = load();
+    if(!data[ns]) data[ns] = {};
+    data[ns][id] = est;
+    save(data);
+  }
+
+  // Cycle to next state
+  function cycle(ns, id, currentEst){
+    const idx = CYCLE.indexOf(currentEst);
+    return CYCLE[(idx+1) % CYCLE.length];
+  }
+
+  // Reset a namespace
+  function resetNS(ns){
+    const data = load();
+    delete data[ns];
+    save(data);
+  }
+
+  // Reset all
+  function resetAll(){
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  }
+
+  // Build an editable check-item HTML string
+  // ns = namespace (e.g. 'iso27001'), id = control id, label, defaultEst, nota
+  function item(ns, ctrlId, label, defaultEst, nota=''){
+    const est = get(ns, ctrlId, defaultEst);
+    return `<div class="check-item se-item" data-ns="${ns}" data-id="${ctrlId}" data-est="${est}" style="cursor:pointer;user-select:none" onclick="SE.toggle('${ns}','${ctrlId}',this)" title="Clic para cambiar estado">
+      <div class="check-badge ${BADGE[est]} se-badge" style="transition:background .15s">${ICONS[est]}</div>
+      <div style="flex:1">
+        <div class="check-label" style="font-size:.83rem">${label}<span class="pill ${PILL[est]} se-pill" style="transition:all .15s">${LABELS[est]}</span></div>
+        ${nota ? `<div class="check-evidencia">${nota}</div>` : ''}
+      </div>
+      <div style="font-size:.65rem;color:var(--muted);flex-shrink:0;margin-left:.3rem" title="Clic para cambiar">↻</div>
+    </div>`;
+  }
+
+  // Toggle state on click
+  function toggle(ns, ctrlId, el){
+    const current = el.dataset.est;
+    const next = cycle(ns, ctrlId, current);
+    set(ns, ctrlId, next);
+    el.dataset.est = next;
+    // Update badge
+    const badge = el.querySelector('.se-badge');
+    if(badge){ badge.className = `check-badge ${BADGE[next]} se-badge`; badge.textContent = ICONS[next]; }
+    // Update pill
+    const pill = el.querySelector('.se-pill');
+    if(pill){ pill.className = `pill ${PILL[next]} se-pill`; pill.textContent = LABELS[next]; }
+    // Fire custom event so scores can refresh
+    document.dispatchEvent(new CustomEvent('se:changed', {detail:{ns, ctrlId, est:next}}));
+  }
+
+  // Score calculator from DOM (for a container element)
+  function scoreFromContainer(containerId){
+    const el = document.getElementById(containerId);
+    if(!el) return {pct:0, ok:0, prog:0, pend:0, total:0};
+    const items = el.querySelectorAll('.se-item');
+    let ok=0, prog=0, pend=0;
+    items.forEach(it=>{
+      const e = it.dataset.est;
+      if(e==='ok') ok++; else if(e==='prog') prog++; else pend++;
+    });
+    const total = ok+prog+pend;
+    const pct = total ? Math.round((ok + prog*0.5)/total*100) : 0;
+    return {pct, ok, prog, pend, total};
+  }
+
+  return {get, set, cycle, toggle, resetNS, resetAll, item, scoreFromContainer, LABELS, ICONS, BADGE, PILL};
+})();
+
+// ── Patch render functions to use SE ─────────────────────────────────────────
+
+// Helper: rewrite a render function to use SE.item() instead of hardcoded est
+// Called once per framework after DOM is populated — adds click interactivity
+// by replacing every .check-item that was built with hardcoded est
+
+// Score refresh on state change
+document.addEventListener('se:changed', function(e){
+  const ns = e.detail.ns;
+  // Refresh KPIs for ISO 27001 domains
+  if(ns === 'iso27001'){
+    ['org','per','fis','tec'].forEach(key=>{
+      const containerId = 'iso27001-'+key+'-list';
+      const kpiId = 'iso27001-'+key;
+      const sc = SE.scoreFromContainer(containerId);
+      const kEl = document.getElementById(kpiId);
+      if(kEl){
+        kEl.textContent = sc.pct+'%';
+        const par = kEl.closest('.eje');
+        if(par) par.className = 'eje '+(sc.pct>=70?'verde':sc.pct>=40?'naranja':'rojo');
+      }
+    });
+    // global counts
+    ['iso27001-ok-count','iso27001-prog-count','iso27001-pend-count'].forEach((id,i)=>{
+      const all=['org','per','fis','tec'].reduce((a,k)=>{
+        const s=SE.scoreFromContainer('iso27001-'+k+'-list'); return a+(i===0?s.ok:i===1?s.prog:s.pend);
+      },0);
+      const el=document.getElementById(id); if(el)el.textContent=all;
+    });
+    const totals=['org','per','fis','tec'].map(k=>SE.scoreFromContainer('iso27001-'+k+'-list'));
+    const globalPct=Math.round(totals.reduce((a,s)=>a+s.ok+s.prog*0.5,0)/totals.reduce((a,s)=>a+s.total,0)*100)||0;
+    const sTxt=document.getElementById('iso27001-score-txt');if(sTxt)sTxt.textContent=globalPct+'%';
+  }
+  // Refresh SOC2 score
+  if(ns==='soc2'){
+    const s=SE.scoreFromContainer('soc2-cc-list');
+    const el=document.getElementById('soc2-score');
+    if(el){el.textContent=s.pct+'%';el.style.color=s.pct>=70?'var(--verde)':s.pct>=40?'var(--naranja)':'var(--rojo)';}
+  }
+  // Refresh simple single-score panels
+  const singleMap={
+    gdpr:'gdpr-score', lgpd:'lgpd-ring', iso37001:'iso37001-score',
+    ccpa:'ccpa-score', dora:'dora-score-txt'
+  };
+  if(singleMap[ns]){
+    // Find all se-items in the panel
+    const panel=document.getElementById('panel-'+ns);
+    if(panel){
+      const items=panel.querySelectorAll('.se-item');
+      let ok=0,prog=0,total=0;
+      items.forEach(it=>{const est=it.dataset.est;total++;if(est==='ok')ok++;else if(est==='prog')prog++;});
+      const pct=total?Math.round((ok+prog*0.5)/total*100):0;
+      const el=document.getElementById(singleMap[ns]);
+      if(el){el.textContent=pct+'%';if(el.style!==undefined)el.style.color=pct>=70?'var(--verde)':pct>=40?'var(--naranja)':'var(--rojo)';}
+    }
+  }
+  // Refresh NIS2/EUAIACT/ISO14001 dora counts
+  if(['nis2','euaiact','iso14001','dora'].includes(ns)){
+    const panel=document.getElementById('panel-'+ns);
+    if(panel){
+      const items=panel.querySelectorAll('.se-item');
+      let ok=0,prog=0,pend=0;
+      items.forEach(it=>{const est=it.dataset.est;if(est==='ok')ok++;else if(est==='prog')prog++;else pend++;});
+      const total=ok+prog+pend;
+      const pct=total?Math.round((ok+prog*0.5)/total*100):0;
+      ['ok','prog','pend'].forEach(k=>{
+        const el=document.getElementById(ns+'-'+k); if(el)el.textContent={ok,prog,pend}[k];
+      });
+      const sc=document.getElementById(ns+'-score-txt');if(sc){sc.textContent=pct+'%';sc.style.color=pct>=70?'var(--verde)':pct>=40?'var(--naranja)':'var(--rojo)';}
+    }
+  }
+  // Always refresh dashboard framework grid if visible
+  if(document.getElementById('dash-frameworks-grid')) renderFrameworksDashboard();
+});
+
+// ── Patch mkList helpers in all frameworks to use SE ─────────────────────────
+// We wrap the existing render functions so items use SE.item() for persistence
+
+// Monkey-patch: after any panel renders, replace check-items with SE-aware versions
+// by re-reading data-ns/data-id from the generated HTML
+function _patchPanelForSE(panelId, ns){
+  const panel = document.getElementById(panelId);
+  if(!panel) return;
+  panel.querySelectorAll('.check-item:not(.se-item)').forEach(el=>{
+    // Can't retroactively add click without re-rendering; instead we add a
+    // wrapper click on the container and delegate
+  });
+}
+
+// Better approach: override the stMap item generation in each framework
+// by patching the shared helper used by NIS2, EUAIACT, DORA, CrossMap etc.
+
+// Global SE-aware check-item builder (replaces inline HTML strings in render fns)
+window.seItem = function(ns, id, label, defaultEst, nota='', extraClass=''){
+  return SE.item(ns, id, label, defaultEst, nota);
+};
+
+// ── Patch existing render functions to use SE ─────────────────────────────────
+// Re-render ISO 27001 with SE
+const _origRenderISO27001 = renderISO27001;
+renderISO27001 = function(){
+  _origRenderISO27001();
+  // After render, convert all check-items to SE-aware
+  const ns = 'iso27001';
+  document.querySelectorAll('#panel-iso27001 .check-item').forEach(el=>{
+    if(el.classList.contains('se-item')) return;
+    const labelEl = el.querySelector('.check-label');
+    if(!labelEl) return;
+    const pillEl = el.querySelector('.pill');
+    const badgeEl = el.querySelector('.check-badge');
+    const refEl = el.querySelector('.check-evidencia');
+    // Get control id from label text (first word before —)
+    const fullText = labelEl.childNodes[0]?.textContent?.trim() || '';
+    const match = fullText.match(/^(A\.\d+(?:\.\d+)?)/);
+    if(!match) return;
+    const ctrlId = match[1];
+    const defaultEst = badgeEl?.classList.contains('badge-ok') ? 'ok' : badgeEl?.classList.contains('badge-prog') ? 'prog' : 'pend';
+    const est = SE.get(ns, ctrlId, defaultEst);
+    // Apply SE state
+    el.classList.add('se-item');
+    el.dataset.ns = ns;
+    el.dataset.id = ctrlId;
+    el.dataset.est = est;
+    el.style.cursor = 'pointer';
+    el.style.userSelect = 'none';
+    el.title = 'Clic para cambiar estado';
+    el.onclick = function(){ SE.toggle(ns, ctrlId, this); };
+    if(badgeEl){ badgeEl.classList.add('se-badge'); badgeEl.className = `check-badge ${SE.BADGE[est]} se-badge`; badgeEl.textContent = SE.ICONS[est]; }
+    if(pillEl){ pillEl.classList.add('se-pill'); pillEl.className = `pill ${SE.PILL[est]} se-pill`; pillEl.textContent = SE.LABELS[est]; }
+    // Add toggle hint
+    if(!el.querySelector('.se-hint')){
+      const hint = document.createElement('div');
+      hint.className = 'se-hint';
+      hint.style.cssText = 'font-size:.65rem;color:var(--muted);flex-shrink:0;margin-left:.3rem';
+      hint.title = 'Clic para cambiar';
+      hint.textContent = '↻';
+      el.appendChild(hint);
+    }
+  });
+};
+
+// Generic SE patcher for simpler frameworks (NIS2, GDPR, ISO37001, ISO14001, SOC2, CCPA, DORA, EUAIACT, LGPD)
+function _patchSimpleFramework(panelId, ns){
+  let idx = 0;
+  document.querySelectorAll(`#${panelId} .check-item`).forEach(el=>{
+    if(el.classList.contains('se-item')) return;
+    const badgeEl = el.querySelector('.check-badge');
+    const pillEl  = el.querySelector('.pill');
+    const labelEl = el.querySelector('.check-label');
+    if(!labelEl) return;
+    const defaultEst = badgeEl?.classList.contains('badge-ok') ? 'ok' : badgeEl?.classList.contains('badge-prog') ? 'prog' : 'pend';
+    // Generate a stable id from label text snippet
+    const text = labelEl.childNodes[0]?.textContent?.trim().substring(0,40).replace(/\s+/g,'_').replace(/[^a-z0-9_]/gi,'') || `ctrl_${idx}`;
+    const ctrlId = `${ns}_${text}`;
+    idx++;
+    const est = SE.get(ns, ctrlId, defaultEst);
+    el.classList.add('se-item');
+    el.dataset.ns = ns;
+    el.dataset.id = ctrlId;
+    el.dataset.est = est;
+    el.style.cursor = 'pointer';
+    el.style.userSelect = 'none';
+    el.title = 'Clic para cambiar estado';
+    el.onclick = function(){ SE.toggle(ns, ctrlId, this); };
+    if(badgeEl){ badgeEl.classList.add('se-badge'); badgeEl.className = `check-badge ${SE.BADGE[est]} se-badge`; badgeEl.textContent = SE.ICONS[est]; }
+    if(pillEl){ pillEl.classList.add('se-pill'); pillEl.className = `pill ${SE.PILL[est]} se-pill`; pillEl.textContent = SE.LABELS[est]; }
+    if(!el.querySelector('.se-hint')){
+      const hint = document.createElement('div');
+      hint.className = 'se-hint';
+      hint.style.cssText = 'font-size:.65rem;color:var(--muted);flex-shrink:0;margin-left:.3rem';
+      hint.textContent = '↻';
+      el.appendChild(hint);
+    }
+  });
+}
+
+// Wrap each simple framework renderer
+['NIS2','GDPR','ISO37001','ISO14001','SOC2','CCPA','DORA','EUAIAct','LGPD'].forEach(name=>{
+  const fnName = 'render'+name;
+  const origFn = window[fnName];
+  if(typeof origFn !== 'function') return;
+  const nsMap = {
+    NIS2:'nis2', GDPR:'gdpr', ISO37001:'iso37001', ISO14001:'iso14001',
+    SOC2:'soc2', CCPA:'ccpa', DORA:'dora', EUAIAct:'euaiact', LGPD:'lgpd'
+  };
+  const panelMap = {
+    NIS2:'panel-nis2', GDPR:'panel-gdpr', ISO37001:'panel-iso37001', ISO14001:'panel-iso14001',
+    SOC2:'panel-soc2', CCPA:'panel-ccpa', DORA:'panel-dora', EUAIAct:'panel-euaiact', LGPD:'panel-lgpd'
+  };
+  window[fnName] = function(){
+    origFn();
+    _patchSimpleFramework(panelMap[name], nsMap[name]);
+  };
+});
+
+// ── Reset button in Settings-style floating button ────────────────────────────
+(function addResetBtn(){
+  const btn = document.createElement('button');
+  btn.innerHTML = '🔄 Resetear estados';
+  btn.title = 'Borra todos los estados guardados y vuelve a los valores por defecto';
+  btn.style.cssText = 'position:fixed;bottom:1.2rem;right:1.2rem;z-index:9999;background:#37474f;color:#fff;border:none;border-radius:8px;padding:.45rem .8rem;font-size:.72rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);opacity:.75;transition:opacity .2s';
+  btn.onmouseenter = ()=>btn.style.opacity='1';
+  btn.onmouseleave = ()=>btn.style.opacity='.75';
+  btn.onclick = ()=>{
+    if(confirm('¿Resetear todos los estados a los valores por defecto? Se perderán los cambios guardados.')){
+      SE.resetAll();
+      // Re-render active panel
+      const active = document.querySelector('.tab-btn.active');
+      if(active && active.dataset.panel) renderPanel(active.dataset.panel);
+    }
+  };
+  document.body.appendChild(btn);
+})();
+
+// ── Hover tooltip: show "Clic para cambiar estado" on check-items ─────────────
+document.addEventListener('mouseover', function(e){
+  const item = e.target.closest('.se-item');
+  if(item) item.style.background = '#f0f4f8';
+});
+document.addEventListener('mouseout', function(e){
+  const item = e.target.closest('.se-item');
+  if(item) item.style.background = '';
+});
+
+
+
 
 </script>
 </body>
