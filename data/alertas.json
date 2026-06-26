@@ -1,232 +1,232 @@
 {
-  "actualizado": "2026-06-25T12:30:05.254960Z",
+  "actualizado": "2026-06-26T08:48:01.795030Z",
   "total": 24,
   "alertas": [
     {
       "id": "v001",
-      "descripcion": "RenovaciÛn Canal de Denuncias ó certificaciÛn anual",
+      "descripcion": "Renovaci√≥n Canal de Denuncias ‚Äî certificaci√≥n anual",
       "severidad": "rojo",
       "categoria": "programa",
-      "vencimiento": "2026-07-10",
+      "vencimiento": "2026-07-11",
       "fuente": "Interna"
     },
     {
       "id": "v002",
-      "descripcion": "ActualizaciÛn Mapa de Riesgos ó revisiÛn semestral",
+      "descripcion": "Actualizaci√≥n Mapa de Riesgos ‚Äî revisi√≥n semestral",
       "severidad": "naranja",
       "categoria": "riesgo",
-      "vencimiento": "2026-08-09",
+      "vencimiento": "2026-08-10",
       "fuente": "Ley 27.401 art. 23"
     },
     {
       "id": "v003",
-      "descripcion": "MÛdulo de capacitaciÛn AML ó cierre cohorte Q2",
+      "descripcion": "M√≥dulo de capacitaci√≥n AML ‚Äî cierre cohorte Q2",
       "severidad": "naranja",
       "categoria": "capacitacion",
-      "vencimiento": "2026-07-25",
+      "vencimiento": "2026-07-26",
       "fuente": "UIF Res. 70/2011"
     },
     {
-      "id": "oa_cffe",
-      "descripcion": "ReuniÛn de la Red de Enlaces y ¡reas de Integridad P˙blica 2026",
+      "id": "oa_e23c",
+      "descripcion": "Reuni√≥n de la Red de Enlaces y √Åreas de Integridad P√∫blica 2026",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
-      "fuente": "Oficina AnticorrupciÛn",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "Oficina Anticorrupci√≥n",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "oa_5549",
-      "descripcion": "La OA participÛ en la ReuniÛn Regional Latinoamericana de Expertos sobre la MediciÛn de la Eficacia de las Agencias AnticorrupciÛn",
+      "id": "oa_ec14",
+      "descripcion": "La OA particip√≥ en la Reuni√≥n Regional Latinoamericana de Expertos sobre la Medici√≥n de la Eficacia de las Agencias Anticorrupci√≥n",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
-      "fuente": "Oficina AnticorrupciÛn",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "Oficina Anticorrupci√≥n",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "oa_5d76",
-      "descripcion": "La OCDE presentÛ el resultado para la Argentina de los indicadores de integridad p˙blica",
+      "id": "oa_63c0",
+      "descripcion": "La OCDE present√≥ el resultado para la Argentina de los indicadores de integridad p√∫blica",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
-      "fuente": "Oficina AnticorrupciÛn",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "Oficina Anticorrupci√≥n",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "oa_65bb",
-      "descripcion": "La OA participÛ de los grupos de trabajo de la ConvenciÛn de las Naciones Unidas contra la CorrupciÛn",
+      "id": "oa_2946",
+      "descripcion": "La OA particip√≥ de los grupos de trabajo de la Convenci√≥n de las Naciones Unidas contra la Corrupci√≥n",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
-      "fuente": "Oficina AnticorrupciÛn",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "Oficina Anticorrupci√≥n",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "uif_5efb",
-      "descripcion": "UIF ResoluciÛn 35/2026 ó Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
+      "id": "uif_fb8c",
+      "descripcion": "UIF Resoluci√≥n 35/2026 ‚Äî Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
-      "fuente": "UIF ó Res. 35/2026",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "UIF ‚Äî Res. 35/2026",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "numero": "35/2026",
-        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluciÛn-35-2026-424417"
+        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluci√≥n-35-2026-424417"
       }
     },
     {
-      "id": "uif_7a03",
-      "descripcion": "UIF ResoluciÛn 127/2023 ó Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
+      "id": "uif_786a",
+      "descripcion": "UIF Resoluci√≥n 127/2023 ‚Äî Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
-      "fuente": "UIF ó Res. 127/2023",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "UIF ‚Äî Res. 127/2023",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "numero": "127/2023",
-        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluciÛn-127-2023-386743"
+        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluci√≥n-127-2023-386743"
       }
     },
     {
-      "id": "uif_42c2",
-      "descripcion": "UIF ResoluciÛn 72/2023 ó Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
+      "id": "uif_9767",
+      "descripcion": "UIF Resoluci√≥n 72/2023 ‚Äî Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
-      "fuente": "UIF ó Res. 72/2023",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "UIF ‚Äî Res. 72/2023",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "numero": "72/2023",
-        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluciÛn-72-2023-383138"
+        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluci√≥n-72-2023-383138"
       }
     },
     {
-      "id": "uif_567f",
-      "descripcion": "UIF ResoluciÛn 66/2023 ó Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
+      "id": "uif_5355",
+      "descripcion": "UIF Resoluci√≥n 66/2023 ‚Äî Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
-      "fuente": "UIF ó Res. 66/2023",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "UIF ‚Äî Res. 66/2023",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "numero": "66/2023",
-        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluciÛn-66-2023-382262"
+        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluci√≥n-66-2023-382262"
       }
     },
     {
-      "id": "uif_a11c",
-      "descripcion": "UIF ResoluciÛn 61/2023 ó Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
+      "id": "uif_1122",
+      "descripcion": "UIF Resoluci√≥n 61/2023 ‚Äî Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
-      "fuente": "UIF ó Res. 61/2023",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "UIF ‚Äî Res. 61/2023",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "numero": "61/2023",
-        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluciÛn-61-2023-382071"
+        "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resoluci√≥n-61-2023-382071"
       }
     },
     {
       "id": "ocde_2026a",
-      "descripcion": "OCDE Anti-Corruption & Integrity Outlook 2026 ó Publicado marzo 2026. Analiza tendencias globales en integridad p˙blica, nuevas recomendaciones para el sector privado y avances en la ConvenciÛn Anti-Soborno.",
+      "descripcion": "OCDE Anti-Corruption & Integrity Outlook 2026 ‚Äî Publicado marzo 2026. Analiza tendencias globales en integridad p√∫blica, nuevas recomendaciones para el sector privado y avances en la Convenci√≥n Anti-Soborno.",
       "severidad": "verde",
       "categoria": "internacional_ocde",
       "vencimiento": null,
-      "fuente": "OCDE ó Anti-Bribery 2026",
+      "fuente": "OCDE ‚Äî Anti-Bribery 2026",
       "metadata": {
         "url": "https://www.oecd.org/daf/anti-bribery/"
       },
-      "fecha_deteccion": "2026-06-25"
+      "fecha_deteccion": "2026-06-26"
     },
     {
       "id": "ocde_2026b",
-      "descripcion": "OCDE ó Sanctioning foreign bribery through multijurisdictional resolutions (mayo 2026). GuÌa para empresas con operaciones en m˙ltiples jurisdicciones sobre coordinaciÛn de sanciones y acuerdos de resoluciÛn.",
+      "descripcion": "OCDE ‚Äî Sanctioning foreign bribery through multijurisdictional resolutions (mayo 2026). Gu√≠a para empresas con operaciones en m√∫ltiples jurisdicciones sobre coordinaci√≥n de sanciones y acuerdos de resoluci√≥n.",
       "severidad": "verde",
       "categoria": "internacional_ocde",
       "vencimiento": null,
-      "fuente": "OCDE ó Anti-Bribery 2026",
+      "fuente": "OCDE ‚Äî Anti-Bribery 2026",
       "metadata": {
         "url": "https://www.oecd.org/daf/anti-bribery/"
       },
-      "fecha_deteccion": "2026-06-25"
+      "fecha_deteccion": "2026-06-26"
     },
     {
       "id": "ocde_2026c",
-      "descripcion": "OCDE Argentina ó Indicadores de integridad p˙blica 2026 presentados ante la Oficina AnticorrupciÛn (mayo 2026). Eval˙a transparencia, gestiÛn de riesgos y cultura organizacional del sector p˙blico.",
+      "descripcion": "OCDE Argentina ‚Äî Indicadores de integridad p√∫blica 2026 presentados ante la Oficina Anticorrupci√≥n (mayo 2026). Eval√∫a transparencia, gesti√≥n de riesgos y cultura organizacional del sector p√∫blico.",
       "severidad": "verde",
       "categoria": "internacional_ocde",
       "vencimiento": null,
-      "fuente": "OCDE ó Argentina 2026",
+      "fuente": "OCDE ‚Äî Argentina 2026",
       "metadata": {
         "url": "https://www.oecd.org/daf/anti-bribery/"
       },
-      "fecha_deteccion": "2026-06-25"
+      "fecha_deteccion": "2026-06-26"
     },
     {
       "id": "igj_c001",
-      "descripcion": "RG IGJ 5/2026 ó Resoluciones particulares en formato digital desde 16/06/2026. Verificar habilitaciÛn TAD y CUIT asociado para recibir notificaciones.",
+      "descripcion": "RG IGJ 5/2026 ‚Äî Resoluciones particulares en formato digital desde 16/06/2026. Verificar habilitaci√≥n TAD y CUIT asociado para recibir notificaciones.",
       "severidad": "naranja",
       "categoria": "normativa_igj",
       "vencimiento": "2026-07-31",
-      "fuente": "IGJ ó RG 5/2026",
-      "fecha_deteccion": "2026-06-25"
+      "fuente": "IGJ ‚Äî RG 5/2026",
+      "fecha_deteccion": "2026-06-26"
     },
     {
       "id": "igj_c002",
-      "descripcion": "IGJ implementa plancha de inscripciÛn digital: elimina obligaciÛn de copias en papel. Actualizar procedimiento interno de inscripciÛn de actas y poderes.",
+      "descripcion": "IGJ implementa plancha de inscripci√≥n digital: elimina obligaci√≥n de copias en papel. Actualizar procedimiento interno de inscripci√≥n de actas y poderes.",
       "severidad": "verde",
       "categoria": "normativa_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó Circular 2026",
-      "fecha_deteccion": "2026-06-25"
+      "fuente": "IGJ ‚Äî Circular 2026",
+      "fecha_deteccion": "2026-06-26"
     },
     {
-      "id": "igj_res_1428",
-      "descripcion": "RG IGJ 6/2026 ó Nueva resoluciÛn general publicada. Ver texto de la resoluciÛn",
+      "id": "igj_res_27b7",
+      "descripcion": "RG IGJ 6/2026 ‚Äî Nueva resoluci√≥n general publicada. Ver texto de la resoluci√≥n",
       "severidad": "naranja",
       "categoria": "normativa_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó argentina.gob.ar",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "IGJ ‚Äî argentina.gob.ar",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "url_pdf": "https://www.argentina.gob.ar/sites/default/files/2026/01/rg_igj_6-2026.pdf",
         "numero": "RG IGJ 6/2026"
       }
     },
     {
-      "id": "igj_res_407a",
-      "descripcion": "ResoluciÛn General IGJ ó Nueva resoluciÛn general publicada. Ver cronograma actualizado desde el 16/06",
+      "id": "igj_res_5dff",
+      "descripcion": "Resoluci√≥n General IGJ ‚Äî Nueva resoluci√≥n general publicada. Ver cronograma actualizado desde el 16/06",
       "severidad": "naranja",
       "categoria": "normativa_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó argentina.gob.ar",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "IGJ ‚Äî argentina.gob.ar",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "url_pdf": "https://www.argentina.gob.ar/sites/default/files/2026/06/igj_-_cronograma_de_implementacion_-_resolucion_general_5_2026_-_v16-06.pdf",
-        "numero": "ResoluciÛn General IGJ"
+        "numero": "Resoluci√≥n General IGJ"
       }
     },
     {
-      "id": "igj_bal_dd88",
-      "descripcion": "NRG ARGENTINA (SA) ó balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaciÛn organismos de control.",
+      "id": "igj_bal_8daa",
+      "descripcion": "NRG ARGENTINA (SA) ‚Äî balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaci√≥n organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó datos.jus.gob.ar",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "IGJ ‚Äî datos.jus.gob.ar",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "razon_social": "NRG ARGENTINA",
         "tipo": "SA",
@@ -235,13 +235,13 @@
       }
     },
     {
-      "id": "igj_bal_a5d7",
-      "descripcion": "HERENCIA TOSCANA (SA) ó balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaciÛn organismos de control.",
+      "id": "igj_bal_e0c9",
+      "descripcion": "HERENCIA TOSCANA (SA) ‚Äî balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaci√≥n organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó datos.jus.gob.ar",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "IGJ ‚Äî datos.jus.gob.ar",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "razon_social": "HERENCIA TOSCANA",
         "tipo": "SA",
@@ -250,13 +250,13 @@
       }
     },
     {
-      "id": "igj_bal_a4a5",
-      "descripcion": "SCATEC EQUINOR SOLUTIONS ARGENTINA (SA) ó balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaciÛn organismos de control.",
+      "id": "igj_bal_ecbb",
+      "descripcion": "SCATEC EQUINOR SOLUTIONS ARGENTINA (SA) ‚Äî balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaci√≥n organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó datos.jus.gob.ar",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "IGJ ‚Äî datos.jus.gob.ar",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "razon_social": "SCATEC EQUINOR SOLUTIONS ARGENTINA",
         "tipo": "SA",
@@ -265,28 +265,28 @@
       }
     },
     {
-      "id": "igj_bal_eed6",
-      "descripcion": "COMPA—IA EXPORTADORA DE ALIMENTOS (SA) ó balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaciÛn organismos de control.",
+      "id": "igj_bal_c3ec",
+      "descripcion": "COMPA√ëIA EXPORTADORA DE ALIMENTOS (SA) ‚Äî balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaci√≥n organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó datos.jus.gob.ar",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "IGJ ‚Äî datos.jus.gob.ar",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
-        "razon_social": "COMPA—IA EXPORTADORA DE ALIMENTOS",
+        "razon_social": "COMPA√ëIA EXPORTADORA DE ALIMENTOS",
         "tipo": "SA",
         "fecha_balance": "2018-12-31",
         "meses_atraso": 91
       }
     },
     {
-      "id": "igj_bal_a90d",
-      "descripcion": "CENTRO DE IMAGENES RD (SA) ó balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaciÛn organismos de control.",
+      "id": "igj_bal_d5ab",
+      "descripcion": "CENTRO DE IMAGENES RD (SA) ‚Äî balance al 31/12/2018 sin actualizar hace 91 meses. Riesgo: multa IGJ + observaci√≥n organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
-      "fuente": "IGJ ó datos.jus.gob.ar",
-      "fecha_deteccion": "2026-06-25",
+      "fuente": "IGJ ‚Äî datos.jus.gob.ar",
+      "fecha_deteccion": "2026-06-26",
       "metadata": {
         "razon_social": "CENTRO DE IMAGENES RD",
         "tipo": "SA",
