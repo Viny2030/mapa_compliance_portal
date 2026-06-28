@@ -1,10 +1,649 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Activar Monitor de Compliance — Ecosistema Transparencia</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pri:#1a3a5c;--sec:#2196f3;--verde:#2e7d32;--rojo:#c62828;
+  --naranja:#e65100;--bg:#f0f4f8;--card:#fff;--texto:#1a1a2e;
+  --muted:#6b7280;--borde:#dde3ea;--radius:10px;
+}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);line-height:1.5;min-height:100vh}
+
+/* ── Header ── */
+header{background:var(--pri);color:#fff;padding:2rem 1rem 1.5rem;text-align:center}
+.header-logo{font-size:1.5rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.3rem}
+.header-sub{font-size:.85rem;opacity:.65}
+.header-badge{display:inline-block;background:rgba(33,150,243,.25);border:1px solid rgba(33,150,243,.4);color:#90caf9;font-size:.7rem;font-weight:700;padding:.2rem .7rem;border-radius:99px;margin-top:.6rem;letter-spacing:.05em}
+
+/* ── Progress bar ── */
+.progress-wrap{background:#fff;border-bottom:1.5px solid var(--borde);padding:.6rem 1rem;position:sticky;top:0;z-index:100}
+.progress-inner{max-width:680px;margin:0 auto}
+.progress-steps{display:flex;gap:0;margin-bottom:.4rem}
+.ps{flex:1;font-size:.7rem;font-weight:700;text-align:center;color:var(--muted);padding:.3rem .2rem;border-bottom:3px solid var(--borde);transition:all .2s}
+.ps.active{color:var(--sec);border-bottom-color:var(--sec)}
+.ps.done{color:var(--verde);border-bottom-color:var(--verde)}
+.progress-bar{height:3px;background:#e3f2fd;border-radius:99px;overflow:hidden;display:none}
+.progress-fill{height:100%;background:var(--sec);transition:width .3s}
+
+/* ── Wrap ── */
+.wrap{max-width:680px;margin:0 auto;padding:1.8rem 1rem 4rem}
+
+/* ── Sections ── */
+.section{display:none}
+.section.active{display:block}
+
+.section-title{font-size:1.2rem;font-weight:800;color:var(--pri);margin-bottom:.3rem}
+.section-sub{font-size:.84rem;color:var(--muted);margin-bottom:1.4rem}
+
+/* ── Cards ── */
+.card{background:var(--card);border-radius:var(--radius);border:1.5px solid var(--borde);box-shadow:0 1px 4px rgba(0,0,0,.06);padding:1.3rem;margin-bottom:1rem}
+
+/* ── Fields ── */
+.field{margin-bottom:.9rem}
+.field label{display:block;font-size:.76rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.field input,.field select,.field textarea{font-family:inherit;font-size:.9rem;padding:.5rem .8rem;border:1.5px solid var(--borde);border-radius:8px;background:#fff;color:var(--texto);width:100%;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--sec);box-shadow:0 0 0 3px rgba(33,150,243,.1)}
+.field input.error{border-color:var(--rojo)}
+.field .hint{font-size:.72rem;color:var(--muted);margin-top:.25rem}
+.field .err-msg{font-size:.72rem;color:var(--rojo);margin-top:.25rem;display:none}
+.field.has-error .err-msg{display:block}
+.field.has-error input,.field.has-error select{border-color:var(--rojo)}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+
+/* ── Toggle chips ── */
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.3rem}
+.chip{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:600;padding:.38rem .8rem;border-radius:99px;border:1.5px solid var(--borde);background:#fff;cursor:pointer;user-select:none;transition:all .15s;color:var(--muted)}
+.chip:hover{border-color:var(--sec);color:var(--sec)}
+.chip.on{border-color:var(--sec);background:#e3f2fd;color:var(--sec)}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* ── Module preview ── */
+.mod-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.5rem;margin-top:.8rem}
+.mod-item{display:flex;align-items:center;gap:.5rem;font-size:.78rem;padding:.4rem .65rem;border-radius:6px;border:1.5px solid var(--borde);background:#fff}
+.mod-item.on{border-color:#a5d6a7;background:#f1f8f1;color:#2e7d32;font-weight:600}
+.mod-item.off{color:#bbb}
+.mod-icon{font-size:.9rem}
+
+/* ── Summary ── */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin:.8rem 0}
+.sum-box{background:#f8fafc;border:1.5px solid var(--borde);border-radius:8px;padding:.7rem .8rem}
+.sum-val{font-size:1.5rem;font-weight:800;color:var(--pri);line-height:1}
+.sum-label{font-size:.68rem;color:var(--muted);margin-top:.15rem;font-weight:600;text-transform:uppercase}
+
+/* ── Buttons ── */
+.btn-row{display:flex;gap:.6rem;margin-top:1.2rem;justify-content:space-between}
+.btn{font-family:inherit;font-size:.88rem;font-weight:700;padding:.6rem 1.4rem;border-radius:8px;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:.4rem}
+.btn-pri{background:var(--sec);color:#fff}.btn-pri:hover{background:#1976d2}
+.btn-pri:disabled{opacity:.4;cursor:not-allowed}
+.btn-sec{background:var(--card);color:var(--pri);border:1.5px solid var(--borde)}.btn-sec:hover{border-color:var(--sec);color:var(--sec)}
+
+/* ── Success ── */
+.success-box{text-align:center;padding:2.5rem 1rem}
+.success-icon{font-size:4rem;margin-bottom:1rem}
+.success-title{font-size:1.4rem;font-weight:800;color:var(--verde);margin-bottom:.5rem}
+.success-sub{font-size:.88rem;color:var(--muted);max-width:400px;margin:0 auto 1.5rem}
+.success-detail{background:#f1f8f1;border:1.5px solid #a5d6a7;border-radius:10px;padding:1rem 1.2rem;text-align:left;font-size:.82rem;margin-bottom:1rem}
+.success-detail strong{color:var(--verde)}
+
+/* ── Alert ── */
+.alert{display:flex;gap:.6rem;padding:.75rem 1rem;border-radius:8px;font-size:.8rem;margin-bottom:1rem;align-items:flex-start}
+.alert.info{background:#e3f2fd;border:1px solid #90caf9;color:#1565c0}
+.alert.warn{background:#fff8e1;border:1px solid #ffe082;color:#f57f17}
+
+/* ── Spinner ── */
+.spinner{display:none;text-align:center;padding:1.5rem}
+.spinner.active{display:block}
+.spin{display:inline-block;width:32px;height:32px;border:3px solid #e3f2fd;border-top-color:var(--sec);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
 <body>
-$END$
+
+<header>
+  <div class="header-logo">🛡️ Monitor de Compliance</div>
+  <div class="header-sub">Ecosistema Transparencia · Ph.D. Vicente H. Monteverde</div>
+  <div class="header-badge">ACTIVACIÓN DE CUENTA</div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="progress-steps">
+      <div class="ps active" id="ps1">1 · Empresa</div>
+      <div class="ps" id="ps2">2 · Perfil</div>
+      <div class="ps" id="ps3">3 · Módulos</div>
+      <div class="ps" id="ps4">4 · Confirmar</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ── PASO 1: Datos empresa ── -->
+  <div class="section active" id="sec-1">
+    <div class="section-title">Datos de tu empresa</div>
+    <div class="section-sub">Completá los datos básicos para configurar tu Monitor de Compliance personalizado.</div>
+
+    <div class="card">
+      <div class="form-row">
+        <div class="field" id="f-nombre">
+          <label>Razón social *</label>
+          <input id="nombre" placeholder="Empresa S.A." autocomplete="organization">
+          <div class="err-msg">Requerido</div>
+        </div>
+        <div class="field" id="f-cuit">
+          <label>CUIT *</label>
+          <input id="cuit" placeholder="30-00000000-0" maxlength="13">
+          <div class="err-msg">Formato: 30-00000000-0</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field" id="f-email">
+          <label>Email compliance *</label>
+          <input id="email" type="email" placeholder="compliance@empresa.com.ar" autocomplete="email">
+          <div class="err-msg">Email válido requerido</div>
+        </div>
+        <div class="field">
+          <label>Teléfono de contacto</label>
+          <input id="telefono" placeholder="+54 11 0000-0000" type="tel">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field" id="f-responsable">
+          <label>Responsable compliance *</label>
+          <input id="responsable" placeholder="Lic. / Dra. Nombre Apellido">
+          <div class="err-msg">Requerido</div>
+        </div>
+        <div class="field">
+          <label>Cargo</label>
+          <input id="cargo" placeholder="Compliance Officer">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="form-row">
+        <div class="field" id="f-sector">
+          <label>Sector de actividad *</label>
+          <select id="sector">
+            <option value="">— Seleccionar —</option>
+            <option value="construccion">Construcción y obra pública</option>
+            <option value="servicios">Servicios profesionales</option>
+            <option value="industria">Industria manufacturera</option>
+            <option value="energia">Energía y recursos naturales</option>
+            <option value="finanzas">Servicios financieros</option>
+            <option value="tecnologia">Tecnología</option>
+            <option value="salud">Salud y farmacéutico</option>
+            <option value="comercio">Comercio y retail</option>
+          </select>
+          <div class="err-msg">Seleccioná un sector</div>
+        </div>
+        <div class="field">
+          <label>Tamaño de empresa</label>
+          <select id="tamanio">
+            <option value="pyme">PYME (hasta 50 empleados)</option>
+            <option value="mediana">Mediana (51–200 empleados)</option>
+            <option value="grande" selected>Grande (201–1000 empleados)</option>
+            <option value="corporacion">Corporación (más de 1000)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>País sede</label>
+          <select id="pais">
+            <option value="Argentina" selected>Argentina</option>
+            <option value="Brasil">Brasil</option>
+            <option value="Uruguay">Uruguay</option>
+            <option value="Chile">Chile</option>
+            <option value="Colombia">Colombia</option>
+            <option value="México">México</option>
+            <option value="España">España</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Provincias / Estados</label>
+          <input id="provincias" placeholder="CABA, Buenos Aires, Córdoba">
+          <div class="hint">Separadas por coma</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <div></div>
+      <button class="btn btn-pri" onclick="irA(2)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 2: Perfil operativo ── -->
+  <div class="section" id="sec-2">
+    <div class="section-title">Perfil operativo</div>
+    <div class="section-sub">Esta información activa automáticamente los módulos de compliance que tu empresa necesita.</div>
+
+    <div class="card">
+      <div class="field">
+        <label>¿Operás internacionalmente?</label>
+        <div class="hint" style="margin-bottom:.6rem">Seleccioná todos los países donde tenés operaciones, contratos o socios</div>
+        <div class="chips">
+          <div class="chip" id="c-brasil" onclick="togChip('brasil')"><span class="dot"></span>🇧🇷 Brasil</div>
+          <div class="chip" id="c-ue" onclick="togChip('ue')"><span class="dot"></span>🇪🇺 Unión Europea</div>
+          <div class="chip" id="c-usa" onclick="togChip('usa')"><span class="dot"></span>🇺🇸 USA</div>
+          <div class="chip" id="c-uk" onclick="togChip('uk')"><span class="dot"></span>🇬🇧 Reino Unido</div>
+          <div class="chip" id="c-otro" onclick="togChip('otro')"><span class="dot"></span>🌐 Otro</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>Características de tu empresa</label>
+        <div class="hint" style="margin-bottom:.6rem">Seleccioná las que apliquen</div>
+        <div class="chips">
+          <div class="chip" id="c-bolsa" onclick="togChip('bolsa')"><span class="dot"></span>📈 Cotiza en bolsa</div>
+          <div class="chip" id="c-tarjetas" onclick="togChip('tarjetas')"><span class="dot"></span>💳 Procesa tarjetas de pago</div>
+          <div class="chip" id="c-finreg" onclick="togChip('finreg')"><span class="dot"></span>🏦 Sector financiero regulado</div>
+          <div class="chip" id="c-salud" onclick="togChip('salud')"><span class="dot"></span>🏥 Salud o industria con riesgo laboral</div>
+          <div class="chip" id="c-ia" onclick="togChip('ia')"><span class="dot"></span>🤖 Desarrolla o usa IA</div>
+          <div class="chip" id="c-ambiental" onclick="togChip('ambiental')"><span class="dot"></span>🌿 Impacto ambiental significativo</div>
+          <div class="chip" id="c-rite" onclick="togChip('rite')"><span class="dot"></span>📋 Registrada o a registrar en RITE</div>
+          <div class="chip" id="c-publico" onclick="togChip('publico')"><span class="dot"></span>🏛️ Contratos con el Estado</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>¿Cuál es tu objetivo principal de compliance?</label>
+        <select id="objetivo">
+          <option value="legal">Cumplir con la Ley 27.401 / normativa local</option>
+          <option value="certificacion">Obtener certificación ISO (37001, 27001, etc.)</option>
+          <option value="licitacion">Participar en licitaciones públicas</option>
+          <option value="expansion">Expansión internacional</option>
+          <option value="inversion">Atracción de inversores / due diligence</option>
+          <option value="integral">Programa de integridad integral</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>¿Tenés alguna certificación de compliance vigente?</label>
+        <div class="chips">
+          <div class="chip" id="c-cert27001" onclick="togChip('cert27001')"><span class="dot"></span>ISO 27001</div>
+          <div class="chip" id="c-cert37001" onclick="togChip('cert37001')"><span class="dot"></span>ISO 37001</div>
+          <div class="chip" id="c-cert14001" onclick="togChip('cert14001')"><span class="dot"></span>ISO 14001</div>
+          <div class="chip" id="c-certsox" onclick="togChip('certsox')"><span class="dot"></span>SOX</div>
+          <div class="chip" id="c-certnone" onclick="togChip('certnone')"><span class="dot"></span>Ninguna</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-sec" onclick="irA(1)">← Volver</button>
+      <button class="btn btn-pri" onclick="calcularModulos();irA(3)">Ver módulos sugeridos →</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 3: Módulos ── -->
+  <div class="section" id="sec-3">
+    <div class="section-title">Módulos de compliance</div>
+    <div class="section-sub">Calculamos los módulos que tu empresa necesita según tu perfil. Podés ajustar antes de confirmar.</div>
+
+    <div class="alert info" id="alert-mod">🤖 Módulos calculados automáticamente según tu perfil. Podés activar o desactivar los opcionales.</div>
+
+    <div class="card" id="modulos-card">
+      <!-- Renderizado por JS -->
+    </div>
+
+    <div class="summary-grid" id="summary-sec3"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-sec" onclick="irA(2)">← Volver</button>
+      <button class="btn btn-pri" onclick="irA(4)">Confirmar →</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 4: Confirmar ── -->
+  <div class="section" id="sec-4">
+    <div class="section-title">Confirmá tu solicitud</div>
+    <div class="section-sub">Revisá el resumen antes de enviar. Recibirás un email de confirmación en minutos.</div>
+
+    <div class="card" id="resumen-card">
+      <!-- Renderizado por JS -->
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>Mensaje adicional (opcional)</label>
+        <textarea id="mensaje" rows="3" placeholder="¿Hay algo específico que quieras contarnos sobre tu empresa o tus necesidades de compliance?"></textarea>
+      </div>
+      <div class="field">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;text-transform:none;font-size:.84rem">
+          <input type="checkbox" id="acepta" style="width:auto;margin:0"> 
+          Acepto que mis datos sean usados para configurar el Monitor de Compliance
+        </label>
+      </div>
+    </div>
+
+    <div class="spinner" id="spinner">
+      <div class="spin"></div>
+      <div style="margin-top:.8rem;font-size:.82rem;color:var(--muted)">Enviando tu solicitud…</div>
+    </div>
+
+    <div class="btn-row" id="btn-row-4">
+      <button class="btn btn-sec" onclick="irA(3)">← Volver</button>
+      <button class="btn btn-pri" id="btn-enviar" onclick="enviarFormulario()">📨 Enviar solicitud</button>
+    </div>
+  </div>
+
+  <!-- ── ÉXITO ── -->
+  <div class="section" id="sec-ok">
+    <div class="success-box">
+      <div class="success-icon">✅</div>
+      <div class="success-title">¡Solicitud recibida!</div>
+      <div class="success-sub">Tu perfil de compliance fue procesado. En los próximos minutos recibirás un email con los próximos pasos.</div>
+      <div class="success-detail" id="ok-detail"></div>
+      <div style="font-size:.78rem;color:var(--muted)">¿No recibís el email? Revisá la carpeta de spam o escribinos a <strong>compliance@ecosistematransparencia.com</strong></div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ── Estado ──────────────────────────────────────────────────────────────────
+const chips = {};
+let modulosActivos = {};
+
+const TODOS_MODULOS = {
+  // Core
+  dashboard:true, board:true, planaccion:true, reporte:true, calendario:true,
+  // Anticorrupcion
+  ley27401:false, brasil:false, fcpa:false, ocde:false,
+  // Privacidad
+  lgpd:false, gdpr:false, ccpa:false, iso27701:false,
+  // Seguridad
+  iso27001:false, soc2:false, nis2:false, pcidss:false,
+  // Ambiental
+  iso14001:false, esg:false,
+  // Gobernanza
+  iso37001:false, iso45001:false, cobit:false, sox:false,
+  // Digital
+  euaiact:false, dora:false,
+  // Cross
+  crossmap:false, riesgo:false, capacitacion:false, duediligence:false,
+  internacional:false, rite:false, mejoras:false, legislacion:false, denuncias:false,
+};
+
+const MOD_META = {
+  dashboard:   {label:'Dashboard',cat:'core',ico:'📊'},
+  board:       {label:'Board Ejecutivo',cat:'core',ico:'📋'},
+  planaccion:  {label:'Plan de Acción',cat:'core',ico:'✅'},
+  reporte:     {label:'Reporte PDF',cat:'core',ico:'📄'},
+  calendario:  {label:'Calendario',cat:'core',ico:'📅'},
+  ley27401:    {label:'Ley 27.401',cat:'anticorrupcion',ico:'⚖️'},
+  brasil:      {label:'Lei 12.846',cat:'anticorrupcion',ico:'🇧🇷'},
+  fcpa:        {label:'FCPA & UK Bribery',cat:'anticorrupcion',ico:'🌎'},
+  ocde:        {label:'OCDE',cat:'anticorrupcion',ico:'🏛️'},
+  lgpd:        {label:'LGPD Brasil',cat:'privacidad',ico:'🔒'},
+  gdpr:        {label:'GDPR',cat:'privacidad',ico:'🇪🇺'},
+  ccpa:        {label:'CCPA/CPRA',cat:'privacidad',ico:'🇺🇸'},
+  iso27701:    {label:'ISO 27701',cat:'privacidad',ico:'🔐'},
+  iso27001:    {label:'ISO 27001',cat:'seguridad',ico:'🛡️'},
+  soc2:        {label:'SOC 2',cat:'seguridad',ico:'☁️'},
+  nis2:        {label:'NIS2',cat:'seguridad',ico:'🌐'},
+  pcidss:      {label:'PCI DSS v4',cat:'seguridad',ico:'💳'},
+  iso14001:    {label:'ISO 14001',cat:'ambiental',ico:'🌿'},
+  esg:         {label:'ESG',cat:'ambiental',ico:'♻️'},
+  iso37001:    {label:'ISO 37001',cat:'gobernanza',ico:'🏆'},
+  iso45001:    {label:'ISO 45001',cat:'gobernanza',ico:'🦺'},
+  cobit:       {label:'COBIT 2019',cat:'gobernanza',ico:'💻'},
+  sox:         {label:'SOX',cat:'gobernanza',ico:'📈'},
+  euaiact:     {label:'EU AI Act',cat:'digital',ico:'🤖'},
+  dora:        {label:'DORA',cat:'digital',ico:'⚡'},
+  crossmap:    {label:'Cross-Framework',cat:'cross',ico:'🗂️'},
+  riesgo:      {label:'Mapa de Riesgo',cat:'cross',ico:'🔥'},
+  capacitacion:{label:'Capacitación',cat:'cross',ico:'🎓'},
+  duediligence:{label:'Due Diligence',cat:'cross',ico:'🔍'},
+  internacional:{label:'Internacional',cat:'cross',ico:'🌍'},
+  rite:        {label:'RITE Argentina',cat:'cross',ico:'📋'},
+  mejoras:     {label:'Mejoras & Alertas',cat:'cross',ico:'🔔'},
+  legislacion: {label:'Legislación',cat:'cross',ico:'📚'},
+  denuncias:   {label:'Canal Denuncias',cat:'cross',ico:'📣'},
+};
+
+const CORE_KEYS = ['dashboard','board','planaccion','reporte','calendario'];
+const SIEMPRE = ['ley27401','ocde','riesgo','capacitacion','duediligence','mejoras','denuncias','internacional','legislacion','crossmap','iso37001'];
+
+// ── Chips ──────────────────────────────────────────────────────────────────
+function togChip(k){
+  chips[k] = !chips[k];
+  document.getElementById('c-'+k)?.classList.toggle('on', chips[k]);
+}
+
+// ── Navegación ─────────────────────────────────────────────────────────────
+function irA(n){
+  if(n===2 && !validarPaso1()) return;
+
+  [1,2,3,4].forEach(i=>{
+    document.getElementById('sec-'+i).classList.toggle('active', i===n);
+    const ps = document.getElementById('ps'+i);
+    ps.classList.remove('active','done');
+    if(i===n) ps.classList.add('active');
+    else if(i<n) ps.classList.add('done');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===4) renderResumen();
+}
+
+function validarPaso1(){
+  let ok = true;
+  const checks = [
+    {id:'nombre',  fid:'f-nombre',  test: v=>v.length>1},
+    {id:'cuit',    fid:'f-cuit',    test: v=>/^\d{2}-\d{8}-\d$/.test(v)},
+    {id:'email',   fid:'f-email',   test: v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)},
+    {id:'responsable',fid:'f-responsable', test: v=>v.length>1},
+    {id:'sector',  fid:'f-sector',  test: v=>v!==''},
+  ];
+  checks.forEach(c=>{
+    const val = document.getElementById(c.id).value.trim();
+    const field = document.getElementById(c.fid);
+    if(!field) return;
+    if(!c.test(val)){
+      field.classList.add('has-error'); ok=false;
+    } else {
+      field.classList.remove('has-error');
+    }
+  });
+  if(!ok) document.getElementById('sec-1').scrollIntoView({behavior:'smooth'});
+  return ok;
+}
+
+// ── Calcular módulos ───────────────────────────────────────────────────────
+function calcularModulos(){
+  const m = {...TODOS_MODULOS};
+  CORE_KEYS.forEach(k=>m[k]=true);
+  SIEMPRE.forEach(k=>m[k]=true);
+
+  const s = document.getElementById('sector').value;
+
+  if(chips.brasil)    { m.brasil=true; m.lgpd=true; }
+  if(chips.ue)        { m.gdpr=true; m.nis2=true; m.iso27701=true; }
+  if(chips.usa)       { m.fcpa=true; m.ccpa=true; }
+  if(chips.uk)        { m.fcpa=true; }
+  if(chips.bolsa)     { m.sox=true; m.soc2=true; }
+  if(chips.tarjetas)  { m.pcidss=true; m.iso27001=true; }
+  if(chips.finreg)    { m.cobit=true; m.sox=true; m.iso27001=true; m.soc2=true; }
+  if(chips.salud)     { m.iso45001=true; m.iso14001=true; }
+  if(chips.ia)        { m.euaiact=true; m.iso27001=true; }
+  if(chips.ambiental) { m.iso14001=true; m.esg=true; }
+  if(chips.rite)      { m.rite=true; }
+  if(chips.publico)   { m.ley27401=true; m.ocde=true; m.rite=true; }
+
+  if(['construccion','industria','energia'].includes(s)) { m.iso14001=true; m.esg=true; m.iso45001=true; }
+  if(s==='finanzas')  { m.cobit=true; m.sox=true; m.iso27001=true; m.soc2=true; }
+  if(s==='tecnologia'){ m.euaiact=true; m.dora=true; m.iso27001=true; }
+  if(s==='salud')     { m.iso45001=true; m.iso14001=true; }
+
+  modulosActivos = m;
+  renderModulos();
+  renderSummary3();
+}
+
+function renderModulos(){
+  const cats = {
+    core:          {label:'🔵 Core (siempre activos)', keys:[]},
+    anticorrupcion:{label:'⚖️ Anticorrupción',          keys:[]},
+    privacidad:    {label:'🔒 Privacidad',               keys:[]},
+    seguridad:     {label:'🛡️ Seguridad',                keys:[]},
+    ambiental:     {label:'🌿 Ambiental / ESG',          keys:[]},
+    gobernanza:    {label:'🏛️ Gestión & Gobernanza',     keys:[]},
+    digital:       {label:'💻 Digital',                  keys:[]},
+    cross:         {label:'🗂️ Cross & Otros',            keys:[]},
+  };
+  Object.entries(MOD_META).forEach(([k,m])=>{ cats[m.cat]?.keys.push(k); });
+
+  let html = '';
+  Object.entries(cats).forEach(([ck,cg])=>{
+    const activos = cg.keys.filter(k=>modulosActivos[k]);
+    if(activos.length===0 && ck!=='core') return;
+    html += `<div style="margin-bottom:1rem">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.4rem">${cg.label}</div>
+      <div class="mod-preview">`;
+    cg.keys.forEach(k=>{
+      const meta = MOD_META[k];
+      const on = !!modulosActivos[k];
+      const isCore = CORE_KEYS.includes(k);
+      html += `<div class="mod-item ${on?'on':'off'}" id="mi-${k}" 
+        onclick="${isCore?'':'toggleMod(\''+k+'\')'}" 
+        style="cursor:${isCore?'default':'pointer'}" 
+        title="${isCore?'Siempre activo':'Click para activar/desactivar'}">
+        <span class="mod-icon">${meta.ico}</span>${meta.label}
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  document.getElementById('modulos-card').innerHTML = html;
+}
+
+function toggleMod(k){
+  if(CORE_KEYS.includes(k)) return;
+  modulosActivos[k] = !modulosActivos[k];
+  const el = document.getElementById('mi-'+k);
+  if(el){ el.classList.toggle('on', modulosActivos[k]); el.classList.toggle('off', !modulosActivos[k]); }
+  renderSummary3();
+}
+
+function renderSummary3(){
+  const total = Object.keys(modulosActivos).length;
+  const activos = Object.values(modulosActivos).filter(Boolean).length;
+  document.getElementById('summary-sec3').innerHTML = `
+    <div class="sum-box"><div class="sum-val">${activos}</div><div class="sum-label">Módulos activos</div></div>
+    <div class="sum-box"><div class="sum-val">${total-activos}</div><div class="sum-label">Módulos ocultos</div></div>
+    <div class="sum-box"><div class="sum-val">${Math.round(activos/total*100)}%</div><div class="sum-label">Cobertura total</div></div>
+  `;
+}
+
+// ── Resumen paso 4 ─────────────────────────────────────────────────────────
+function renderResumen(){
+  const nombre = document.getElementById('nombre').value;
+  const cuit = document.getElementById('cuit').value;
+  const email = document.getElementById('email').value;
+  const responsable = document.getElementById('responsable').value;
+  const sector = document.getElementById('sector').options[document.getElementById('sector').selectedIndex]?.text||'';
+  const activos = Object.entries(modulosActivos).filter(([k,v])=>v).map(([k])=>MOD_META[k]?.ico+' '+MOD_META[k]?.label).join(', ');
+
+  document.getElementById('resumen-card').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;font-size:.84rem">
+      <div><span style="color:var(--muted);font-size:.72rem;font-weight:700;text-transform:uppercase">Empresa</span><br><strong>${nombre}</strong></div>
+      <div><span style="color:var(--muted);font-size:.72rem;font-weight:700;text-transform:uppercase">CUIT</span><br><strong>${cuit}</strong></div>
+      <div><span style="color:var(--muted);font-size:.72rem;font-weight:700;text-transform:uppercase">Email</span><br><strong>${email}</strong></div>
+      <div><span style="color:var(--muted);font-size:.72rem;font-weight:700;text-transform:uppercase">Responsable</span><br><strong>${responsable}</strong></div>
+      <div style="grid-column:1/-1"><span style="color:var(--muted);font-size:.72rem;font-weight:700;text-transform:uppercase">Sector</span><br><strong>${sector}</strong></div>
+    </div>
+    <hr style="margin:.8rem 0;border:none;border-top:1px solid var(--borde)">
+    <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Módulos activos</div>
+    <div style="font-size:.78rem;color:var(--texto);line-height:1.7">${activos}</div>
+  `;
+}
+
+// ── Envío ──────────────────────────────────────────────────────────────────
+async function enviarFormulario(){
+  if(!document.getElementById('acepta').checked){
+    alert('Por favor aceptá los términos para continuar.');
+    return;
+  }
+
+  const payload = {
+    nombre:      document.getElementById('nombre').value.trim(),
+    cuit:        document.getElementById('cuit').value.trim(),
+    email:       document.getElementById('email').value.trim(),
+    telefono:    document.getElementById('telefono').value.trim(),
+    responsable: document.getElementById('responsable').value.trim(),
+    cargo:       document.getElementById('cargo').value.trim(),
+    sector:      document.getElementById('sector').value,
+    tamanio:     document.getElementById('tamanio').value,
+    pais:        document.getElementById('pais').value,
+    provincias:  document.getElementById('provincias').value.split(',').map(s=>s.trim()).filter(Boolean),
+    objetivo:    document.getElementById('objetivo').value,
+    mensaje:     document.getElementById('mensaje').value.trim(),
+    chips:       {...chips},
+    modulos_activos: {...modulosActivos},
+    fecha:       new Date().toISOString(),
+  };
+
+  document.getElementById('spinner').classList.add('active');
+  document.getElementById('btn-row-4').style.display='none';
+
+  try {
+    const res = await fetch('/api/v1/onboarding-cliente', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload),
+    });
+
+    if(res.ok){
+      mostrarExito(payload);
+    } else {
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.detail||'Error del servidor');
+    }
+  } catch(e){
+    // Si no hay backend (prueba local), simular éxito
+    if(e.message.includes('Failed to fetch')||e.message.includes('NetworkError')){
+      mostrarExito(payload, true);
+    } else {
+      document.getElementById('spinner').classList.remove('active');
+      document.getElementById('btn-row-4').style.display='flex';
+      alert('Error al enviar: '+e.message);
+    }
+  }
+}
+
+function mostrarExito(payload, demo=false){
+  document.getElementById('spinner').classList.remove('active');
+  [1,2,3,4].forEach(i=>{ document.getElementById('sec-'+i).classList.remove('active'); ['ps'+i].forEach(id=>{ document.getElementById(id).classList.add('done'); }); });
+  document.getElementById('sec-ok').classList.add('active');
+
+  const activos = Object.values(payload.modulos_activos).filter(Boolean).length;
+  document.getElementById('ok-detail').innerHTML = `
+    <strong>✅ ${payload.nombre}</strong><br>
+    CUIT: ${payload.cuit}<br>
+    Email: ${payload.email}<br>
+    Módulos configurados: <strong>${activos}</strong><br>
+    ${demo?'<br><span style="color:var(--naranja);font-size:.75rem">⚠️ Modo local — en producción se envía el email automáticamente</span>':''}
+  `;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── CUIT auto-format ───────────────────────────────────────────────────────
+document.getElementById('cuit').addEventListener('input', function(){
+  let v = this.value.replace(/\D/g,'');
+  if(v.length>2) v = v.slice(0,2)+'-'+v.slice(2);
+  if(v.length>11) v = v.slice(0,11)+'-'+v.slice(11);
+  this.value = v.slice(0,13);
+});
+</script>
 </body>
 </html>
