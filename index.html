@@ -2961,6 +2961,43 @@ function aplicarDemoStates(){
     'pci-6-1':'prog','pci-6-2':'pend','pci-6-3':'pend',
     'pci-7-1':'ok','pci-8-1':'prog','pci-9-1':'pend',
     'pci-10-1':'ok','pci-10-2':'prog','pci-11-1':'pend','pci-12-1':'prog',
+    // ── OCDE — Constructora del Sur: fuerte en anticorrupción, ambiental en progreso ──
+    'ocde-1-1':'ok','ocde-1-2':'ok','ocde-1-3':'prog',
+    'ocde-2-1':'ok','ocde-2-2':'ok','ocde-2-3':'ok','ocde-2-4':'ok',
+    'ocde-3-1':'ok','ocde-3-2':'ok','ocde-3-3':'prog','ocde-3-4':'pend',
+    'ocde-4-1':'prog','ocde-4-2':'prog','ocde-4-3':'pend','ocde-4-4':'pend',
+    'ocde-5-1':'ok','ocde-5-2':'ok','ocde-5-3':'ok','ocde-5-4':'ok','ocde-5-5':'prog',
+    'ocde-6-1':'ok','ocde-6-2':'prog','ocde-6-3':'pend','ocde-6-4':'prog',
+    'ocde-7-1':'ok','ocde-7-2':'ok','ocde-7-3':'prog','ocde-7-4':'ok','ocde-7-5':'ok',
+    'ocde-8-1':'ok','ocde-8-2':'prog','ocde-8-3':'ok',
+    'ocde-9-1':'pend','ocde-9-2':'pend',
+    'ocde-10-1':'ok','ocde-10-2':'ok',
+    'ocde-11-1':'ok','ocde-11-2':'ok','ocde-11-3':'prog',
+    // ── ISO 45001 — Constructora: SST maduro, auditorías y mejora continua en proceso ──
+    'iso45001-4-1':'ok','iso45001-4-2':'ok','iso45001-4-3':'ok',
+    'iso45001-5-1':'ok','iso45001-5-2':'ok','iso45001-5-3':'ok','iso45001-5-4':'prog',
+    'iso45001-6-1':'ok','iso45001-6-2':'ok','iso45001-6-3':'prog',
+    'iso45001-7-1':'ok','iso45001-7-2':'ok','iso45001-7-3':'prog','iso45001-7-4':'ok','iso45001-7-5':'ok',
+    'iso45001-8-1':'ok','iso45001-8-2':'ok','iso45001-8-3':'prog','iso45001-8-4':'ok',
+    'iso45001-9-1':'ok','iso45001-9-2':'ok','iso45001-9-3':'prog','iso45001-9-4':'prog',
+    'iso45001-10-1':'ok','iso45001-10-2':'prog',
+    // ── COBIT 2019 — Constructora: gobernanza TI básica, gestión datos pendiente ──
+    'cobit-edm01':'ok','cobit-edm02':'ok','cobit-edm03':'ok','cobit-edm04':'prog','cobit-edm05':'prog',
+    'cobit-apo01':'ok','cobit-apo02':'ok','cobit-apo03':'prog','cobit-apo05':'prog',
+    'cobit-apo07':'ok','cobit-apo10':'prog','cobit-apo11':'prog','cobit-apo12':'ok',
+    'cobit-apo13':'prog','cobit-apo14':'pend',
+    'cobit-bai01':'ok','cobit-bai02':'prog','cobit-bai06':'ok','cobit-bai08':'pend',
+    'cobit-bai09':'prog','cobit-bai10':'pend',
+    'cobit-dss01':'ok','cobit-dss02':'ok','cobit-dss03':'prog','cobit-dss04':'pend',
+    'cobit-dss05':'prog','cobit-dss06':'pend',
+    'cobit-mea01':'ok','cobit-mea02':'prog','cobit-mea03':'ok','cobit-mea04':'pend',
+    // ── SOX — Constructora: no cotiza en bolsa, controles básicos implementados ──
+    'sox-302-1':'prog','sox-302-2':'prog','sox-302-3':'pend','sox-302-4':'pend',
+    'sox-404-1':'prog','sox-404-2':'pend','sox-404-3':'pend',
+    'sox-404-4':'pend','sox-404-5':'pend','sox-404-6':'pend',
+    'sox-itgc-1':'ok','sox-itgc-2':'prog','sox-itgc-3':'ok','sox-itgc-4':'pend','sox-itgc-5':'pend',
+    'sox-409-1':'pend','sox-802-1':'ok','sox-802-2':'ok','sox-906-1':'pend',
+    'sox-map-1':'pend','sox-map-2':'pend','sox-map-3':'pend',
   };
   Object.entries(demoStates).forEach(([id,st])=>{
     if(!localStorage.getItem('se:'+id)) localStorage.setItem('se:'+id, JSON.stringify({estado:st, nota:'Demo automático'}));
