@@ -11,7 +11,8 @@ import uvicorn
 import os
 
 from scripts.api_compliance import router as compliance_router
-from scripts.canal_denuncias import router as denuncias_router
+from scripts.canal_denuncias import router as denuncias_router
+from scripts.onboarding_cliente import router as onboarding_router
 
 app = FastAPI(
     title="Monitor de Compliance Empresarial",
@@ -28,7 +29,8 @@ app.add_middleware(
 
 # ââ Rutas API âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 app.include_router(compliance_router, prefix="/api/v1")
-app.include_router(denuncias_router,  prefix="/api/v1", tags=["Canal de Denuncias"])
+app.include_router(denuncias_router,  prefix="/api/v1", tags=["Canal de Denuncias"])
+app.include_router(onboarding_router, prefix="/api/v1", tags=["Onboarding"])
 
 # ââ Archivos estÃ¡ticos (frontend) âââââââââââââââââââââââââââââââââââââââââââ
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
@@ -101,6 +103,10 @@ async def capacitaciones_html():
 async def upload_clientes_html():
     return FileResponse(os.path.join(ROOT, "upload_clientes.html"))
 
+
+@app.get("/formulario-cliente.html", include_in_schema=False)
+async def formulario_cliente_html():
+    return FileResponse(os.path.join(ROOT, "formulario-cliente.html"))
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
 
