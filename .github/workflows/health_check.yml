@@ -16,11 +16,11 @@ jobs:
       - name: Wake up + Check API en Railway
         run: |
           # Primer intento — despierta Railway si está hibernando
-          curl -s https://mapa-compliance-production.up.railway.app/health || true
+          curl -s https://mapacompliance-production.up.railway.app/health || true
           sleep 15
           # Check real
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-            https://mapa-compliance-production.up.railway.app/health || echo "000")
+            https://mapacompliance-production.up.railway.app/health || echo "000")
           echo "HTTP Status: $STATUS"
           if [ "$STATUS" != "200" ]; then
             echo "::error::API no responde correctamente (status $STATUS)"
