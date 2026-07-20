@@ -136,7 +136,15 @@ async def portal_html():
 @app.get("/bridge.html", include_in_schema=False)
 async def bridge_html():
     return FileResponse(os.path.join(ROOT, "bridge.html"))
+# ── Catch-all para HTMLs sueltos en la raíz (incluye -en/-fr/-pt) ──────────
+from fastapi import HTTPException
 
+@app.get("/{filename}.html", include_in_schema=False)
+async def serve_any_html(filename: str):
+    path = os.path.join(ROOT, f"{filename}.html")
+    if os.path.exists(path):
+        return FileResponse(path)
+    raise HTTPException(status_code=404, detail="Not found")
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
