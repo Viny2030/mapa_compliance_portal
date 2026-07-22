@@ -141,7 +141,7 @@ textarea{resize:vertical;min-height:65px}
 
     <!-- Vista nueva DDJJ -->
     <div id="vista-nueva" style="display:none">
-      <div class="alerta naranja"><span>⚠️</span><span>Esta declaración tiene carácter de declaración jurada. La falsedad u omisión de datos puede acarrear consecuencias disciplinarias y legales (Art. 275 CP).</span></div>
+      <div class="alerta naranja"><span>⚠️</span><span>Cette déclaration a valeur de déclaration sur l'honneur. Toute fausse déclaration ou omission peut entraîner des conséquences disciplinaires et légales (art. 275 du Code pénal).</span></div>
 
       <div class="form-section">
         <h3>👤 Données du déclarant</h3>
@@ -202,7 +202,7 @@ textarea{resize:vertical;min-height:65px}
 
       <div class="check-legal">
         <input type="checkbox" id="chk-legal">
-        <label for="chk-legal">Declaro bajo juramento que los datos consignados son correctos y completos, y me comprometo a actualizar esta declaración ante cualquier cambio en mi situación. Entiendo que la falsedad u omisión de datos puede derivar en sanciones disciplinarias y responsabilidad penal (Art. 275 del Código Penal).</label>
+        <label for="chk-legal">Je déclare sur l'honneur que les informations fournies sont exactes et complètes, et je m'engage à mettre à jour cette déclaration en cas de changement de ma situation. Je comprends que toute fausse déclaration ou omission peut entraîner des sanctions disciplinaires et une responsabilité pénale (art. 275 du Code pénal).</label>
       </div>
 
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
@@ -213,7 +213,7 @@ textarea{resize:vertical;min-height:65px}
 
     <!-- Vista aprobador -->
     <div id="vista-aprobador" style="display:none">
-      <div class="alerta verde"><span>👔</span><span>Vue du Responsable conformité. Consultez et traitez les déclarations en attente d'approbation.</span></div>
+      <div class="alerta verde"><span>👔</span><span>Vue du responsable conformité. Consultez et traitez les déclarations en attente d'approbation.</span></div>
       <div id="lista-pendientes-aprobador"></div>
     </div>
 
@@ -255,7 +255,7 @@ if(!ddjjs){
       ]},
     { id:'DDJJ-002', nombre:'Carlos Rodríguez', cuil:'20-31234567-8', cargo:'Gerente Comercial',
       area:'Commercial / Ventes', conflicto:'con_conflicto', tipoConflicto:'Participation au capital d\'un fournisseur/client',
-      empresaConf:'Proveedor XYZ S.R.L.', descConflicto:'Soy socio minoritario (15%) de Proveedor XYZ S.R.L., empresa que participa en la licitación LP-2026-04.',
+      empresaConf:'Proveedor XYZ S.R.L.', descConflicto:'Je suis associé minoritaire (15 %) de Proveedor XYZ S.R.L., société participant à l\'appel d\'offres LP-2026-04.',
       mitigacion:'Je m\'abstiendrai de participer au processus d\'évaluation et d\'attribution de l\'appel d\'offres LP-2026-04.',
       desde:'2026-06-01', hasta:'2026-12-31', obs:'', estado:'pendiente',
       fechaPresentacion:'2026-06-15', fechaResolucion:null, comentarioAprobador:'',
@@ -321,7 +321,7 @@ function renderLista(){
       </div>
       <div class="ddjj-meta">
         <span>📅 Presentada: ${d.fechaPresentacion}</span>
-        <span>📋 Período: ${d.desde} al ${d.hasta}</span>
+        <span>📋 Période : ${d.desde} au ${d.hasta}</span>
         <span style="font-family:monospace;font-size:.7rem">${d.id}</span>
       </div>
     </div>
@@ -401,7 +401,7 @@ function verDetalle(id){
     <div style="font-size:.8rem;font-weight:700;color:var(--pri);margin-bottom:.4rem">📋 Historial</div>
     <div>${d.historial.map(h=>`<div class="hist-item"><span style="color:var(--muted);min-width:85px">${h.fecha}</span><span style="flex:1">${h.accion}</span><span style="color:var(--muted)">${h.autor}</span></div>`).join('')}</div>
     <div style="margin-top:.7rem;padding:.6rem;background:#fffde7;border-left:3px solid var(--amarillo);border-radius:6px;font-size:.74rem;color:var(--muted)">
-      📋 Válido como evidencia ante auditorías externas y Oficina Anticorruption.
+      📋 Valable comme preuve lors d'audits externes et auprès du Bureau anticorruption.
     </div>
   `;
 

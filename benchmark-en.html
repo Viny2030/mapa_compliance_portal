@@ -239,7 +239,7 @@ const SECTORES = {
   },
   tecnologia: {
     label: 'Technology and Innovation',
-    desc: '💻 Sector con alta dinámica. Regulado por ENACOM y normativa de datos personales. 278 empresas en RITE.',
+    desc: '💻 A highly dynamic sector. Regulated by ENACOM and personal data regulations. 278 companies in RITE.',
     empresasRITE: 278,
     distribucion: { avanzado: 19, medio: 45, inicial: 36 },
     scorePromedio: 56,
@@ -352,7 +352,7 @@ function renderPercentil(sc, sector){
   if(diff>10) insights += `<div class="insight positivo">✅ Tu score supera el promedio sectorial por <strong>${diff} pts</strong> — muy buen posicionamiento.</div>`;
   else if(diff>=0) insights += `<div class="insight neutro">📊 You are <strong>${diff} pts</strong> sobre el promedio. Marginal — hay margen de mejora.</div>`;
   else insights += `<div class="insight alerta">⚠️ You are <strong>${Math.abs(diff)} pts</strong> bajo el promedio sectorial. Priorizar mejoras.</div>`;
-  if(diffTop<0) insights += `<div class="insight neutro">🎯 To be in the top 25% you need <strong>${Math.abs(diffTop)} pts</strong> más (llegar a ${sector.scoreTop25}).</div>`;
+  if(diffTop<0) insights += `<div class="insight neutro">🎯 To be in the top 25% you need <strong>${Math.abs(diffTop)} pts</strong> more points (to reach ${sector.scoreTop25}).</div>`;
   else insights += `<div class="insight positivo">🏆 You're already in the <strong>top 25%</strong> de tu sector.</div>`;
   document.getElementById('insights').innerHTML = insights;
 }
@@ -402,10 +402,10 @@ function renderRanking(sc, sector){
 // ── Comparativa por eje ───────────────────────────────────────────────────
 function renderCompEjes(sc, sector){
   const ejes = [
-    {label:'Programa (máx 40)', empresa:sc.programa, sector:sector.ejes.programa, max:40},
-    {label:'Training (máx 25)', empresa:sc.capacitacion, sector:sector.ejes.capacitacion, max:25},
-    {label:'Due Diligence (máx 20)', empresa:sc.due_diligence, sector:sector.ejes.due_diligence, max:20},
-    {label:'Riesgo (máx 15)', empresa:sc.riesgo, sector:sector.ejes.riesgo, max:15},
+    {label:'Program (max 40)', empresa:sc.programa, sector:sector.ejes.programa, max:40},
+    {label:'Training (max 25)', empresa:sc.capacitacion, sector:sector.ejes.capacitacion, max:25},
+    {label:'Due Diligence (max 20)', empresa:sc.due_diligence, sector:sector.ejes.due_diligence, max:20},
+    {label:'Risk (max 15)', empresa:sc.riesgo, sector:sector.ejes.riesgo, max:15},
   ];
   const colorEje = (e,s) => e>=s?'var(--verde)':'var(--naranja)';
   document.getElementById('comp-ejes').innerHTML = ejes.map(e=>`

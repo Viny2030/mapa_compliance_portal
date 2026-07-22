@@ -226,7 +226,7 @@ if(incidentes.length === 0){
   incidentes = [
     { id:'INC-001', titulo:'Pago duplicado a proveedor estatal', tipo:'Fraude interna', severidad:'alto',
       area:'Finanças e Contabilidade', fecha:'2026-05-10', detector:'Auditoria interna',
-      estado:'cerrado', descripcion:'Se detectó doble imputación de factura por $850.000 a proveedor de servicios contratado con el Municipio de San Martín.',
+      estado:'cerrado', descripcion:'Detectada dupla cobrança de fatura de $850.000 a um fornecedor de serviços contratado pelo Município de San Martín.',
       acciones:[
         {fecha:'2026-05-11', texto:'Revisão de registros contábeis. Suspensão preventiva do responsável.', autor:'Compliance'},
         {fecha:'2026-05-18', texto:'Investigação interna concluída. Erro operacional confirmado, sem dolo.', autor:'Jurídico'},
@@ -235,7 +235,7 @@ if(incidentes.length === 0){
       fechaRegistro:'2026-05-10' },
     { id:'INC-002', titulo:'Conflito de interesse não declarado na licitação LP-2026-04', tipo:'Conflito de interesses', severidad:'critico',
       area:'Comercial / Vendas', fecha:'2026-06-01', detector:'Canal de denuncias',
-      estado:'investigando', descripcion:'Denuncia anónima indica que el Gerente Comercial es socio oculto de uno de los oferentes en la licitación LP-2026-04 por $12M.',
+      estado:'investigando', descripcion:'Denúncia anônima indica que o Gerente Comercial é sócio oculto de um dos licitantes na licitação LP-2026-04, no valor de $12M.',
       acciones:[
         {fecha:'2026-06-02', texto:'Abertura de investigação interna. Suspensão do Gerente Comercial.', autor:'Compliance'},
         {fecha:'2026-06-08', texto:'Solicitação de informações patrimoniais ao ANSES e RPI.', autor:'Jurídico'},
@@ -243,7 +243,7 @@ if(incidentes.length === 0){
       fechaRegistro:'2026-06-01' },
     { id:'INC-003', titulo:'Quase-falha: presente de fornecedor fora da política', tipo:'Quase-falha', severidad:'bajo',
       area:'Compras e Abastecimento', fecha:'2026-06-10', detector:'Auto-reporte empleado',
-      estado:'cerrado', descripcion:'Empleado de Compras recibió y rechazó un obsequio (caja de vinos) de un proveedor durante las fiestas. Valor estimado $45.000.',
+      estado:'cerrado', descripcion:'Funcionário de Compras recebeu e recusou um presente (caixa de vinhos) de um fornecedor durante as festas. Valor estimado $45.000.',
       acciones:[
         {fecha:'2026-06-10', texto:'Funcionário recusou o presente e o reportou em até 24h.', autor:'Empleado - Compras'},
         {fecha:'2026-06-11', texto:'Fornecedor notificado sobre a Política de Presentes GR-002.', autor:'Compliance'},
@@ -313,7 +313,7 @@ function renderLista(){
       </div>
       ${i.descripcion ? `<div class="inc-desc">${i.descripcion.substring(0,120)}${i.descripcion.length>120?'…':''}</div>` : ''}
       <div class="inc-acciones">
-        <span style="font-size:.74rem;color:var(--muted)">${i.acciones.length} acción(es) correctiva(s)</span>
+        <span style="font-size:.74rem;color:var(--muted)">${i.acciones.length} ação(ões) corretiva(s)</span>
       </div>
     </div>
   `).join('');
@@ -367,7 +367,7 @@ function abrirModal(id){
       <label style="font-size:.78rem;font-weight:600;color:var(--pri);display:block;margin-bottom:.3rem">Adicionar ação corretiva</label>
       <div style="display:flex;gap:.4rem">
         <input type="text" id="nueva-accion" placeholder="Descrição da ação tomada…" style="flex:1;font-size:.83rem;padding:.4rem .65rem;border:1px solid var(--borde);border-radius:6px">
-        <button class="btn btn-sm verde" onclick="agregarAccion()">+ Agregar</button>
+        <button class="btn btn-sm verde" onclick="agregarAccion()">+ Adicionar</button>
       </div>
     </div>
   `;
@@ -417,7 +417,7 @@ function registrarIncidente(){
   const severidad = document.getElementById('f-severidad').value;
   const area = document.getElementById('f-area').value;
   if(!titulo || !tipo || !severidad || !area){
-    toast('⚠️ Completá los campos obligatorios (*)'); return;
+    toast('⚠️ Preencha os campos obrigatórios (*)'); return;
   }
   const nuevo = {
     id: genId(),

@@ -237,7 +237,7 @@ if(!docs){
      lecturas:[
        {nombre:'Dra. María González',area:'Compliance',fecha:'2024-04-05'},
      ]},
-    {id:'D-003',nombre:'Procedimento de Contratações Públicas',codigo:'LP-001',tipo:'Procedimento',version:'v3.0',vigencia:'2025-01-01',vencimiento:'2027-01-01',responsable:'Legal / Comercial',url:'',descripcion:'Procedimento obligatorio para toda participación de la empresa en licitaciones y contrataciones con el Estado.',
+    {id:'D-003',nombre:'Procedimento de Contratações Públicas',codigo:'LP-001',tipo:'Procedimento',version:'v3.0',vigencia:'2025-01-01',vencimiento:'2027-01-01',responsable:'Legal / Comercial',url:'',descripcion:'Procedimento obrigatório para toda participação da empresa em licitações e contratações com o Estado.',
      versiones:[
        {numero:'v1.0',fecha:'2020-03-01',nota:'Versão inicial'},
        {numero:'v2.0',fecha:'2022-07-15',nota:'Incorporação Art. 24 Lei 27.401'},
@@ -281,7 +281,7 @@ function renderKPIs(){
 }
 
 // ── Lista ─────────────────────────────────────────────────────────────────
-const TIPOS_ICO = {Código:'📜',Política:'📋',Procedimento:'📝',Manual:'📖',Reglamento:'⚖️',Formulario:'📄','Declaração jurada':'✍️',Otro:'📁'};
+const TIPOS_ICO = {Código:'📜',Política:'📋',Procedimento:'📝',Manual:'📖',Regulamento:'⚖️',Formulário:'📄','Declaração jurada':'✍️',Outro:'📁'};
 
 function setFiltro(f, btn){
   filtroActivo = f;
@@ -345,8 +345,8 @@ function verDetalle(id){
   let vencInfo='';
   if(d.vencimiento){
     const dias = Math.round((new Date(d.vencimiento)-hoy)/86400000);
-    if(dias<0) vencInfo=`<span class="badge badge-vencido">⚠️ Venceu hace ${Math.abs(dias)} días — renovar</span>`;
-    else if(dias<60) vencInfo=`<span class="badge badge-prox">⏰ Vence en ${dias} días</span>`;
+    if(dias<0) vencInfo=`<span class="badge badge-vencido">⚠️ Vencido há ${Math.abs(dias)} dias — renovar</span>`;
+    else if(dias<60) vencInfo=`<span class="badge badge-prox">⏰ Vence em ${dias} dias</span>`;
     else vencInfo=`<span class="badge badge-vigente">✅ Vigente hasta ${d.vencimiento}</span>`;
   }
   document.getElementById('detalle-body').innerHTML = `
@@ -385,10 +385,10 @@ function verDetalle(id){
             <span style="color:var(--muted);min-width:80px;text-align:right">${l.fecha}</span>
           </div>
         `).join('')}</div>`
-      : `<div style="font-size:.82rem;color:var(--muted);padding:.4rem">Sin lecturas registradas aún.</div>`
+      : `<div style="font-size:.82rem;color:var(--muted);padding:.4rem">Nenhuma leitura registrada ainda.</div>`
     }
     <div style="margin-top:.7rem;padding:.6rem;background:#f0f4f8;border-radius:7px;font-size:.77rem;color:var(--muted)">
-      📋 Este registro de lecturas es válido como evidencia ante la Oficina Anticorrupção y auditores externos.
+      📋 Este registro de leituras é válido como evidência perante o Escritório Anticorrupção e auditores externos.
     </div>
   `;
   document.getElementById('modal-detalle').classList.add('open');

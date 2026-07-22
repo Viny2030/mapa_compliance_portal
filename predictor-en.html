@@ -118,7 +118,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-sh
 <div class="page-header">
   <div class="wrap" style="padding-top:0;padding-bottom:0">
     <h1>🤖 AI Score Predictor</h1>
-    <p>Predicción del score de compliance para el próximo trimestre · Regresión lineal + análisis de factores</p>
+    <p>Compliance score prediction for next quarter · Linear regression + factor analysis</p>
   </div>
 </div>
 
@@ -158,7 +158,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--pri);box-sh
   <div class="card">
     <h2>📈 Score projection — history + prediction</h2>
     <div class="chart-wrap"><canvas id="ch-proyeccion"></canvas></div>
-    <div class="fuente">📊 Línea continua = histórico real. Línea punteada = proyección del modelo. Banda = intervalo de confianza 80%.</div>
+    <div class="fuente">📊 Solid line = actual history. Dotted line = model projection. Band = 80% confidence interval.</div>
   </div>
 
   <div class="grid2">
@@ -289,7 +289,7 @@ function calcularRiesgoUSD() {
     <div class="usd-total-box">
       <div>
         <div class="usd-total-label">Total expected exposure</div>
-        <div style="font-size:.75rem;opacity:.65">${areas.length} areas · ${fmtUSD(facturacion)} de facturación</div>
+        <div style="font-size:.75rem;opacity:.65">${areas.length} areas · ${fmtUSD(facturacion)} in revenue</div>
       </div>
       <div class="usd-total-num">${fmtUSD(totalEsperado)}</div>
     </div>
@@ -383,14 +383,14 @@ function generarRecomendaciones(scoreActual, scorePred){
   if(cap_baj.length) recs.push({prioridad:'alta', impacto:'+5 pts', texto:`Elevar completitud de ${cap_baj.length} mandatory module(s) at 80%+: ${cap_baj.map(c=>typeof c.modulo==='object'?c.modulo.es:c.modulo).join(', ')}`});
 
   const dd_tot = CONFIG.cuits_verificados.length;
-  if(dd_tot < 5) recs.push({prioridad:'media', impacto:'+4 pts', texto:`Ampliar due diligence a ${5-dd_tot} proveedor(es) más (objetivo: 5 verificados)`});
+  if(dd_tot < 5) recs.push({prioridad:'media', impacto:'+4 pts', texto:`Extend due diligence to ${5-dd_tot} more vendor(s) (target: 5 verified)`});
 
   const incs = JSON.parse(localStorage.getItem('inc_data')||'[]');
   const incsCrit = incs.filter(i=>i.severidad==='critico'&&(i.estado==='abierto'||i.estado==='investigando'));
   if(incsCrit.length) recs.push({prioridad:'alta', impacto:'+6 pts', texto:`Cerrar ${incsCrit.length} active critical incident(s) — each one deducts 3 pts from the score`});
 
   const op_pend = pi.elementos_opcionales.filter(e=>e.estado==='pendiente');
-  if(op_pend.length) recs.push({prioridad:'media', impacto:'+3 pts', texto:`Avanzar en opcionales pendientes: "${op_pend.slice(0,2).map(e=>typeof e.label==='object'?e.label.es:e.label).join('", "')}"${op_pend.length>2?` y ${op_pend.length-2} más`:''}`});
+  if(op_pend.length) recs.push({prioridad:'media', impacto:'+3 pts', texto:`Avanzar en opcionales pendientes: "${op_pend.slice(0,2).map(e=>typeof e.label==='object'?e.label.es:e.label).join('", "')}"${op_pend.length>2?` and ${op_pend.length-2} more`:''}`});
 
   if(!pi.registrado_rite) recs.push({prioridad:'alta', impacto:'+2 pts', texto:'Register the company in RITE (rite.gob.ar) — a requirement to contract with the State'});
 
@@ -437,7 +437,7 @@ function renderPrediccion(pred, reg, esc){
   const trend = reg.m > 2 ? 'acelerada' : reg.m > 0.5 ? 'constante' : reg.m > 0 ? 'lenta' : 'estancada o en descenso';
   document.getElementById('pred-resumen').innerHTML = `
     Tendencia <strong>${trend}</strong> (+${reg.m.toFixed(1)} pts/mes en promedio).<br>
-    Con el ritmo actual alcanzarías <strong>${pred} pts</strong> en 3 meses.<br>
+    At the current pace you would reach <strong>${pred} pts</strong> in 3 months.<br>
     Confianza: <strong>${conf}%</strong> (R²=${reg.r2.toFixed(2)}, ${historial.length} puntos de datos).
   `;
 }
@@ -458,7 +458,7 @@ function renderEscenarios(esc){
   `).join('');
   document.getElementById('escenario-desc').innerHTML =
     `💡 El escenario <strong>optimista (${esc.optimista} pts)</strong> es alcanzable ejecutando las recomendaciones de alta prioridad. ` +
-    `El <strong>pesimista (${esc.pesimista} pts)</strong> ocurre si se abren nuevos incidentes críticos o hay demoras en capacitaciones.`;
+    `The <strong>pessimistic scenario (${esc.pesimista} pts)</strong> occurs if new critical incidents arise or training is delayed.`;
 }
 
 // ── Render gráfico ────────────────────────────────────────────────────────

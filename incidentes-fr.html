@@ -226,7 +226,7 @@ if(incidentes.length === 0){
   incidentes = [
     { id:'INC-001', titulo:'Pago duplicado a proveedor estatal', tipo:'Fraude interne', severidad:'alto',
       area:'Finance et comptabilité', fecha:'2026-05-10', detector:'Audit interne',
-      estado:'cerrado', descripcion:'Se detectó doble imputación de factura por $850.000 a proveedor de servicios contratado con el Municipio de San Martín.',
+      estado:'cerrado', descripcion:'Double facturation détectée pour 850 000 $ envers un prestataire de services sous contrat avec la municipalité de San Martín.',
       acciones:[
         {fecha:'2026-05-11', texto:'Revue des registres comptables. Suspension conservatoire du responsable.', autor:'Compliance'},
         {fecha:'2026-05-18', texto:'Enquête interne terminée. Erreur opérationnelle confirmée, sans intention.', autor:'Juridique'},
@@ -235,7 +235,7 @@ if(incidentes.length === 0){
       fechaRegistro:'2026-05-10' },
     { id:'INC-002', titulo:'Conflit d\'intérêts non déclaré dans l\'appel d\'offres LP-2026-04', tipo:'Conflit d\'intérêts', severidad:'critico',
       area:'Commercial / Ventes', fecha:'2026-06-01', detector:'Canal de denuncias',
-      estado:'investigando', descripcion:'Denuncia anónima indica que el Gerente Comercial es socio oculto de uno de los oferentes en la licitación LP-2026-04 por $12M.',
+      estado:'investigando', descripcion:'Un signalement anonyme indique que le directeur commercial est associé occulte de l\'un des soumissionnaires de l\'appel d\'offres LP-2026-04, pour 12 M$.',
       acciones:[
         {fecha:'2026-06-02', texto:'Ouverture d\'une enquête interne. Suspension du directeur commercial.', autor:'Compliance'},
         {fecha:'2026-06-08', texto:'Demande d\'informations patrimoniales à l\'ANSES et au RPI.', autor:'Juridique'},
@@ -243,7 +243,7 @@ if(incidentes.length === 0){
       fechaRegistro:'2026-06-01' },
     { id:'INC-003', titulo:'Presque-accident : cadeau d\'un fournisseur hors politique', tipo:'Presque-accident', severidad:'bajo',
       area:'Achats et approvisionnement', fecha:'2026-06-10', detector:'Auto-reporte empleado',
-      estado:'cerrado', descripcion:'Empleado de Compras recibió y rechazó un obsequio (caja de vinos) de un proveedor durante las fiestas. Valor estimado $45.000.',
+      estado:'cerrado', descripcion:'Un employé des Achats a reçu et refusé un cadeau (caisse de vins) d\'un fournisseur pendant les fêtes. Valeur estimée : 45 000 $.',
       acciones:[
         {fecha:'2026-06-10', texto:'L\'employé a refusé le cadeau et l\'a signalé dans les 24 h.', autor:'Empleado - Compras'},
         {fecha:'2026-06-11', texto:'Fournisseur informé de la politique de cadeaux GR-002.', autor:'Compliance'},
@@ -313,7 +313,7 @@ function renderLista(){
       </div>
       ${i.descripcion ? `<div class="inc-desc">${i.descripcion.substring(0,120)}${i.descripcion.length>120?'…':''}</div>` : ''}
       <div class="inc-acciones">
-        <span style="font-size:.74rem;color:var(--muted)">${i.acciones.length} acción(es) correctiva(s)</span>
+        <span style="font-size:.74rem;color:var(--muted)">${i.acciones.length} action(s) corrective(s)</span>
       </div>
     </div>
   `).join('');
@@ -367,7 +367,7 @@ function abrirModal(id){
       <label style="font-size:.78rem;font-weight:600;color:var(--pri);display:block;margin-bottom:.3rem">Ajouter une action corrective</label>
       <div style="display:flex;gap:.4rem">
         <input type="text" id="nueva-accion" placeholder="Description de l'action entreprise…" style="flex:1;font-size:.83rem;padding:.4rem .65rem;border:1px solid var(--borde);border-radius:6px">
-        <button class="btn btn-sm verde" onclick="agregarAccion()">+ Agregar</button>
+        <button class="btn btn-sm verde" onclick="agregarAccion()">+ Ajouter</button>
       </div>
     </div>
   `;
@@ -417,7 +417,7 @@ function registrarIncidente(){
   const severidad = document.getElementById('f-severidad').value;
   const area = document.getElementById('f-area').value;
   if(!titulo || !tipo || !severidad || !area){
-    toast('⚠️ Completá los campos obligatorios (*)'); return;
+    toast('⚠️ Complétez les champs obligatoires (*)'); return;
   }
   const nuevo = {
     id: genId(),

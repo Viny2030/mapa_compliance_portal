@@ -133,7 +133,7 @@ body.gated{padding-top:88px}
 
   <div class="page-header">
     <h1>📂 Téléversement des documents du client</h1>
-    <p>Subí los documentos del programa de integridad. El sistema los procesa y actualiza el checklist automáticamente.</p>
+    <p>Téléversez les documents du programme d'intégrité. Le système les traite et met à jour la checklist automatiquement.</p>
   </div>
 
   <!-- KPIs -->
@@ -454,7 +454,7 @@ function mostrarResultado(meta) {
     extras += `
       <div class="extrac-row">
         <span class="extrac-key">CUITs detectados:</span>
-        <span class="extrac-val">${cuits}${meta.datos.cuits_detectados.length > 10 ? ' +más' : ''}</span>
+        <span class="extrac-val">${cuits}${meta.datos.cuits_detectados.length > 10 ? ' +plus' : ''}</span>
       </div>`;
   }
 
@@ -481,7 +481,7 @@ function mostrarResultado(meta) {
       </div>
       ${meta.fecha_detectada ? `
       <div class="extrac-row">
-        <span class="extrac-key">Fecha detectada:</span>
+        <span class="extrac-key">Date détectée :</span>
         <span class="extrac-val" style="color:var(--verde)">${meta.fecha_detectada}</span>
       </div>` : ''}
       <div class="extrac-row">

@@ -110,7 +110,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--sec);border-colo
   <div class="card">
     <div class="view-tabs">
       <button class="view-tab active" onclick="setVista('admin',this)">👔 Vue Administrateur</button>
-      <button class="view-tab" onclick="setVista('empleado',this)">👤 Vista Empleado (Firma)</button>
+      <button class="view-tab" onclick="setVista('empleado',this)">👤 Vue Employé (Signature)</button>
     </div>
 
     <!-- Vista admin -->
@@ -207,8 +207,8 @@ if(!modulos){
   if(!modulos.length){
     modulos = [
       {id:'MOD-001',nombre:'Code d\'éthique et de conduite',obligatorio:true,fechaLimite:'2026-03-31',destinatarios:'Tous',descripcion:'L\'employé certifie avoir lu et compris le Code d\'éthique et de conduite de l\'entreprise, s\'engageant à agir conformément à ses principes.',firmas:[{nombre:'María García',fecha:'2026-01-15',hora:'09:32',ip:'192.168.1.10',declaracion:true},{nombre:'Carlos López',fecha:'2026-01-16',hora:'14:10',ip:'192.168.1.22',declaracion:true}],completado:88},
-      {id:'MOD-002',nombre:'Introduction à la loi 27 401',obligatorio:true,fechaLimite:'2026-03-31',destinatarios:'Tous',descripcion:'Formación sobre la Ley de Responsabilidad Penal Empresaria y sus implicancias para la empresa y los empleados.',firmas:[{nombre:'María García',fecha:'2026-01-20',hora:'11:05',ip:'192.168.1.10',declaracion:true}],completado:95},
-      {id:'MOD-003',nombre:'Procédures de marchés publics',obligatorio:true,fechaLimite:'2026-06-30',destinatarios:'Comercial, Compras',descripcion:'Normativa y procedimientos obligatorios para la participación en licitaciones y contrataciones con el Estado Nacional.',firmas:[],completado:72},
+      {id:'MOD-002',nombre:'Introduction à la loi 27 401',obligatorio:true,fechaLimite:'2026-03-31',destinatarios:'Tous',descripcion:'Formation sur la loi de responsabilité pénale des entreprises et ses implications pour l\'entreprise et les employés.',firmas:[{nombre:'María García',fecha:'2026-01-20',hora:'11:05',ip:'192.168.1.10',declaracion:true}],completado:95},
+      {id:'MOD-003',nombre:'Procédures de marchés publics',obligatorio:true,fechaLimite:'2026-06-30',destinatarios:'Comercial, Compras',descripcion:'Réglementation et procédures obligatoires pour la participation aux appels d\'offres et contrats avec l\'État national.',firmas:[],completado:72},
     ];
   }
   guardar();
@@ -298,8 +298,8 @@ function renderVistaEmpleado(){
     let venceBadge='';
     if(m.fechaLimite){
       const dias = Math.round((new Date(m.fechaLimite)-hoy)/86400000);
-      if(dias<0) venceBadge=`<span class="badge badge-vence-urgent">⚠️ Échu depuis hace ${Math.abs(dias)} días</span>`;
-      else venceBadge=`<span class="badge badge-vence-prox">📅 Vence en ${dias} días</span>`;
+      if(dias<0) venceBadge=`<span class="badge badge-vence-urgent">⚠️ Échu depuis ${Math.abs(dias)} jours</span>`;
+      else venceBadge=`<span class="badge badge-vence-prox">📅 Échéance dans ${dias} jours</span>`;
     }
     return `<div class="modulo-card">
       <div class="modulo-head">
@@ -337,11 +337,11 @@ function abrirModalFirma(modId, nombre){
     <div class="firma-modal-box">
       <div style="font-size:.78rem;color:var(--muted);margin-bottom:.4rem">Signez en saisissant votre nom complet</div>
       <input class="firma-nombre-input" type="text" id="firma-nombre-inp" value="${nombre}" placeholder="Tu nombre completo">
-      <div style="font-size:.72rem;color:var(--muted)">Fecha y hora: ${new Date().toLocaleString('es-AR')}</div>
+      <div style="font-size:.72rem;color:var(--muted)">Date et heure : ${new Date().toLocaleString('fr-FR')}</div>
     </div>
     <div style="display:flex;justify-content:flex-end;gap:.4rem;margin-top:.5rem">
       <button class="btn gris btn-sm" onclick="document.getElementById('modal-firma').classList.remove('open')">Annuler</button>
-      <button class="btn verde btn-sm" id="btn-confirmar-firma" disabled onclick="confirmarFirma()">✍️ Confirmar firma</button>
+      <button class="btn verde btn-sm" id="btn-confirmar-firma" disabled onclick="confirmarFirma()">✍️ Confirmer la signature</button>
     </div>
   `;
   document.getElementById('modal-firma').classList.add('open');
@@ -382,7 +382,7 @@ function verDetalle(id){
   document.getElementById('detalle-body').innerHTML = `
     <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.8rem">
       <span class="badge ${m.obligatorio?'badge-oblig':'badge-opc'}">${m.obligatorio?'Obligatoire':'Opcional'}</span>
-      ${m.fechaLimite?`<span class="badge badge-vence-prox">📅 Límite: ${m.fechaLimite}</span>`:''}
+      ${m.fechaLimite?`<span class="badge badge-vence-prox">📅 Échéance : ${m.fechaLimite}</span>`:''}
       <span class="badge" style="background:#e3f2fd;color:#0d47a1">👥 ${m.destinatarios}</span>
     </div>
     <p style="font-size:.83rem;color:#444;margin-bottom:1rem;line-height:1.5">${m.descripcion||''}</p>
@@ -403,7 +403,7 @@ function verDetalle(id){
       : `<div class="empty" style="padding:1rem">Aucune signature enregistrée pour l'instant.</div>`
     }
     <div style="margin-top:.8rem;padding:.6rem;background:#f0f4f8;border-radius:7px;font-size:.77rem;color:var(--muted)">
-      📋 Este registro es válido como evidencia de capacitación ante la Oficina Anticorruption (RITE) y auditores externos.
+      📋 Ce registre est valable comme preuve de formation auprès du Bureau anticorruption (RITE) et des auditeurs externes.
     </div>
   `;
   document.getElementById('modal-detalle').classList.add('open');

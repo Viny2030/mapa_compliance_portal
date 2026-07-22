@@ -141,7 +141,7 @@ textarea{resize:vertical;min-height:65px}
 
     <!-- Vista nueva DDJJ -->
     <div id="vista-nueva" style="display:none">
-      <div class="alerta naranja"><span>⚠️</span><span>Esta declaración tiene carácter de declaración jurada. La falsedad u omisión de datos puede acarrear consecuencias disciplinarias y legales (Art. 275 CP).</span></div>
+      <div class="alerta naranja"><span>⚠️</span><span>This declaration has the legal status of a sworn statement. False statements or omissions may result in disciplinary and legal consequences (Art. 275 of the Criminal Code).</span></div>
 
       <div class="form-section">
         <h3>👤 Discloser's details</h3>
@@ -202,7 +202,7 @@ textarea{resize:vertical;min-height:65px}
 
       <div class="check-legal">
         <input type="checkbox" id="chk-legal">
-        <label for="chk-legal">Declaro bajo juramento que los datos consignados son correctos y completos, y me comprometo a actualizar esta declaración ante cualquier cambio en mi situación. Entiendo que la falsedad u omisión de datos puede derivar en sanciones disciplinarias y responsabilidad penal (Art. 275 del Código Penal).</label>
+        <label for="chk-legal">I declare under oath that the information provided is true and complete, and I commit to updating this declaration in the event of any change in my situation. I understand that false statements or omissions may result in disciplinary sanctions and criminal liability (Art. 275 of the Criminal Code).</label>
       </div>
 
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
@@ -255,7 +255,7 @@ if(!ddjjs){
       ]},
     { id:'DDJJ-002', nombre:'Carlos Rodríguez', cuil:'20-31234567-8', cargo:'Gerente Comercial',
       area:'Commercial / Sales', conflicto:'con_conflicto', tipoConflicto:'Equity stake in a vendor/client',
-      empresaConf:'Proveedor XYZ S.R.L.', descConflicto:'Soy socio minoritario (15%) de Proveedor XYZ S.R.L., empresa que participa en la licitación LP-2026-04.',
+      empresaConf:'Proveedor XYZ S.R.L.', descConflicto:'I am a minority partner (15%) in Proveedor XYZ S.R.L., a company participating in tender LP-2026-04.',
       mitigacion:'I will abstain from participating in the evaluation and award process of tender LP-2026-04.',
       desde:'2026-06-01', hasta:'2026-12-31', obs:'', estado:'pendiente',
       fechaPresentacion:'2026-06-15', fechaResolucion:null, comentarioAprobador:'',
@@ -321,7 +321,7 @@ function renderLista(){
       </div>
       <div class="ddjj-meta">
         <span>📅 Presentada: ${d.fechaPresentacion}</span>
-        <span>📋 Período: ${d.desde} al ${d.hasta}</span>
+        <span>📋 Period: ${d.desde} to ${d.hasta}</span>
         <span style="font-family:monospace;font-size:.7rem">${d.id}</span>
       </div>
     </div>
@@ -401,7 +401,7 @@ function verDetalle(id){
     <div style="font-size:.8rem;font-weight:700;color:var(--pri);margin-bottom:.4rem">📋 Historial</div>
     <div>${d.historial.map(h=>`<div class="hist-item"><span style="color:var(--muted);min-width:85px">${h.fecha}</span><span style="flex:1">${h.accion}</span><span style="color:var(--muted)">${h.autor}</span></div>`).join('')}</div>
     <div style="margin-top:.7rem;padding:.6rem;background:#fffde7;border-left:3px solid var(--amarillo);border-radius:6px;font-size:.74rem;color:var(--muted)">
-      📋 Válido como evidencia ante auditorías externas y Oficina Anti-corruption.
+      📋 Valid as evidence before external audits and the Anti-Corruption Office.
     </div>
   `;
 

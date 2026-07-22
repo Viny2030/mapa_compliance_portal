@@ -278,8 +278,8 @@ const TODOS_MODULOS = [
 
 const GRUPO_LABELS = {
   core:'⚙️ Core',anticorrupcion:'⚖️ Anticorruption',
-  privacidad:'🔒 Privacidad',seguridad:'🔐 Seguridad',
-  ambiental:'🌿 Ambiental',gobernanza:'🏛️ Gobernanza',
+  privacidad:'🔒 Confidentialité',seguridad:'🔐 Sécurité',
+  ambiental:'🌿 Environnemental',gobernanza:'🏛️ Gouvernance',
   digital:'🤖 Digital',cross:'🗺️ Cross',
 };
 
@@ -577,7 +577,7 @@ function renderClienteCard(c) {
         ${sugs.length > 0 ? `<span class="badge" style="background:#fff3e0;color:#e65100">⚡ ${sugs.length} sugerencias</span>` : ''}
         <span class="badge ${planClass}">${c.plan}</span>
         <span class="badge ${c.activo?'badge-activo':'badge-inactivo'}">${c.activo?'Activo':'Inactivo'}</span>
-        <span class="score-mini ${scoreClass}">${pct}% módulos</span>
+        <span class="score-mini ${scoreClass}">${pct}% modules</span>
       </div>
     </div>
     <div class="cliente-detalle" id="det-${c.id}">
@@ -595,7 +595,7 @@ function renderDetalle(c, sugs) {
   return `
   <div class="det-tabs">
     <button class="det-tab active" onclick="showDetTab(this,'${c.id}','info')">📋 Info</button>
-    <button class="det-tab" onclick="showDetTab(this,'${c.id}','modulos')">🧩 Módulos (${activos.length}/${TODOS_MODULOS.length})</button>
+    <button class="det-tab" onclick="showDetTab(this,'${c.id}','modulos')">🧩 Modules (${activos.length}/${TODOS_MODULOS.length})</button>
     <button class="det-tab" onclick="showDetTab(this,'${c.id}','sugeridor')">💡 Sugeridor ${sugs.length>0?`<span style="background:#e65100;color:#fff;border-radius:4px;padding:.05rem .35rem;font-size:.62rem;margin-left:.2rem">${sugs.length}</span>`:''}</button>
   </div>
 
@@ -613,7 +613,7 @@ function renderDetalle(c, sugs) {
       <div class="info-item"><div class="info-label">Pays</div><div class="info-value">${c.pais||'—'}</div></div>
       <div class="info-item"><div class="info-label">Responsable</div><div class="info-value">${c.responsable||'—'}</div></div>
       <div class="info-item"><div class="info-label">Élevée</div><div class="info-value">${c.fecha_alta||'—'}</div></div>
-      <div class="info-item"><div class="info-label">Vencimiento</div><div class="info-value">${c.fecha_vencimiento||'—'}</div></div>
+      <div class="info-item"><div class="info-label">Échéance</div><div class="info-value">${c.fecha_vencimiento||'—'}</div></div>
     </div>
     ${onb ? `<div style="font-size:.76rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:.5rem">
       ${onb.opera_en_brasil?'<span style="background:#e8f5e9;color:#2e7d32;padding:.15rem .5rem;border-radius:4px;font-weight:600">🇧🇷 Brésil</span>':''}
@@ -625,9 +625,9 @@ function renderDetalle(c, sugs) {
       ${onb.sector_salud_industria?'<span style="background:#fff8e1;color:#e65100;padding:.15rem .5rem;border-radius:4px;font-weight:600">🦺 SST</span>':''}
     </div>` : ''}
     <div class="acciones-row">
-      <a href="onboarding-fr.html" class="btn-accion pri">✏️ Editar onboarding</a>
+      <a href="onboarding-fr.html" class="btn-accion pri">✏️ Modifier l'onboarding</a>
       <button class="btn-accion sec" onclick="copiarLink('${c.id}')">🔗 Copiar link</button>
-      <button class="btn-accion warn">📧 Enviar acceso</button>
+      <button class="btn-accion warn">📧 Envoyer l'accès</button>
       <button class="btn-accion danger">🗑️ Desactivar</button>
     </div>
   </div>
@@ -680,7 +680,7 @@ function renderSugeridor(c, sugs) {
 
   return `
   <div class="sug-header">
-    <h3>💡 ${sugs.length} módulo${sugs.length>1?'s':''} sugerido${sugs.length>1?'s':''} para el perfil</h3>
+    <h3>💡 ${sugs.length} module${sugs.length>1?'s':''} suggéré${sugs.length>1?'s':''} pour ce profil</h3>
     <span style="font-size:.72rem;color:var(--muted)">Sector: ${c.onboarding.sector} · ${c.pais}</span>
   </div>
   <div class="sug-grupos">
@@ -748,7 +748,7 @@ function abrirModalActivar(clienteId) {
   if(!c) return;
   const sugs = calcSugerencias(c);
   document.getElementById('modal-title').textContent = `Activer les modules suggérés — ${c.nombre}`;
-  document.getElementById('modal-desc').textContent = `Seront activés ${sugs.length} módulo${sugs.length>1?'s':''} basés sur le profil du client.`;
+  document.getElementById('modal-desc').textContent = `${sugs.length} module${sugs.length>1?'s':''} seront activés selon le profil du client.`;
   document.getElementById('modal-mods').innerHTML = sugs.map(sid => {
     const mod = TODOS_MODULOS.find(m=>m.id===sid);
     return mod ? `<span style="background:#e8f5e9;color:#1b5e20;font-size:.72rem;font-weight:600;padding:.2rem .55rem;border-radius:5px">${mod.label}</span>` : '';

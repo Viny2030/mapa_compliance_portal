@@ -190,7 +190,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--texto);mi
             <option value="pyme">PyME (hasta 50 empleados)</option>
             <option value="mediana">Mediana (51–250 empleados)</option>
             <option value="grande" selected>Grande (251–1000 empleados)</option>
-            <option value="corporacion">Corporación (+1000 empleados)</option>
+            <option value="corporacion">Corporation (+1000 salariés)</option>
           </select>
         </div>
 
@@ -467,7 +467,7 @@ function goStep3(){
   document.getElementById('c-resp').textContent    = document.getElementById('responsable').value || '—';
   document.getElementById('c-tel').textContent     = document.getElementById('telefono').value || '—';
   document.getElementById('c-plan').textContent    = planLabel[state.plan]||state.plan;
-  document.getElementById('c-mods').textContent    = `${activos.length} módulos`;
+  document.getElementById('c-mods').textContent    = `${activos.length} modules`;
   goStep(3);
 }
 

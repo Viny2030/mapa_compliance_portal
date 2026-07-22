@@ -226,7 +226,7 @@ if(incidentes.length === 0){
   incidentes = [
     { id:'INC-001', titulo:'Pago duplicado a proveedor estatal', tipo:'Internal fraud', severidad:'alto',
       area:'Finance and Accounting', fecha:'2026-05-10', detector:'Internal audit',
-      estado:'cerrado', descripcion:'Se detectó doble imputación de factura por $850.000 a proveedor de servicios contratado con el Municipio de San Martín.',
+      estado:'cerrado', descripcion:'Duplicate invoice billing detected for $850,000 to a services vendor under contract with the Municipality of San Martín.',
       acciones:[
         {fecha:'2026-05-11', texto:'Review of accounting records. Precautionary suspension of the responsible party.', autor:'Compliance'},
         {fecha:'2026-05-18', texto:'Internal investigation concluded. Operational error confirmed, no intent.', autor:'Legal'},
@@ -235,7 +235,7 @@ if(incidentes.length === 0){
       fechaRegistro:'2026-05-10' },
     { id:'INC-002', titulo:'Undisclosed conflict of interest in tender LP-2026-04', tipo:'Conflict of interest', severidad:'critico',
       area:'Commercial / Sales', fecha:'2026-06-01', detector:'Canal de denuncias',
-      estado:'investigando', descripcion:'Denuncia anónima indica que el Gerente Comercial es socio oculto de uno de los oferentes en la licitación LP-2026-04 por $12M.',
+      estado:'investigando', descripcion:'Anonymous report indicates that the Sales Manager is a hidden partner of one of the bidders in tender LP-2026-04, worth $12M.',
       acciones:[
         {fecha:'2026-06-02', texto:'Internal investigation opened. Sales Manager suspended.', autor:'Compliance'},
         {fecha:'2026-06-08', texto:'Request for asset information from ANSES and RPI.', autor:'Legal'},
@@ -243,7 +243,7 @@ if(incidentes.length === 0){
       fechaRegistro:'2026-06-01' },
     { id:'INC-003', titulo:'Near-miss: vendor gift outside policy', tipo:'Near-miss', severidad:'bajo',
       area:'Purchasing and Procurement', fecha:'2026-06-10', detector:'Auto-reporte empleado',
-      estado:'cerrado', descripcion:'Empleado de Compras recibió y rechazó un obsequio (caja de vinos) de un proveedor durante las fiestas. Valor estimado $45.000.',
+      estado:'cerrado', descripcion:'Procurement employee received and declined a gift (case of wine) from a vendor during the holidays. Estimated value $45,000.',
       acciones:[
         {fecha:'2026-06-10', texto:'Employee declined the gift and reported it within 24 hours.', autor:'Empleado - Compras'},
         {fecha:'2026-06-11', texto:'Vendor notified about Gifts Policy GR-002.', autor:'Compliance'},
@@ -313,7 +313,7 @@ function renderLista(){
       </div>
       ${i.descripcion ? `<div class="inc-desc">${i.descripcion.substring(0,120)}${i.descripcion.length>120?'…':''}</div>` : ''}
       <div class="inc-acciones">
-        <span style="font-size:.74rem;color:var(--muted)">${i.acciones.length} acción(es) correctiva(s)</span>
+        <span style="font-size:.74rem;color:var(--muted)">${i.acciones.length} corrective action(s)</span>
       </div>
     </div>
   `).join('');
@@ -367,7 +367,7 @@ function abrirModal(id){
       <label style="font-size:.78rem;font-weight:600;color:var(--pri);display:block;margin-bottom:.3rem">Add corrective action</label>
       <div style="display:flex;gap:.4rem">
         <input type="text" id="nueva-accion" placeholder="Description of the action taken…" style="flex:1;font-size:.83rem;padding:.4rem .65rem;border:1px solid var(--borde);border-radius:6px">
-        <button class="btn btn-sm verde" onclick="agregarAccion()">+ Agregar</button>
+        <button class="btn btn-sm verde" onclick="agregarAccion()">+ Add</button>
       </div>
     </div>
   `;
@@ -417,7 +417,7 @@ function registrarIncidente(){
   const severidad = document.getElementById('f-severidad').value;
   const area = document.getElementById('f-area').value;
   if(!titulo || !tipo || !severidad || !area){
-    toast('⚠️ Completá los campos obligatorios (*)'); return;
+    toast('⚠️ Complete the required fields (*)'); return;
   }
   const nuevo = {
     id: genId(),
