@@ -25,6 +25,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import sqlite3
 import uuid
 from datetime import datetime, timezone
@@ -169,8 +170,9 @@ SYSTEM_PROMPT = """Sos el agente de due diligence de terceros de un sistema de c
 Tu tarea: dado un CUIT, decidir qué fuentes consultar (afip, uif, ocde — podés llamar las que necesites, \
 en el orden que corresponda, y no repetir una fuente ya consultada) y devolver un veredicto final.
 
-Cuando ya tengas información suficiente, respondé en texto plano (sin más tool calls) con un JSON único \
-y exacto, sin texto adicional ni backticks:
+Cuando ya tengas información suficiente, tu ÚNICA respuesta debe ser el JSON de abajo. No agregues \
+ninguna frase antes o después (nada de "acá está el veredicto", "con la información obtenida", etc.), \
+ni backticks: el mensaje completo tiene que ser el JSON, nada más.
 {
   "cuit": "...",
   "riesgo": "bajo|medio|alto",
@@ -247,10 +249,22 @@ async def ejecutar_due_diligence_async(cuit: str) -> dict:
                         b.get("text", "") for b in content_blocks if b.get("type") == "text"
                     ).strip()
                     texto = texto.replace("```json", "").replace("```", "").strip()
+                    resultado = None
                     try:
                         resultado = json.loads(texto)
                     except json.JSONDecodeError:
-                        log.warning(f"Respuesta final del agente no es JSON válido: {texto[:200]}")
+                        # El modelo a veces antepone una frase antes del JSON pese a la
+                        # instrucción del system prompt (ej. "Con la información obtenida,
+                        # emito el veredicto final: {...}") — extraer el bloque {...} y
+                        # reintentar antes de rendirse.
+                        match = re.search(r"\{.*\}", texto, re.DOTALL)
+                        if match:
+                            try:
+                                resultado = json.loads(match.group(0))
+                            except json.JSONDecodeError:
+                                resultado = None
+                    if resultado is None:
+                        log.warning(f"Respuesta final del agente no es JSON válido: {texto[:300]}")
                         resultado = _fallback_determinista(cuit)
                     _log_paso(sesion_id, cuit, paso, "respuesta_final", None, resultado)
                     return resultado
