@@ -1619,6 +1619,15 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
       <div id="dd-res"></div>
       <p style="font-size:.73rem;color:var(--muted)" data-i18n="dd_ejemplos">Ejemplos: 30-54667581-3 (Siemens) · 30-69142665-7 (SAP) · 30-57655868-3 (ABB)</p>
     </div>
+    <div class="card">
+      <h2>🤖 Due Diligence con Agente IA</h2>
+      <p style="font-size:.83rem;color:var(--muted);margin-bottom:.8rem">El agente decide qué fuentes consultar (AFIP, UIF, OCDE) según el caso y arma un veredicto con justificación — en vez de un chequeo fijo siempre igual. Cada corrida queda registrada para trazabilidad.</p>
+      <div class="dd-form">
+        <input class="dd-input" id="dd-agente-input" placeholder="CUIT, ej: 30712345678">
+        <button class="btn" onclick="verificarCuitAgente()">Consultar agente →</button>
+      </div>
+      <div id="dd-agente-res"></div>
+    </div>
     <div class="grid2">
       <div class="card" style="margin-bottom:0"><h2 data-i18n="resumen_verificaciones">Resumen verificaciones</h2><div class="chart-wrap" style="height:180px"><canvas id="ch-dd"></canvas></div></div>
       <div class="card" style="margin-bottom:0"><h2 data-i18n="historial">Historial</h2><div id="dd-hist"></div></div>
@@ -2589,6 +2598,39 @@ async function verificarCuit(){
     if(d.sancionada_ocde){const primerCaso=(d.casos&&d.casos.length)?d.casos[0]:null;const empresaNombre=d.empresa_matriz||t('dd_empresa_sancionada');const casoTexto=primerCaso?`${primerCaso.nombre} (${primerCaso.anio}) — ${primerCaso.tipo}`:'—';res.innerHTML=`<div class="dd-res alerta">🔴 <strong>${t('dd_alerta_label')}</strong> ${cuitInput} → <strong>${empresaNombre}</strong> — ${t('dd_caso')} ${casoTexto} — <a href="${CONFIG.meaci_url}" target="_blank">${t('dd_ver_meaci')}</a></div>`;}
     else{res.innerHTML=`<div class="dd-res ok">✅ <strong>${t('dd_sin_antecedentes')}</strong> CUIT ${cuitInput} ${t('dd_no_figura')}</div>`;}
   }catch(e){res.innerHTML=`<div class="dd-res ok">✅ ${t('dd_sin_detectados')} ${cuitInput}. ${t('dd_verificar_conn')}</div>`;}
+}
+
+async function verificarCuitAgente(){
+  const cuitInput=document.getElementById('dd-agente-input').value.trim();if(!cuitInput)return;
+  const res=document.getElementById('dd-agente-res');
+  res.innerHTML=`<div class="dd-res loading">🤖 Consultando agente…</div>`;
+  try{
+    const r=await fetch('/api/v1/due-diligence/agente',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({cuit:cuitInput}),
+    });
+    if(!r.ok){
+      let detalle='Error consultando el agente';
+      try{const err=await r.json();detalle=err.detail||detalle;}catch(_){}
+      res.innerHTML=`<div class="dd-res alerta">⚠️ ${detalle}</div>`;
+      return;
+    }
+    const d=await r.json();
+    const color=d.riesgo==='alto'?'#c62828':d.riesgo==='medio'?'#e65100':'#2e7d32';
+    const icono=d.riesgo==='alto'?'🔴':d.riesgo==='medio'?'🟠':'🟢';
+    const hallazgos=(d.hallazgos&&d.hallazgos.length)
+      ? `<ul style="margin:.4rem 0 0 1.1rem;font-size:.8rem">${d.hallazgos.map(h=>`<li>${h}</li>`).join('')}</ul>`
+      : '';
+    res.innerHTML=`<div class="dd-res" style="border-left:4px solid ${color};background:#f8fafc">
+      <div style="font-weight:700;color:${color}">${icono} Riesgo ${d.riesgo?d.riesgo.toUpperCase():'?'}</div>
+      <div style="font-size:.82rem;margin-top:.3rem">${d.justificacion||''}</div>
+      ${hallazgos}
+      <div style="font-size:.72rem;color:var(--muted);margin-top:.4rem">Fuentes consultadas: ${(d.fuentes_consultadas||[]).join(', ')||'—'}</div>
+    </div>`;
+  }catch(e){
+    res.innerHTML=`<div class="dd-res alerta">⚠️ No se pudo contactar al agente. Probá de nuevo en un momento.</div>`;
+  }
 }
 
 function renderInternacional(){

@@ -206,6 +206,31 @@ async def due_diligence(req: DueDiligenceRequest, request: Request):
     return _verificar_cuit(cuit)
 
 
+@router.post("/due-diligence/agente")
+async def due_diligence_agente(req: DueDiligenceRequest, request: Request):
+    """
+    Due diligence vía agente director (Claude tool_use): decide dinámicamente
+    qué fuentes consultar (AFIP/UIF/OCDE) según el caso, en vez de llamarlas
+    siempre en el mismo orden fijo. Trazabilidad completa en agente_trazabilidad.db.
+    Sin ANTHROPIC_API_KEY configurada, cae al criterio determinístico anterior.
+    """
+    limitar(request, "due-diligence-agente", max_llamadas=10, ventana_seg=60)
+    from scripts.agente_director import ejecutar_due_diligence_async
+    cuit = _limpiar_cuit(req.cuit)
+    if not cuit:
+        raise HTTPException(status_code=400, detail="CUIT inválido")
+    return await ejecutar_due_diligence_async(cuit)
+
+
+@router.get("/due-diligence/agente/historial")
+async def due_diligence_agente_historial(request: Request, cuit: Optional[str] = Query(None)):
+    """Trazabilidad de corridas del agente de due diligence (más reciente primero)."""
+    limitar(request, "due-diligence-agente-historial", max_llamadas=30, ventana_seg=60)
+    from scripts.agente_director import historial
+    cuit_limpio = _limpiar_cuit(cuit) if cuit else None
+    return {"historial": historial(cuit_limpio)}
+
+
 @router.post("/reporte/pdf")
 async def exportar_pdf(req: PDFRequest, request: Request):
     """Genera y retorna el reporte PDF ejecutivo."""
