@@ -1,5 +1,5 @@
 {
-  "actualizado": "2026-08-15T06:04:43.376705Z",
+  "actualizado": "2026-08-16T06:04:51.717956Z",
   "total": 22,
   "alertas": [
     {
@@ -7,7 +7,7 @@
       "descripcion": "Renovación Canal de Denuncias — certificación anual",
       "severidad": "rojo",
       "categoria": "programa",
-      "vencimiento": "2026-08-30",
+      "vencimiento": "2026-08-31",
       "fuente": "Interna"
     },
     {
@@ -15,7 +15,7 @@
       "descripcion": "Actualización Mapa de Riesgos — revisión semestral",
       "severidad": "naranja",
       "categoria": "riesgo",
-      "vencimiento": "2026-09-29",
+      "vencimiento": "2026-09-30",
       "fuente": "Ley 27.401 art. 23"
     },
     {
@@ -23,117 +23,117 @@
       "descripcion": "Módulo de capacitación AML — cierre cohorte Q2",
       "severidad": "naranja",
       "categoria": "capacitacion",
-      "vencimiento": "2026-09-14",
+      "vencimiento": "2026-09-15",
       "fuente": "UIF Res. 70/2011"
     },
     {
-      "id": "oa_b248",
+      "id": "oa_5b30",
       "descripcion": "Jornada sobre integridad y transparencia en las contrataciones públicas",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
       "fuente": "Oficina Anticorrupción",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "oa_4d27",
+      "id": "oa_3338",
       "descripcion": "La OA brindó en La Pampa una capacitación sobre técnicas de investigación de actos de corrupción",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
       "fuente": "Oficina Anticorrupción",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "oa_e231",
+      "id": "oa_5136",
       "descripcion": "Reunión de la Red de Enlaces y Áreas de Integridad Pública 2026",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
       "fuente": "Oficina Anticorrupción",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "oa_2509",
+      "id": "oa_45c8",
       "descripcion": "La OA participó en la Reunión Regional Latinoamericana de Expertos sobre la Medición de la Eficacia de las Agencias Anticorrupción",
       "severidad": "verde",
       "categoria": "normativa_oa",
       "vencimiento": null,
       "fuente": "Oficina Anticorrupción",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "fecha_noticia": null
       }
     },
     {
-      "id": "uif_d55c",
+      "id": "uif_d973",
       "descripcion": "UIF Resolución 35/2026 — Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
       "fuente": "UIF — Res. 35/2026",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "numero": "35/2026",
         "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resolución-35-2026-424417"
       }
     },
     {
-      "id": "uif_7a37",
+      "id": "uif_1ef2",
       "descripcion": "UIF Resolución 127/2023 — Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
       "fuente": "UIF — Res. 127/2023",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "numero": "127/2023",
         "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resolución-127-2023-386743"
       }
     },
     {
-      "id": "uif_3d93",
+      "id": "uif_13a9",
       "descripcion": "UIF Resolución 72/2023 — Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
       "fuente": "UIF — Res. 72/2023",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "numero": "72/2023",
         "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resolución-72-2023-383138"
       }
     },
     {
-      "id": "uif_f446",
+      "id": "uif_e83c",
       "descripcion": "UIF Resolución 66/2023 — Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
       "fuente": "UIF — Res. 66/2023",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "numero": "66/2023",
         "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resolución-66-2023-382262"
       }
     },
     {
-      "id": "uif_ce21",
+      "id": "uif_d52e",
       "descripcion": "UIF Resolución 61/2023 — Norma AML/CFT vigente. Verificar aplicabilidad a su sector.",
       "severidad": "naranja",
       "categoria": "normativa_aml",
       "vencimiento": null,
       "fuente": "UIF — Res. 61/2023",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "numero": "61/2023",
         "url_saij": "https://www.argentina.gob.ar/normativa/nacional/resolución-61-2023-382071"
@@ -149,7 +149,7 @@
       "metadata": {
         "url": "https://www.oecd.org/daf/anti-bribery/"
       },
-      "fecha_deteccion": "2026-08-15"
+      "fecha_deteccion": "2026-08-16"
     },
     {
       "id": "ocde_2026b",
@@ -161,7 +161,7 @@
       "metadata": {
         "url": "https://www.oecd.org/daf/anti-bribery/"
       },
-      "fecha_deteccion": "2026-08-15"
+      "fecha_deteccion": "2026-08-16"
     },
     {
       "id": "ocde_2026c",
@@ -173,7 +173,7 @@
       "metadata": {
         "url": "https://www.oecd.org/daf/anti-bribery/"
       },
-      "fecha_deteccion": "2026-08-15"
+      "fecha_deteccion": "2026-08-16"
     },
     {
       "id": "igj_c001",
@@ -182,7 +182,7 @@
       "categoria": "normativa_igj",
       "vencimiento": "2026-07-31",
       "fuente": "IGJ — RG 5/2026",
-      "fecha_deteccion": "2026-08-15"
+      "fecha_deteccion": "2026-08-16"
     },
     {
       "id": "igj_c002",
@@ -191,16 +191,16 @@
       "categoria": "normativa_igj",
       "vencimiento": null,
       "fuente": "IGJ — Circular 2026",
-      "fecha_deteccion": "2026-08-15"
+      "fecha_deteccion": "2026-08-16"
     },
     {
-      "id": "igj_bal_6b59",
+      "id": "igj_bal_2d4f",
       "descripcion": "NRG ARGENTINA (SA) — balance al 31/12/2018 sin actualizar hace 92 meses. Riesgo: multa IGJ + observación organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
       "fuente": "IGJ — datos.jus.gob.ar",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "razon_social": "NRG ARGENTINA",
         "tipo": "SA",
@@ -209,13 +209,13 @@
       }
     },
     {
-      "id": "igj_bal_2cdb",
+      "id": "igj_bal_cb0c",
       "descripcion": "HERENCIA TOSCANA (SA) — balance al 31/12/2018 sin actualizar hace 92 meses. Riesgo: multa IGJ + observación organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
       "fuente": "IGJ — datos.jus.gob.ar",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "razon_social": "HERENCIA TOSCANA",
         "tipo": "SA",
@@ -224,13 +224,13 @@
       }
     },
     {
-      "id": "igj_bal_6217",
+      "id": "igj_bal_c60f",
       "descripcion": "SCATEC EQUINOR SOLUTIONS ARGENTINA (SA) — balance al 31/12/2018 sin actualizar hace 92 meses. Riesgo: multa IGJ + observación organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
       "fuente": "IGJ — datos.jus.gob.ar",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "razon_social": "SCATEC EQUINOR SOLUTIONS ARGENTINA",
         "tipo": "SA",
@@ -239,13 +239,13 @@
       }
     },
     {
-      "id": "igj_bal_f9dc",
+      "id": "igj_bal_c9ce",
       "descripcion": "COMPAÑIA EXPORTADORA DE ALIMENTOS (SA) — balance al 31/12/2018 sin actualizar hace 92 meses. Riesgo: multa IGJ + observación organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
       "fuente": "IGJ — datos.jus.gob.ar",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "razon_social": "COMPAÑIA EXPORTADORA DE ALIMENTOS",
         "tipo": "SA",
@@ -254,13 +254,13 @@
       }
     },
     {
-      "id": "igj_bal_bd5d",
+      "id": "igj_bal_9602",
       "descripcion": "CENTRO DE IMAGENES RD (SA) — balance al 31/12/2018 sin actualizar hace 92 meses. Riesgo: multa IGJ + observación organismos de control.",
       "severidad": "rojo",
       "categoria": "societario_igj",
       "vencimiento": null,
       "fuente": "IGJ — datos.jus.gob.ar",
-      "fecha_deteccion": "2026-08-15",
+      "fecha_deteccion": "2026-08-16",
       "metadata": {
         "razon_social": "CENTRO DE IMAGENES RD",
         "tipo": "SA",
