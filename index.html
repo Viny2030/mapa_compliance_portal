@@ -1622,6 +1622,10 @@ a{color:var(--sec);text-decoration:none}a:hover{text-decoration:underline}
     <div class="card">
       <h2>🤖 Due Diligence con Agente IA</h2>
       <p style="font-size:.83rem;color:var(--muted);margin-bottom:.8rem">El agente decide qué fuentes consultar (AFIP, UIF, OCDE) según el caso y arma un veredicto con justificación — en vez de un chequeo fijo siempre igual. Cada corrida queda registrada para trazabilidad.</p>
+      <div class="alerta naranja" style="margin-bottom:.8rem">
+        <span class="alerta-ico">⚠️</span>
+        <span><strong>MVP — fuentes simuladas.</strong> AFIP, UIF y OCDE todavía no están integradas con datos reales: el agente redacta un veredicto con lenguaje natural, pero la información de base es un placeholder derivado del propio CUIT, no una consulta real a esos organismos. No usar este resultado para decisiones de negocio hasta completar la integración oficial.</span>
+      </div>
       <div class="dd-form">
         <input class="dd-input" id="dd-agente-input" placeholder="CUIT, ej: 30712345678">
         <button class="btn" onclick="verificarCuitAgente()">Consultar agente →</button>
@@ -2622,11 +2626,13 @@ async function verificarCuitAgente(){
     const hallazgos=(d.hallazgos&&d.hallazgos.length)
       ? `<ul style="margin:.4rem 0 0 1.1rem;font-size:.8rem">${d.hallazgos.map(h=>`<li>${h}</li>`).join('')}</ul>`
       : '';
+    const aviso=d.aviso||'⚠️ Resultado simulado (MVP) — AFIP/UIF/OCDE no están integradas con datos reales todavía.';
     res.innerHTML=`<div class="dd-res" style="border-left:4px solid ${color};background:#f8fafc">
       <div style="font-weight:700;color:${color}">${icono} Riesgo ${d.riesgo?d.riesgo.toUpperCase():'?'}</div>
       <div style="font-size:.82rem;margin-top:.3rem">${d.justificacion||''}</div>
       ${hallazgos}
       <div style="font-size:.72rem;color:var(--muted);margin-top:.4rem">Fuentes consultadas: ${(d.fuentes_consultadas||[]).join(', ')||'—'}</div>
+      <div style="font-size:.72rem;color:#7c3a00;background:#fff3e0;border-left:3px solid var(--naranja);padding:.35rem .55rem;border-radius:5px;margin-top:.5rem">${aviso}</div>
     </div>`;
   }catch(e){
     res.innerHTML=`<div class="dd-res alerta">⚠️ No se pudo contactar al agente. Probá de nuevo en un momento.</div>`;

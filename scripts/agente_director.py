@@ -133,7 +133,11 @@ TOOLS_PYTHON = {
 TOOLS_SCHEMA = [
     {
         "name": "consultar_afip",
-        "description": "Consulta el padrón de AFIP para verificar el estado de una CUIT (activo/inactivo, tipo societario).",
+        "description": (
+            "[SIMULADO — no es una consulta real a AFIP todavía] Devuelve un estado de CUIT "
+            "(activo/inactivo, tipo societario) calculado con una heurística de ejemplo, "
+            "pendiente de reemplazo por WS_SR_PADRON_A5."
+        ),
         "input_schema": {
             "type": "object",
             "properties": {"cuit": {"type": "string", "description": "CUIT sin guiones, 11 dígitos"}},
@@ -143,8 +147,9 @@ TOOLS_SCHEMA = [
     {
         "name": "consultar_uif",
         "description": (
-            "Consulta a la UIF (Unidad de Información Financiera) si el titular de la CUIT figura en "
-            "listas de sospechosos o es una persona expuesta políticamente (PEP)."
+            "[SIMULADO — no es una consulta real a la UIF todavía] Devuelve una marca de "
+            "sospechoso/PEP calculada con una heurística de ejemplo sobre el CUIT, pendiente "
+            "de reemplazo por la integración real con la Unidad de Información Financiera."
         ),
         "input_schema": {
             "type": "object",
@@ -155,8 +160,9 @@ TOOLS_SCHEMA = [
     {
         "name": "consultar_ocde",
         "description": (
-            "Consulta listas de riesgo de la OCDE (lista negra/gris de jurisdicciones o entidades "
-            "sancionadas) asociadas a la CUIT."
+            "[SIMULADO — no es una consulta real a listas de la OCDE todavía] Devuelve una marca "
+            "de lista negra/gris calculada con una heurística de ejemplo sobre el CUIT, pendiente "
+            "de reemplazo por la integración real con listas de riesgo OCDE."
         ),
         "input_schema": {
             "type": "object",
@@ -170,6 +176,11 @@ SYSTEM_PROMPT = """Sos el agente de due diligence de terceros de un sistema de c
 Tu tarea: dado un CUIT, decidir qué fuentes consultar (afip, uif, ocde — podés llamar las que necesites, \
 en el orden que corresponda, y no repetir una fuente ya consultada) y devolver un veredicto final.
 
+IMPORTANTE: las tres tools son simulaciones de ejemplo (ver su descripción) — todavía no consultan AFIP, \
+la UIF ni la OCDE reales. Redactá los "hallazgos" y la "justificacion" dejando en claro que se trata de \
+un resultado preliminar/simulado (por ejemplo: "según la fuente simulada de AFIP...", "de confirmarse con \
+la fuente real..."), nunca como si fuera una verificación oficial ya realizada.
+
 Cuando ya tengas información suficiente, tu ÚNICA respuesta debe ser el JSON de abajo. No agregues \
 ninguna frase antes o después (nada de "acá está el veredicto", "con la información obtenida", etc.), \
 ni backticks: el mensaje completo tiene que ser el JSON, nada más.
@@ -178,8 +189,28 @@ ni backticks: el mensaje completo tiene que ser el JSON, nada más.
   "riesgo": "bajo|medio|alto",
   "hallazgos": ["..."],
   "fuentes_consultadas": ["afip", "uif", "ocde"],
-  "justificacion": "una o dos oraciones explicando el veredicto"
+  "justificacion": "una o dos oraciones explicando el veredicto, dejando en claro que las fuentes son simuladas"
 }"""
+
+
+# Aviso fijo que acompaña TODO veredicto de due diligence mientras las tools
+# de AFIP/UIF/OCDE sigan siendo stubs (ver docstring del módulo). Se agrega
+# server-side —no depende de que el modelo se acuerde de mencionarlo— para
+# que ningún consumidor de la API (la UI, un script, un tercero) pueda
+# tomar el veredicto como una verificación real por accidente.
+AVISO_FUENTES_SIMULADAS = (
+    "Resultado simulado (MVP): las consultas a AFIP/UIF/OCDE todavía son "
+    "placeholders derivados del propio CUIT, no integraciones reales. "
+    "No usar este veredicto para decisiones de negocio hasta reemplazar "
+    "las tools por las integraciones oficiales."
+)
+
+
+def _marcar_simulado(resultado: dict) -> dict:
+    """Agrega el flag y aviso de fuentes simuladas a cualquier veredicto de due diligence."""
+    resultado["fuentes_reales"] = False
+    resultado["aviso"] = AVISO_FUENTES_SIMULADAS
+    return resultado
 
 
 def _fallback_determinista(cuit: str) -> dict:
@@ -191,13 +222,13 @@ def _fallback_determinista(cuit: str) -> dict:
         "alto" if (uif["persona_expuesta_politicamente"] or ocde["lista_gris"] or ocde["lista_negra"])
         else ("bajo" if afip["valido"] else "medio")
     )
-    return {
+    return _marcar_simulado({
         "cuit": cuit,
         "riesgo": riesgo,
         "hallazgos": [],
         "fuentes_consultadas": ["afip", "uif", "ocde"],
         "justificacion": "Evaluación determinística (agente IA no disponible o sin ANTHROPIC_API_KEY configurada).",
-    }
+    })
 
 
 async def ejecutar_due_diligence_async(cuit: str) -> dict:
@@ -266,6 +297,8 @@ async def ejecutar_due_diligence_async(cuit: str) -> dict:
                     if resultado is None:
                         log.warning(f"Respuesta final del agente no es JSON válido: {texto[:300]}")
                         resultado = _fallback_determinista(cuit)
+                    else:
+                        resultado = _marcar_simulado(resultado)
                     _log_paso(sesion_id, cuit, paso, "respuesta_final", None, resultado)
                     return resultado
 

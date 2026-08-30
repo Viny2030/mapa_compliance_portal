@@ -86,6 +86,12 @@ def _verificar_cuit(cuit: str) -> dict:
         "ocde": {"lista_negra": False, "lista_gris": False},
         "riesgo": "bajo" if es_valido and digito_verificador % 3 != 0 else "medio",
         "fecha_consulta": date.today().isoformat(),
+        "fuentes_reales": False,
+        "aviso": (
+            "Resultado simulado (MVP): AFIP/UIF/OCDE son placeholders derivados "
+            "del propio CUIT, no consultas reales. Ver scripts/agente_director.py "
+            "para reemplazarlos por integraciones oficiales."
+        ),
     }
 
 
